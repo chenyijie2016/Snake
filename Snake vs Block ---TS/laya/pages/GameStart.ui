@@ -1,8 +1,8 @@
 {
     "x":0,
     "type":"View",
-    "selectedBox":3,
-    "selecteID":3,
+    "selectedBox":1,
+    "selecteID":7,
     "props":{"sceneWidth":414,"sceneColor":"#000000","height":736},
     "nodeParent":-1,
     "label":"View",
@@ -14,49 +14,8 @@
     "child":[
         {
             "x":15,
-            "type":"Text",
-            "props":{"y":218,"x":172,"width":51,"text":"VS","height":40,"fontSize":35,"font":"Arial","color":"#FFFFFF"},
-            "nodeParent":1,
-            "label":"Text",
-            "isOpen":true,
-            "isDirectory":false,
-            "isAniNode":true,
-            "hasChild":false,
-            "compId":3,
-            "child":[
-                ]
-        },
-        {
-            "x":15,
-            "type":"Text",
-            "props":{"y":168,"x":30,"width":138,"text":"Snake","height":47,"fontSize":40,"font":"Helvetica","color":"#b2de3f","bold":true},
-            "nodeParent":1,
-            "label":"Text",
-            "isOpen":true,
-            "isDirectory":false,
-            "isAniNode":true,
-            "hasChild":false,
-            "compId":4,
-            "child":[
-                ]
-        },
-        {
-            "x":15,
-            "type":"Text",
-            "props":{"y":242,"x":251,"width":136,"text":"Block","height":46,"fontSize":40,"font":"Helvetica","color":"#dbe240","bold":true},
-            "nodeParent":1,
-            "label":"Text",
-            "isDirectory":false,
-            "isAniNode":true,
-            "hasChild":false,
-            "compId":6,
-            "child":[
-                ]
-        },
-        {
-            "x":15,
             "type":"Button",
-            "props":{"y":564,"x":196,"width":152,"var":"gameStartButton","stateNum":"2","skin":"ui/btn_start.png","pivotY":26,"pivotX":75,"label":"label","height":57},
+            "props":{"y":643,"x":187,"width":165,"var":"gameStartButton","stateNum":"2","skin":"ui/btn_start.png","pivotY":48,"pivotX":63,"height":80},
             "nodeParent":1,
             "label":"Button(gameStartButton)",
             "isDirectory":false,
