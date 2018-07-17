@@ -1,0 +1,37 @@
+{
+    "x":0,
+    "type":"View",
+    "selectedBox":1,
+    "selecteID":2,
+    "props":{"sceneWidth":375,"sceneHeight":667,"sceneColor":"#000000"},
+    "nodeParent":-1,
+    "label":"View",
+    "isOpen":true,
+    "isDirectory":true,
+    "isAniNode":true,
+    "hasChild":true,
+    "compId":1,
+    "child":[
+        {
+            "x":15,
+            "type":"Rect",
+            "props":{"y":341,"x":120,"width":100,"lineWidth":1,"height":100,"fillColor":"#ff0000"},
+            "nodeParent":1,
+            "label":"Rect",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":2,
+            "child":[
+                ]
+        }],
+    "animations":[
+        {
+            "nodes":[
+                ],
+            "name":"ani1",
+            "id":1,
+            "frameRate":24,
+            "action":0
+        }]
+}
