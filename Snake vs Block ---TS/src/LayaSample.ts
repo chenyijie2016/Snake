@@ -1,27 +1,24 @@
 import WebGL = Laya.WebGL;
-import Browser = Laya.Browser;
-import Stage = Laya.Stage;
 // 程序入口
 class GameMain {
     public static gameStart: view.GameStart;
     public static gameView: view.GameView;
+    public static width: number = 414;
+    public static height: number = 736;
     constructor() {
         Laya.init(414, 736, WebGL);
-        // 不支持WebGL时自动切换至Canvas
-        Laya.init(Browser.clientWidth, Browser.clientHeight, WebGL);
         Laya.stage.alignH = Laya.Stage.ALIGN_CENTER;
-        Laya.stage.alignV = Laya.Stage.ALIGN_MIDDLE;
-        Laya.stage.scaleMode = Stage.SCALE_SHOWALL;
-        //设置stage颜色
-        Laya.stage.bgColor = "black";
-        var resArray:Array<any>=[
-            {url:"res/atlas/ui.atlas",type:Laya.Loader.ATLAS},
-            // {url:"ui/back.png",type:Laya.Loader.IMAGE},
-            // {url:"ui/help.png",type:Laya.Loader.IMAGE}
+        Laya.stage.alignV = Laya.Stage.ALIGN_CENTER;
+        Laya.stage.scaleMode = Laya.Stage.SCALE_SHOWALL;
+        Laya.stage.bgColor = "#000000";
+        var resArray: Array<any> = [
+            { url: "res/atlas/ui.json", type: Laya.Loader.ATLAS },
+            { url: "ui/btn_start.png", type: Laya.Loader.IMAGE }
         ];
-        Laya.loader.load(resArray,Laya.Handler.create(this,this.onload));
+
+        Laya.loader.load(resArray, Laya.Handler.create(this, this.onLoaded));
     }
-    onload(): void {
+    onLoaded(): void {
         GameMain.gameStart = new view.GameStart();
         Laya.stage.addChild(GameMain.gameStart);
     }
