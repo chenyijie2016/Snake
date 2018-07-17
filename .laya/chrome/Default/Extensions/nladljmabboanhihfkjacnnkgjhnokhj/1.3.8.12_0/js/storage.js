@@ -1,0 +1,1 @@
+"use strict";uBlock.keyvalSetOne=function(e,a,t){var n={};n[e]=a,vAPI.storage.set(n,t||this.noopFunc)},uBlock.saveExternalData=function(){this.keyvalSetOne("externalData",adawareTelemetry.getExternalData())},uBlock.saveInlineParameters=function(e){this.keyvalSetOne("inlineParameters",e)};
