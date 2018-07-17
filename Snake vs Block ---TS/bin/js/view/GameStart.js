@@ -45,7 +45,7 @@ var view;
             var letter;
             for (var i = 0, len = txt2.length; i < len; ++i) {
                 letter = this.createLetter(txt2.charAt(i));
-                letter.x = (i == 0 ? (Laya.stage.width >> 1) - 25 : (Laya.stage.width >> 1));
+                letter.x = (i == 0 ? (Laya.stage.width >> 1) - 27 : (Laya.stage.width >> 1) + 5);
                 letter.y = 0;
                 //字符缓动动画
                 Laya.Tween.to(letter, { y: Laya.stage.height * 0.16, update: new Laya.Handler(this, updateColor, [letter]) }, 1500, Laya.Ease.bounceIn, Laya.Handler.create(this, changeColor, [letter]), i * 200);

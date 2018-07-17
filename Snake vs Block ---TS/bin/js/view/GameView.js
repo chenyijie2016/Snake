@@ -14,7 +14,14 @@ var view;
     var GameView = /** @class */ (function (_super) {
         __extends(GameView, _super);
         function GameView() {
-            return _super.call(this) || this;
+            var _this = _super.call(this) || this;
+            _this.debugInfo = new Laya.Text();
+            _this.debugInfo.width = 300;
+            _this.debugInfo.font = "SimSun";
+            _this.debugInfo.fontSize = 20;
+            _this.debugInfo.color = "white";
+            _this.addChild(_this.debugInfo);
+            return _this;
         }
         GameView.prototype.startGame = function () {
             this.snake = new sprite.Snake();
@@ -33,30 +40,30 @@ var view;
         };
         GameView.prototype.onMouseUp = function () {
             this.mouseDown = false;
+            this.debugInfo.text = 'mouseup';
         };
         GameView.prototype.onLoop = function () {
             var currentMouseX = Laya.stage.mouseX;
-            //console.log(currentMouseX, this.lastMouseX);
+            //this.debugInfo.text = Math.abs(currentMouseX - this.lastMouseX).toString();
             if (this.mouseDown) {
+                var level = 0;
+                if (Math.abs(currentMouseX - this.lastMouseX) > 20)
+                    level = 4;
+                else if (Math.abs(currentMouseX - this.lastMouseX) >= 15)
+                    level = 3;
+                else if (Math.abs(currentMouseX - this.lastMouseX) >= 10)
+                    level = 2;
+                else if (Math.abs(currentMouseX - this.lastMouseX) >= 5)
+                    level = 1;
                 if (currentMouseX < this.lastMouseX) {
-                    this.snake.moveLeft();
+                    this.snake.moveLeft(level);
                 }
                 else if (currentMouseX > this.lastMouseX) {
-                    this.snake.moveRight();
+                    this.snake.moveRight(level);
                 }
             }
             this.snake.updateBody();
             this.lastMouseX = currentMouseX;
-        };
-        GameView.prototype.onMouseMove = function (e) {
-            //this.snake.pos(Laya.stage.mouseX, Laya.stage.mouseY);
-            var currentMouseX = Laya.stage.mouseX;
-            if (currentMouseX < this.lastMouseX) {
-                this.snake.moveLeft();
-            }
-            else if (currentMouseX > this.lastMouseX) {
-                this.snake.moveRight();
-            }
         };
         return GameView;
     }(ui.GameViewUI));
