@@ -30,11 +30,11 @@ module sprite {
             //TODO :draw Block
             if (this.visible) {
                 let path: any[] = [
-                    ["moveTo", 0, 0],
-                    ["arcTo", Const.BLOCK_WIDTH, 0, Const.BLOCK_WIDTH, 1, Const.BLOCK_RADIUS],
-                    ["arcTo", Const.BLOCK_WIDTH, Const.BLOCK_WIDTH, Const.BLOCK_WIDTH - 1, Const.BLOCK_WIDTH, Const.BLOCK_RADIUS],
-                    ["arcTo", 0, Const.BLOCK_WIDTH, 0, Const.BLOCK_WIDTH - 1, Const.BLOCK_RADIUS],
-                    ["arcTo", 0, 0, 1, 0, Const.BLOCK_RADIUS],
+                    ["moveTo", Const.BLOCK_RADIUS, 0],
+                    ["arcTo", Const.BLOCK_WIDTH, 0, Const.BLOCK_WIDTH, Const.BLOCK_RADIUS, Const.BLOCK_RADIUS],
+                    ["arcTo", Const.BLOCK_WIDTH, Const.BLOCK_WIDTH, Const.BLOCK_WIDTH - Const.BLOCK_RADIUS, Const.BLOCK_WIDTH, Const.BLOCK_RADIUS],
+                    ["arcTo", 0, Const.BLOCK_WIDTH, 0, Const.BLOCK_WIDTH - Const.BLOCK_RADIUS, Const.BLOCK_RADIUS],
+                    ["arcTo", 0, 0, Const.BLOCK_RADIUS, 0, Const.BLOCK_RADIUS],
                 ];
 
                 this.graphics.drawPath(this.PosX - Const.BLOCK_WIDTH / 2, this.PosY - Const.BLOCK_WIDTH / 2, path, { fillStyle: this.getBlockColor() });

@@ -86,7 +86,7 @@ module view {
 				let orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], blockNumber);
 				for (let i = 0; i < blockNumber; i++) {
 					let b = new sprite.Block();
-					b.setPos(orders[i] * 82.8 + 45, 0);
+					b.setPos(orders[i] * 82.8 + 41, 0);
 					this.blocks.push(b);
 					this.addChildren(b);
 				}
