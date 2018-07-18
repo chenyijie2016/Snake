@@ -1,3 +1,4 @@
+/**Created by the LayaAirIDE*/
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -8,7 +9,6 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-/**Created by the LayaAirIDE*/
 var view;
 (function (view) {
     var GameView = /** @class */ (function (_super) {
@@ -25,13 +25,11 @@ var view;
         }
         GameView.prototype.startGame = function () {
             this.snake = new sprite.Snake();
-            this.snake.pos(GameMain.width / 2, GameMain.height * 0.8);
             Laya.stage.addChild(this.snake);
-            //Laya.stage.on('mousemove', this, this.onMouseMove);
             this.lastMouseX = Laya.stage.mouseX;
             this.snake.pos(0, 0);
-            Laya.timer.frameLoop(1, this, this.onLoop);
-            this.snake.addBody(15);
+            Laya.timer.frameLoop(1, this, this.mainLoop); // Every Frame
+            this.snake.extendBody(25);
             Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
         };
@@ -42,19 +40,33 @@ var view;
             this.mouseDown = false;
             this.debugInfo.text = 'mouseup';
         };
-        GameView.prototype.onLoop = function () {
+        // The Main Loop for the game
+        GameView.prototype.mainLoop = function () {
+            this.updateGameStatus();
+            this.detectMouseMove();
+            this.snake.updateBody();
+            this.updateBlocks();
+        };
+        GameView.prototype.detectMouseMove = function () {
             var currentMouseX = Laya.stage.mouseX;
             //this.debugInfo.text = Math.abs(currentMouseX - this.lastMouseX).toString();
             if (this.mouseDown) {
-                var level = 0;
-                if (Math.abs(currentMouseX - this.lastMouseX) > 20)
-                    level = 4;
-                else if (Math.abs(currentMouseX - this.lastMouseX) >= 15)
-                    level = 3;
-                else if (Math.abs(currentMouseX - this.lastMouseX) >= 10)
-                    level = 2;
-                else if (Math.abs(currentMouseX - this.lastMouseX) >= 5)
-                    level = 1;
+                // let level = 0;
+                // if (Math.abs(currentMouseX - this.lastMouseX) > 20)
+                // 	level = 4;
+                // else if (Math.abs(currentMouseX - this.lastMouseX) >= 15)
+                // 	level = 3;
+                // else if (Math.abs(currentMouseX - this.lastMouseX) >= 10)
+                // 	level = 2;
+                // else if (Math.abs(currentMouseX - this.lastMouseX) >= 5)
+                // 	level = 1;
+                var level = 1;
+                if (Math.abs(currentMouseX - this.lastMouseX) > 20) {
+                    level = 40;
+                }
+                else {
+                    level = Math.abs(currentMouseX - this.lastMouseX) * 2;
+                }
                 if (currentMouseX < this.lastMouseX) {
                     this.snake.moveLeft(level);
                 }
@@ -62,8 +74,11 @@ var view;
                     this.snake.moveRight(level);
                 }
             }
-            this.snake.updateBody();
             this.lastMouseX = currentMouseX;
+        };
+        GameView.prototype.updateGameStatus = function () {
+        };
+        GameView.prototype.updateBlocks = function () {
         };
         return GameView;
     }(ui.GameViewUI));

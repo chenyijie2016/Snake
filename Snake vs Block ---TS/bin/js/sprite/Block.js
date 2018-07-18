@@ -17,8 +17,20 @@ var sprite;
             _this.init();
             return _this;
         }
+        Block.prototype.isVisible = function () {
+            return this.Visible;
+        };
+        Block.prototype.setVisible = function () {
+            this.Visible = true;
+        };
+        Block.prototype.hidden = function () {
+            this.Visible = false;
+        };
         Block.prototype.setScore = function (score) {
-            this.Score = score;
+            this.score = score;
+        };
+        Block.prototype.show = function () {
+            this.graphics.clear();
         };
         Block.prototype.init = function () {
             this.graphics.drawCircle(0, 0, 8, '#FFEE00');
