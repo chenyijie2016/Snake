@@ -38,11 +38,11 @@ var sprite;
             //TODO :draw Block
             if (this.visible) {
                 var path = [
-                    ["moveTo", 0, 0],
-                    ["arcTo", Const.BLOCK_WIDTH, 0, Const.BLOCK_WIDTH, 1, Const.BLOCK_RADIUS],
-                    ["arcTo", Const.BLOCK_WIDTH, Const.BLOCK_WIDTH, Const.BLOCK_WIDTH - 1, Const.BLOCK_WIDTH, Const.BLOCK_RADIUS],
-                    ["arcTo", 0, Const.BLOCK_WIDTH, 0, Const.BLOCK_WIDTH - 1, Const.BLOCK_RADIUS],
-                    ["arcTo", 0, 0, 1, 0, Const.BLOCK_RADIUS],
+                    ["moveTo", Const.BLOCK_RADIUS, 0],
+                    ["arcTo", Const.BLOCK_WIDTH, 0, Const.BLOCK_WIDTH, Const.BLOCK_RADIUS, Const.BLOCK_RADIUS],
+                    ["arcTo", Const.BLOCK_WIDTH, Const.BLOCK_WIDTH, Const.BLOCK_WIDTH - Const.BLOCK_RADIUS, Const.BLOCK_WIDTH, Const.BLOCK_RADIUS],
+                    ["arcTo", 0, Const.BLOCK_WIDTH, 0, Const.BLOCK_WIDTH - Const.BLOCK_RADIUS, Const.BLOCK_RADIUS],
+                    ["arcTo", 0, 0, Const.BLOCK_RADIUS, 0, Const.BLOCK_RADIUS],
                 ];
                 this.graphics.drawPath(this.PosX - Const.BLOCK_WIDTH / 2, this.PosY - Const.BLOCK_WIDTH / 2, path, { fillStyle: this.getBlockColor() });
                 this.graphics.fillText(this.value.toString(), this.PosX - 5, this.PosY - 5, '30px Arial', '#000000', 'center');
@@ -53,28 +53,10 @@ var sprite;
             if (blockValue > 50) {
                 blockValue = 50;
             }
-            // if (blockValue === 1) {
-            //     return '#68EFED'
-            // } else if (blockValue <= 4) {
-            //     return '#17D673'
-            // } else if (blockValue <= 8) {
-            //     return '#00C853'
-            // } else if (blockValue <= 12) {
-            //     return '#FFD54F'
-            // } else if (blockValue <= 16) {
-            //     return '#FFCA28'
-            // } else if (blockValue <= 20) {
-            //     return '#FF8F00'
-            // } else if (blockValue >= 21) {
-            //     return '#D84315'
-            // }
             var rgbToHex = function (rgb) {
                 var color = rgb.toString().match(/\d+/g); // 把 x,y,z 推送到 color 数组里
                 var hex = "#";
                 for (var i = 0; i < 3; i++) {
-                    // 'Number.toString(16)' 是JS默认能实现转换成16进制数的方法.
-                    // 'color[i]' 是数组，要转换成字符串.
-                    // 如果结果是一位数，就在前面补零。例如： A变成0A
                     hex += ("0" + Number(color[i]).toString(16)).slice(-2);
                 }
                 return hex;
@@ -83,7 +65,7 @@ var sprite;
             return rgbToHex(rgb);
         };
         Block.prototype.init = function () {
-            this.setValue(Common.getRandomNumber(1, 40) + 1);
+            this.setValue(Common.getRandomNumber(1, 50) + 1);
             this.PosX = 0;
             this.PosY = 0;
         };

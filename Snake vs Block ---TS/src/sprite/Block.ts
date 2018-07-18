@@ -62,7 +62,7 @@ module sprite {
         }
 
         init(): void {
-            this.setValue(Common.getRandomNumber(1, 40) + 1);
+            this.setValue(Common.getRandomNumber(1, 50) + 1);
             this.PosX = 0;
             this.PosY = 0;
         }

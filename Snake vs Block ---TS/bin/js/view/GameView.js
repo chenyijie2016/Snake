@@ -23,6 +23,7 @@ var view;
             _this.debugInfo.color = "white";
             _this.addChild(_this.debugInfo);
             _this.blocks = new Array();
+            _this.snakeAdds = new Array();
             return _this;
         }
         GameView.prototype.startGame = function () {
@@ -35,7 +36,9 @@ var view;
             this.snake.extendBody(25);
             Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
-            Laya.timer.frameLoop(300, this, this.updateGameStatus); //每300帧添加进行游戏状态更新，添加方块
+            // Laya.timer.frameLoop(100, this, this.updateBlocksStatus);//每300帧添加进行游戏状态更新，添加Block
+            Laya.timer.frameOnce(100, this, this.updateBlocksStatus); //每个随机帧数添加进行游戏状态更新，添加Block
+            Laya.timer.frameOnce(80, this, this.updateSnakeAddsStatus); //每个随机帧添加进行游戏状态更新，添加SnakeAdd
         };
         GameView.prototype.onMouseDown = function () {
             this.mouseDown = true;
@@ -49,6 +52,7 @@ var view;
             this.detectMouseMove();
             this.snake.updateBody();
             this.updateBlocks();
+            this.updateSnakeAdds();
         };
         // 检测触点移动情况
         GameView.prototype.detectMouseMove = function () {
@@ -75,18 +79,35 @@ var view;
         GameView.prototype.isDirectCollision = function () {
             return false;
         };
-        // 更新游戏状态
-        GameView.prototype.updateGameStatus = function () {
-            var blockNumber = Common.getRandomNumber(0, 5);
-            if (blockNumber > 0) {
-                var orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], blockNumber);
-                for (var i = 0; i < blockNumber; i++) {
+        // 更新方块集合Blocks
+        GameView.prototype.updateBlocksStatus = function () {
+            var blockNumber = Common.getRandomArrayElements(Const.BLOCK_NUMBERS, 1);
+            if (blockNumber[0] > 0) {
+                var orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], blockNumber[0]);
+                for (var i = 0; i < blockNumber[0]; i++) {
                     var b = new sprite.Block();
-                    b.setPos(orders[i] * 82.8 + 45, 0);
+                    b.setPos(orders[i] * 82.8 + 41, 0);
                     this.blocks.push(b);
                     this.addChildren(b);
                 }
             }
+            var nextTimeNewBlocks = Common.getRandomArrayElements(Const.BLOCK_NEWTIMES, 1);
+            Laya.timer.frameOnce(nextTimeNewBlocks[0], this, this.updateBlocksStatus); //每个随机帧数添加进行游戏状态更新，添加Block
+        };
+        // 更新Grow集合SnakeAdds
+        GameView.prototype.updateSnakeAddsStatus = function () {
+            var snakeAddNumber = Common.getRandomArrayElements(Const.SNAKE_ADD_NUMBERS, 1);
+            if (snakeAddNumber[0] > 0) {
+                var orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], snakeAddNumber[0]);
+                for (var i = 0; i < snakeAddNumber[0]; i++) {
+                    var add = new sprite.SnakeAdd();
+                    add.setPos(orders[i] * 82.8 + 41, 0);
+                    this.snakeAdds.push(add);
+                    this.addChildren(add);
+                }
+            }
+            var nextTimeNewAdds = Common.getRandomArrayElements(Const.SNAKE_ADD_NEWTIMES, 1);
+            Laya.timer.frameOnce(50, this, this.updateSnakeAddsStatus); //每个随机帧添加进行游戏状态更新，添加SnakeAdd	
         };
         // 更新碰撞检测信息
         GameView.prototype.updateCollisionDetection = function () {
@@ -103,6 +124,21 @@ var view;
                     block.destory();
                     console.log('destory block');
                     _this.blocks.splice(_this.blocks.indexOf(block), 1);
+                }
+            });
+        };
+        // 更新SnakeAdd状态
+        GameView.prototype.updateSnakeAdds = function () {
+            var _this = this;
+            this.snakeAdds.forEach(function (snakeAdd) {
+                if (!_this.isDirectCollision()) {
+                    snakeAdd.PosY += _this.gameScrollSpeed;
+                    snakeAdd.update();
+                }
+                if (snakeAdd.PosY > Const.SCREEN_HEIGHT) {
+                    snakeAdd.destory();
+                    console.log('destory snakeAdd');
+                    _this.snakeAdds.splice(_this.snakeAdds.indexOf(snakeAdd), 1);
                 }
             });
         };
