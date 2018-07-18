@@ -28,14 +28,14 @@ var sprite;
             for (var i = 1; i < this.length; i++) {
                 var XDifference = Math.abs(this.bodyPosX[i] - this.bodyPosX[i - 1]);
                 if (this.bodyPosX[i] < this.bodyPosX[i - 1]) {
-                    this.bodyPosX[i] += XDifference / 2;
+                    this.bodyPosX[i] += XDifference / Const.SNAKE_FLEXIBILITY;
                 }
                 else if (this.bodyPosX[i] > this.bodyPosX[i - 1]) {
-                    this.bodyPosX[i] -= XDifference / 2;
+                    this.bodyPosX[i] -= XDifference / Const.SNAKE_FLEXIBILITY;
                 }
                 var YDifference = Const.SNAKE_BODY_MINIUM_SPACING;
-                if (Math.pow(Const.SNAKE_BODY_DEFALUT_SPACING, 2) - Math.pow(XDifference, 2) / 4 > 0) {
-                    YDifference = Math.sqrt(Math.pow(Const.SNAKE_BODY_DEFALUT_SPACING, 2) - Math.pow(XDifference, 2) / 4);
+                if (Math.pow(Const.SNAKE_BODY_DEFALUT_SPACING, 2) - Math.pow(XDifference, 2) / Math.pow(Const.SNAKE_FLEXIBILITY, 2) > 0) {
+                    YDifference = Math.sqrt(Math.pow(Const.SNAKE_BODY_DEFALUT_SPACING, 2) - Math.pow(XDifference, 2) / Math.pow(Const.SNAKE_FLEXIBILITY, 2));
                 }
                 this.bodyPosY[i] = this.bodyPosY[i - 1] + YDifference;
             }
@@ -51,6 +51,7 @@ var sprite;
         };
         Snake.prototype.showBody = function () {
             this.graphics.clear();
+            this.graphics.fillText(this.length.toString(), this.bodyPosX[0], this.bodyPosY[0] - 35, '20px Arial', '#FFFFFF', 'center');
             for (var i = 0; i < this.length; i++) {
                 // Using Skin !!!
                 // this is just a demo
@@ -59,26 +60,12 @@ var sprite;
             }
         };
         Snake.prototype.moveLeft = function (level) {
-            // switch (level) {
-            //     case 0: this.bodyPosX[0] -= 8; break;
-            //     case 1: this.bodyPosX[0] -= 18; break;
-            //     case 2: this.bodyPosX[0] -= 24; break;
-            //     case 3: this.bodyPosX[0] -= 32; break;
-            //     case 4: this.bodyPosX[0] -= 40; break;
-            // }
             this.bodyPosX[0] -= level;
             if (this.bodyPosX[0] < 0) {
                 this.bodyPosX[0] = Const.SNAKE_BODY_RADIUS;
             }
         };
         Snake.prototype.moveRight = function (level) {
-            // switch (level) {
-            //     case 0: this.bodyPosX[0] += 8; break;
-            //     case 1: this.bodyPosX[0] += 18; break;
-            //     case 2: this.bodyPosX[0] += 24; break;
-            //     case 3: this.bodyPosX[0] += 32; break;
-            //     case 4: this.bodyPosX[0] += 40; break;
-            // }
             this.bodyPosX[0] += level;
             if (this.bodyPosX[0] > Const.SCREEN_WIDTH) {
                 this.bodyPosX[0] = Const.SCREEN_WIDTH - Const.SNAKE_BODY_RADIUS;
