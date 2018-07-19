@@ -18,7 +18,7 @@ var view;
             /* for debug */
             _this.debugInfo = new Laya.Text();
             _this.debugInfo.width = 300;
-            _this.debugInfo.font = "SimSun";
+            _this.debugInfo.font = "Hei";
             _this.debugInfo.fontSize = 20;
             _this.debugInfo.color = "white";
             _this.addChild(_this.debugInfo);
@@ -26,19 +26,23 @@ var view;
             _this.snakeAdds = new Array();
             return _this;
         }
+        GameView.prototype.setDebugInfo = function (msg) {
+            this.debugInfo.text = msg;
+        };
         GameView.prototype.startGame = function () {
             this.gameScrollSpeed = 3;
             this.snake = new sprite.Snake();
             Laya.stage.addChild(this.snake);
             this.lastMouseX = Laya.stage.mouseX;
             this.snake.pos(0, 0);
-            Laya.timer.frameLoop(1, this, this.mainLoop); // Every Frame
-            this.snake.extendBody(25);
+            Laya.timer.frameLoop(1, this, this.mainLoop, null, false); // Every Frame
+            this.snake.extendBody(15);
             Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
             // Laya.timer.frameLoop(100, this, this.updateBlocksStatus);//每300帧添加进行游戏状态更新，添加Block
             Laya.timer.frameOnce(100, this, this.updateBlocksStatus); //每个随机帧数添加进行游戏状态更新，添加Block
             Laya.timer.frameOnce(80, this, this.updateSnakeAddsStatus); //每个随机帧添加进行游戏状态更新，添加SnakeAdd
+            Laya.timer.frameLoop(300, this.snake, this.snake.updateHeadHistory);
         };
         GameView.prototype.onMouseDown = function () {
             this.mouseDown = true;
@@ -49,15 +53,16 @@ var view;
         };
         // The Main Loop for the game 
         GameView.prototype.mainLoop = function () {
+            console.log('--Main Loop begin---');
             this.detectMouseMove();
             this.snake.updateBody();
             this.updateBlocks();
             this.updateSnakeAdds();
+            console.log('--Main Loop end---');
         };
         // 检测触点移动情况
         GameView.prototype.detectMouseMove = function () {
             var currentMouseX = Laya.stage.mouseX;
-            //this.debugInfo.text = Math.abs(currentMouseX - this.lastMouseX).toString();
             if (this.mouseDown) {
                 var level = 1;
                 if (Math.abs(currentMouseX - this.lastMouseX) > 20) {

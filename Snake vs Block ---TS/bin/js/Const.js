@@ -6,9 +6,9 @@ var Const = /** @class */ (function () {
     }
     Const.SCREEN_WIDTH = 414; // 屏幕宽度
     Const.SCREEN_HEIGHT = 736; // 屏幕高度
-    Const.SNAKE_FLEXIBILITY = 4; // 蛇的柔韧性，越小越不柔韧
-    Const.SNAKE_BODY_RADIUS = 12; // 蛇身半径
-    Const.SNAKE_BODY_DEFALUT_SPACING = 22; // 蛇身体部分之间的默认距离
+    Const.SNAKE_FLEXIBILITY = 1.2; // 蛇的柔韧性，越小越不柔韧
+    Const.SNAKE_BODY_RADIUS = 11.75; // 蛇身半径
+    Const.SNAKE_BODY_DEFALUT_SPACING = 23; // 蛇身体部分之间的默认距离
     Const.SNAKE_BODY_MINIUM_SPACING = 4; // 蛇身体部分之间的最小Y轴距离
     Const.BLOCK_WIDTH = 80; // 方块宽度
     Const.BLOCK_RADIUS = 10; // 方块圆角半径

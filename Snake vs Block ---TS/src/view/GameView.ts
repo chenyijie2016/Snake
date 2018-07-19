@@ -4,17 +4,17 @@ module view {
 	export class GameView extends ui.GameViewUI {
 		private snake: sprite.Snake;
 		private blocks: Array<sprite.Block>;
-		private snakeAdds: Array<sprite.SnakeAdd>; 
+		private snakeAdds: Array<sprite.SnakeAdd>;
 		private lastMouseX: number;
 		private mouseDown: boolean;
 		private debugInfo: Laya.Text;
-		private gameScrollSpeed: number;
+		public gameScrollSpeed: number;
 		constructor() {
 			super();
 			/* for debug */
 			this.debugInfo = new Laya.Text();
 			this.debugInfo.width = 300;
-			this.debugInfo.font = "SimSun";
+			this.debugInfo.font = "Hei";
 			this.debugInfo.fontSize = 20;
 			this.debugInfo.color = "white";
 			this.addChild(this.debugInfo);
@@ -23,6 +23,9 @@ module view {
 			this.snakeAdds = new Array<sprite.SnakeAdd>();
 
 		}
+		public setDebugInfo(msg: string): void {
+			this.debugInfo.text = msg;
+		}
 
 		public startGame(): void {
 			this.gameScrollSpeed = 3;
@@ -30,13 +33,14 @@ module view {
 			Laya.stage.addChild(this.snake);
 			this.lastMouseX = Laya.stage.mouseX;
 			this.snake.pos(0, 0);
-			Laya.timer.frameLoop(1, this, this.mainLoop);// Every Frame
-			this.snake.extendBody(25);
+			Laya.timer.frameLoop(1, this, this.mainLoop, null, false);// Every Frame
+			this.snake.extendBody(15);
 			Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
 			Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
 			// Laya.timer.frameLoop(100, this, this.updateBlocksStatus);//每300帧添加进行游戏状态更新，添加Block
 			Laya.timer.frameOnce(100, this, this.updateBlocksStatus);//每个随机帧数添加进行游戏状态更新，添加Block
 			Laya.timer.frameOnce(80, this, this.updateSnakeAddsStatus);//每个随机帧添加进行游戏状态更新，添加SnakeAdd
+			Laya.timer.frameLoop(300, this.snake, this.snake.updateHeadHistory);
 
 		}
 
@@ -51,16 +55,18 @@ module view {
 
 		// The Main Loop for the game 
 		private mainLoop(): void {
+			console.log('--Main Loop begin---')
 			this.detectMouseMove();
 			this.snake.updateBody();
 			this.updateBlocks();
 			this.updateSnakeAdds();
+			console.log('--Main Loop end---')
 		}
 
 		// 检测触点移动情况
 		private detectMouseMove(): void {
 			let currentMouseX = Laya.stage.mouseX;
-			//this.debugInfo.text = Math.abs(currentMouseX - this.lastMouseX).toString();
+		
 			if (this.mouseDown) {
 
 				let level = 1;

@@ -4,9 +4,9 @@
 class Const {
     public static SCREEN_WIDTH: number = 414; // 屏幕宽度
     public static SCREEN_HEIGHT: number = 736; // 屏幕高度
-    public static SNAKE_FLEXIBILITY: number = 4; // 蛇的柔韧性，越小越不柔韧
-    public static SNAKE_BODY_RADIUS: number = 12; // 蛇身半径
-    public static SNAKE_BODY_DEFALUT_SPACING: number = 22; // 蛇身体部分之间的默认距离
+    public static SNAKE_FLEXIBILITY: number = 1.2; // 蛇的柔韧性，越小越不柔韧
+    public static SNAKE_BODY_RADIUS: number = 11.75; // 蛇身半径
+    public static SNAKE_BODY_DEFALUT_SPACING: number = 23; // 蛇身体部分之间的默认距离
     public static SNAKE_BODY_MINIUM_SPACING: number = 4; // 蛇身体部分之间的最小Y轴距离
     public static BLOCK_WIDTH: number = 80; // 方块宽度
     public static BLOCK_RADIUS: number = 10; // 方块圆角半径
