@@ -62,7 +62,11 @@ var view;
             this.snake.updateBody();
             this.updateBlocks();
             this.updateSnakeAdds();
+<<<<<<< HEAD
+            console.log('--Main Loop end---');
+=======
             this.updateWalls();
+>>>>>>> a08349f2294123af71d66c91995bee3e7db2886f
         };
         // 检测触点移动情况
         GameView.prototype.detectMouseMove = function () {
