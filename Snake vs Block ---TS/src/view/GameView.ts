@@ -4,6 +4,8 @@ module view {
 	export class GameView extends ui.GameViewUI {
 		private snake: sprite.Snake;
 		private blocks: Array<sprite.Block>;
+		private latestBlocks: Array<sprite.Block>;//最近生成的一行Block
+		private latestSnakeAdds: Array<sprite.SnakeAdd>; //最近生成的一行SnakeAdds
 		private snakeAdds: Array<sprite.SnakeAdd>; 
 		private lastMouseX: number;
 		private mouseDown: boolean;
@@ -20,7 +22,9 @@ module view {
 			this.addChild(this.debugInfo);
 
 			this.blocks = new Array<sprite.Block>();
+			this.latestBlocks = new Array<sprite.Block>();
 			this.snakeAdds = new Array<sprite.SnakeAdd>();
+			this.latestSnakeAdds = new Array<sprite.SnakeAdd>();
 
 		}
 
@@ -89,10 +93,34 @@ module view {
 			let blockNumber = Common.getRandomArrayElements(Const.BLOCK_NUMBERS, 1);
 			if (blockNumber[0] > 0) {
 				let orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], blockNumber[0]);
+				this.latestBlocks.splice(0, this.latestBlocks.length);//清空
 				for (let i = 0; i < blockNumber[0]; i++) {
 					let b = new sprite.Block();
 					b.setPos(orders[i] * 82.8 + 41, 0);
+					//检测当前位置是否存在SnakeAdd
+					let Flag = false;
+					for(let j = 0; j < this.latestSnakeAdds.length; j++){
+						let add = this.latestSnakeAdds[j];
+						let x1 = b.PosX + (Const.BLOCK_WIDTH >> 1);
+						let y1 = b.PosY + (Const.BLOCK_WIDTH >> 1);
+						let x2 = add.PosX;
+						let y2 =add.PosY;
+						let calx = x1 - x2;
+						let caly = y1 - y2;
+						let dis = Math.pow(calx*calx + caly*caly, 0.5);
+
+						if(dis <= (Const.BLOCK_MIN_CIRCLE_R+Const.SNAKE_BODY_RADIUS*2)){
+							b.destory();
+							Flag = true;
+							break;
+						}
+					}
+					if(Flag){
+						continue;
+					}
+					//当前位置不存在SnakeAdd，则...
 					this.blocks.push(b);
+					this.latestBlocks.push(b);
 					this.addChildren(b);
 				}
 			}
@@ -105,10 +133,34 @@ module view {
 			let snakeAddNumber = Common.getRandomArrayElements(Const.SNAKE_ADD_NUMBERS, 1);
 			if (snakeAddNumber[0] > 0) {
 				let orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], snakeAddNumber[0]);
+				this.latestSnakeAdds.splice(0, this.latestSnakeAdds.length);//清空
 				for (let i = 0; i < snakeAddNumber[0]; i++) {
 					let add = new sprite.SnakeAdd();
 					add.setPos(orders[i] * 82.8 + 41, 0);
+					//检测当前位置是否存在Block
+					let Flag = false;
+					for(let j = 0; j < this.latestBlocks.length; j++){
+						let block = this.latestBlocks[j];
+						let x1 = block.PosX + (Const.BLOCK_WIDTH >> 1);
+						let y1 = block.PosY + (Const.BLOCK_WIDTH >> 1);
+						let x2 = add.PosX;
+						let y2 =add.PosY;
+						let calx = x1 - x2;
+						let caly = y1 - y2;
+						let dis = Math.pow(calx*calx + caly*caly, 0.5);
+
+						if(dis <= (Const.BLOCK_MIN_CIRCLE_R+Const.SNAKE_BODY_RADIUS*2)){
+							add.destory();
+							Flag = true;
+							break;
+						}
+					}
+					if(Flag){
+						continue;
+					}
+					//当前位置不存在Block，则...
 					this.snakeAdds.push(add);
+					this.latestSnakeAdds.push(add);
 					this.addChildren(add);
 				}
 			}

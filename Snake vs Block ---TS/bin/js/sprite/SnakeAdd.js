@@ -44,7 +44,7 @@ var sprite;
             }
         };
         SnakeAdd.prototype.init = function () {
-            this.setValue(Common.getRandomNumber(1, 5) + 1);
+            this.setValue(Common.getRandomNumber(1, 5));
             this.PosX = 0;
             this.PosY = 0;
         };

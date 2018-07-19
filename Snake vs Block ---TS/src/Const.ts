@@ -9,6 +9,7 @@ class Const {
     public static SNAKE_BODY_DEFALUT_SPACING: number = 22; // 蛇身体部分之间的默认距离
     public static SNAKE_BODY_MINIUM_SPACING: number = 4; // 蛇身体部分之间的最小Y轴距离
     public static BLOCK_WIDTH: number = 80; // 方块宽度
+    public static BLOCK_MIN_CIRCLE_R: number = 57; //方块最小包围圆半径
     public static BLOCK_RADIUS: number = 10; // 方块圆角半径
 
 
@@ -18,7 +19,7 @@ class Const {
     //添加BLOCK的随机帧数
     public static BLOCK_NEWTIMES = [60, 80, 80, 80, 90, 90, 90, 90, 90, 100, 100, 150];
 
-    //每次添加SNAKEADD的随机数量【1-5】
+    //每次添加SNAKEADD的随机数量【1-3】
     public static SNAKE_ADD_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3];
     //添加SNAKEADD的随机帧数
     public static SNAKE_ADD_NEWTIMES = [50, 70, 70, 70, 90, 90, 90, 90, 90, 95, 130];
