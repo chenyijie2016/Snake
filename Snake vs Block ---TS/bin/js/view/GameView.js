@@ -26,6 +26,7 @@ var view;
             _this.latestBlocks = new Array();
             _this.snakeAdds = new Array();
             _this.latestSnakeAdds = new Array();
+            _this.walls = new Array();
             return _this;
         }
         GameView.prototype.startGame = function () {
@@ -40,6 +41,7 @@ var view;
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
             // Laya.timer.frameLoop(100, this, this.updateBlocksStatus);//每300帧添加进行游戏状态更新，添加Block
             Laya.timer.frameOnce(100, this, this.updateBlocksStatus); //每个随机帧数添加进行游戏状态更新，添加Block
+            Laya.timer.frameOnce(300, this, this.updateWallsStatus); //每个随机帧数添加进行游戏状态更新，添加Wall
             Laya.timer.frameOnce(80, this, this.updateSnakeAddsStatus); //每个随机帧添加进行游戏状态更新，添加SnakeAdd
         };
         GameView.prototype.onMouseDown = function () {
@@ -55,6 +57,7 @@ var view;
             this.snake.updateBody();
             this.updateBlocks();
             this.updateSnakeAdds();
+            this.updateWalls();
         };
         // 检测触点移动情况
         GameView.prototype.detectMouseMove = function () {
@@ -157,6 +160,21 @@ var view;
             var nextTimeNewAdds = Common.getRandomArrayElements(Const.SNAKE_ADD_NEWTIMES, 1);
             Laya.timer.frameOnce(50, this, this.updateSnakeAddsStatus); //每个随机帧添加进行游戏状态更新，添加SnakeAdd	
         };
+        // 更新隔板集合Walls
+        GameView.prototype.updateWallsStatus = function () {
+            var wallNumber = Common.getRandomArrayElements(Const.WALL_NUMBERS, 1);
+            if (wallNumber[0] > 0) {
+                var orders = Common.getRandomArrayElements([1, 2, 3, 4], wallNumber[0]);
+                for (var i = 0; i < wallNumber[0]; i++) {
+                    var w = new sprite.Wall();
+                    w.setPos(orders[i] * 82.8 + 1, -Const.BLOCK_WIDTH);
+                    this.walls.push(w);
+                    this.addChildren(w);
+                }
+            }
+            var nextTimeNewWalls = Common.getRandomArrayElements(Const.WALL_NEWTIMES, 1);
+            Laya.timer.frameOnce(nextTimeNewWalls[0], this, this.updateWallsStatus); //每个随机帧数添加进行游戏状态更新，添加Block
+        };
         // 更新碰撞检测信息
         GameView.prototype.updateCollisionDetection = function () {
         };
@@ -187,6 +205,21 @@ var view;
                     snakeAdd.destory();
                     console.log('destory snakeAdd');
                     _this.snakeAdds.splice(_this.snakeAdds.indexOf(snakeAdd), 1);
+                }
+            });
+        };
+        // 更新隔板状态
+        GameView.prototype.updateWalls = function () {
+            var _this = this;
+            this.walls.forEach(function (wall) {
+                if (!_this.isDirectCollision()) {
+                    wall.PosY += _this.gameScrollSpeed;
+                    wall.update();
+                }
+                if (wall.PosY > Const.SCREEN_HEIGHT) {
+                    wall.destory();
+                    console.log('destory wall');
+                    _this.walls.splice(_this.walls.indexOf(wall), 1);
                 }
             });
         };

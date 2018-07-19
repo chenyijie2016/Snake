@@ -5,8 +5,9 @@ module view {
 		private snake: sprite.Snake;
 		private blocks: Array<sprite.Block>;
 		private latestBlocks: Array<sprite.Block>;//最近生成的一行Block
-		private latestSnakeAdds: Array<sprite.SnakeAdd>; //最近生成的一行SnakeAdds
 		private snakeAdds: Array<sprite.SnakeAdd>; 
+		private latestSnakeAdds: Array<sprite.SnakeAdd>; //最近生成的一行SnakeAdds
+		private walls: Array<sprite.Wall>;
 		private lastMouseX: number;
 		private mouseDown: boolean;
 		private debugInfo: Laya.Text;
@@ -25,6 +26,7 @@ module view {
 			this.latestBlocks = new Array<sprite.Block>();
 			this.snakeAdds = new Array<sprite.SnakeAdd>();
 			this.latestSnakeAdds = new Array<sprite.SnakeAdd>();
+			this.walls = new Array<sprite.Wall>();
 
 		}
 
@@ -39,7 +41,9 @@ module view {
 			Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
 			Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
 			// Laya.timer.frameLoop(100, this, this.updateBlocksStatus);//每300帧添加进行游戏状态更新，添加Block
+
 			Laya.timer.frameOnce(100, this, this.updateBlocksStatus);//每个随机帧数添加进行游戏状态更新，添加Block
+			Laya.timer.frameOnce(300, this, this.updateWallsStatus);//每个随机帧数添加进行游戏状态更新，添加Wall
 			Laya.timer.frameOnce(80, this, this.updateSnakeAddsStatus);//每个随机帧添加进行游戏状态更新，添加SnakeAdd
 
 		}
@@ -59,6 +63,7 @@ module view {
 			this.snake.updateBody();
 			this.updateBlocks();
 			this.updateSnakeAdds();
+			this.updateWalls();
 		}
 
 		// 检测触点移动情况
@@ -168,6 +173,23 @@ module view {
 			Laya.timer.frameOnce(50, this, this.updateSnakeAddsStatus);//每个随机帧添加进行游戏状态更新，添加SnakeAdd	
 		}
 
+		// 更新隔板集合Walls
+		private updateWallsStatus(): void {
+			let wallNumber = Common.getRandomArrayElements(Const.WALL_NUMBERS, 1);
+			if (wallNumber[0] > 0) {
+				let orders = Common.getRandomArrayElements([1, 2, 3, 4], wallNumber[0]);
+				for (let i = 0; i < wallNumber[0]; i++) {
+					let w = new sprite.Wall();
+					w.setPos(orders[i] * 82.8 + 1, -Const.BLOCK_WIDTH);
+
+					this.walls.push(w);
+					this.addChildren(w);
+				}
+			}
+			let nextTimeNewWalls = Common.getRandomArrayElements(Const.WALL_NEWTIMES, 1);
+			Laya.timer.frameOnce(nextTimeNewWalls[0], this, this.updateWallsStatus);//每个随机帧数添加进行游戏状态更新，添加Block
+		}
+
 		// 更新碰撞检测信息
 		private updateCollisionDetection(): void {
 
@@ -204,5 +226,22 @@ module view {
 				}
 			})
 		}
+
+		// 更新隔板状态
+		private updateWalls(): void {
+			this.walls.forEach((wall) => {
+				if (!this.isDirectCollision()) {
+					wall.PosY += this.gameScrollSpeed;
+					wall.update();
+				}
+
+				if (wall.PosY > Const.SCREEN_HEIGHT) {
+					wall.destory();
+					console.log('destory wall');
+					this.walls.splice(this.walls.indexOf(wall), 1);
+				}
+			})
+		}
+
 	}
 }
