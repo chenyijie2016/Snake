@@ -8,6 +8,10 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+/*
+轴心点：
+    (this.PosX - Const.BLOCK_WIDTH / 2 + Const.WALL_WIDTH / 2,  this.PosY - Const.BLOCK_WIDTH / 2 + this.len / 2)
+*/
 var sprite;
 (function (sprite) {
     var Wall = /** @class */ (function (_super) {
@@ -44,11 +48,11 @@ var sprite;
                     ["arcTo", 0, this.len, 0, this.len - Const.WALL_RADIUS, Const.WALL_RADIUS],
                     ["arcTo", 0, 0, Const.WALL_RADIUS, 0, Const.WALL_RADIUS],
                 ];
-                this.graphics.drawPath(this.PosX - Const.WALL_WIDTH / 2, this.PosY - this.len / 2, path, { fillStyle: "white" });
+                this.graphics.drawPath(this.PosX - Const.BLOCK_WIDTH / 2, this.PosY - Const.BLOCK_WIDTH / 2, path, { fillStyle: "white" });
             }
         };
         Wall.prototype.init = function () {
-            this.setLength(Common.getRandomArrayElements([80, 80, 80, 160, 160], 1)[0]);
+            this.setLength(Common.getRandomArrayElements([101, 101, 101, 180, 180], 1)[0]);
             this.PosX = 0;
             this.PosY = 0;
         };

@@ -1,3 +1,7 @@
+/*
+轴心点：    
+    (this.PosX,  this.PosY)
+*/
 module sprite {
     export class SnakeAdd extends Laya.Sprite {
         private value: number;

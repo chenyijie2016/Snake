@@ -1,3 +1,7 @@
+/*
+轴心点：    
+    (this.PosX - Const.BLOCK_WIDTH / 2 + Const.WALL_WIDTH / 2,  this.PosY - Const.BLOCK_WIDTH / 2 + this.len / 2)
+*/
 module sprite {
     export class Wall extends Laya.Sprite {
         private len: number;
@@ -37,13 +41,13 @@ module sprite {
                     ["arcTo", 0, 0, Const.WALL_RADIUS, 0, Const.WALL_RADIUS],
                 ];
 
-                this.graphics.drawPath(this.PosX - Const.WALL_WIDTH / 2, this.PosY - this.len / 2, path, { fillStyle: "white" });
+                this.graphics.drawPath(this.PosX - Const.BLOCK_WIDTH / 2, this.PosY - Const.BLOCK_WIDTH / 2, path, { fillStyle: "white" });
             }
 
         }
 
         init(): void {
-            this.setLength(Common.getRandomArrayElements([80, 80, 80, 160, 160], 1)[0]);
+            this.setLength(Common.getRandomArrayElements([101, 101, 101, 180, 180], 1)[0]);
             this.PosX = 0;
             this.PosY = 0;
         }

@@ -6,6 +6,7 @@ var GameMain = /** @class */ (function () {
     function GameMain() {
         //Laya.Config.isAntialias=true;
         Laya.init(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT, WebGL);
+        Laya.Stat.show(0, 0); //TS与JS的面板调用写法
         Laya.stage.alignH = Laya.Stage.ALIGN_CENTER;
         Laya.stage.alignV = Laya.Stage.ALIGN_CENTER;
         Laya.stage.scaleMode = Laya.Stage.SCALE_SHOWALL;

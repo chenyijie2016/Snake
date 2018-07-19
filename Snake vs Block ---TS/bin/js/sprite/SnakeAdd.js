@@ -8,6 +8,10 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+/*
+轴心点：
+    (this.PosX,  this.PosY)
+*/
 var sprite;
 (function (sprite) {
     var SnakeAdd = /** @class */ (function (_super) {

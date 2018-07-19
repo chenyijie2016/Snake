@@ -11,13 +11,13 @@ module view {
 		private lastMouseX: number;
 		private mouseDown: boolean;
 		private debugInfo: Laya.Text;
-		private gameScrollSpeed: number;
+		public gameScrollSpeed: number;
 		constructor() {
 			super();
 			/* for debug */
 			this.debugInfo = new Laya.Text();
 			this.debugInfo.width = 300;
-			this.debugInfo.font = "SimSun";
+			this.debugInfo.font = "Hei";
 			this.debugInfo.fontSize = 20;
 			this.debugInfo.color = "white";
 			this.addChild(this.debugInfo);
@@ -29,6 +29,9 @@ module view {
 			this.walls = new Array<sprite.Wall>();
 
 		}
+		public setDebugInfo(msg: string): void {
+			this.debugInfo.text = msg;
+		}
 
 		public startGame(): void {
 			this.gameScrollSpeed = 3;
@@ -36,8 +39,8 @@ module view {
 			Laya.stage.addChild(this.snake);
 			this.lastMouseX = Laya.stage.mouseX;
 			this.snake.pos(0, 0);
-			Laya.timer.frameLoop(1, this, this.mainLoop);// Every Frame
-			this.snake.extendBody(25);
+			Laya.timer.frameLoop(1, this, this.mainLoop, null, false);// Every Frame
+			this.snake.extendBody(15);
 			Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
 			Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
 			// Laya.timer.frameLoop(100, this, this.updateBlocksStatus);//每300帧添加进行游戏状态更新，添加Block
@@ -45,6 +48,7 @@ module view {
 			Laya.timer.frameOnce(100, this, this.updateBlocks_WALLStatus);//每个随机帧数添加进行游戏状态更新，添加Block、Wall
 			//Laya.timer.frameOnce(100, this, this.updateWallsStatus);//每个随机帧数添加进行游戏状态更新，添加Wall
 			Laya.timer.frameOnce(80, this, this.updateSnakeAddsStatus);//每个随机帧添加进行游戏状态更新，添加SnakeAdd
+			Laya.timer.frameLoop(300, this.snake, this.snake.updateHeadHistory);
 
 		}
 
@@ -59,6 +63,7 @@ module view {
 
 		// The Main Loop for the game 
 		private mainLoop(): void {
+			console.log('--Main Loop begin---')
 			this.detectMouseMove();
 			this.snake.updateBody();
 			this.updateBlocks();
@@ -69,7 +74,7 @@ module view {
 		// 检测触点移动情况
 		private detectMouseMove(): void {
 			let currentMouseX = Laya.stage.mouseX;
-			//this.debugInfo.text = Math.abs(currentMouseX - this.lastMouseX).toString();
+		
 			if (this.mouseDown) {
 
 				let level = 1;
@@ -101,7 +106,7 @@ module view {
 				let orders = Common.getRandomArrayElements([1, 2, 3, 4], wallNumber[0]);
 				for (let i = 0; i < wallNumber[0]; i++) {
 					let w = new sprite.Wall();
-					w.setPos(orders[i] * 82.8 + 1, -Const.BLOCK_WIDTH);
+					w.setPos(orders[i] * 82.8 + 37.2, -Const.BLOCK_WIDTH*3-1.5);
 
 					this.walls.push(w);
 					this.addChildren(w);
@@ -114,15 +119,15 @@ module view {
 				this.latestBlocks.splice(0, this.latestBlocks.length);//清空
 				for (let i = 0; i < blockNumber[0]; i++) {
 					let b = new sprite.Block();
-					b.setPos(orders[i] * 82.8 + 41, -Const.BLOCK_WIDTH*2);
+					b.setPos(orders[i] * 82.8 + 41, -Const.BLOCK_WIDTH*4);
 					//检测当前位置是否存在SnakeAdd
 					let Flag = false;
 					for(let j = 0; j < this.latestSnakeAdds.length; j++){
 						let add = this.latestSnakeAdds[j];
-						let x1 = b.PosX + (Const.BLOCK_WIDTH >> 1);
-						let y1 = b.PosY + (Const.BLOCK_WIDTH >> 1);
+						let x1 = b.PosX;
+						let y1 = b.PosY;
 						let x2 = add.PosX;
-						let y2 =add.PosY;
+						let y2 = add.PosY;
 						let calx = x1 - x2;
 						let caly = y1 - y2;
 						let dis = Math.pow(calx*calx + caly*caly, 0.5);
@@ -154,15 +159,15 @@ module view {
 				this.latestSnakeAdds.splice(0, this.latestSnakeAdds.length);//清空
 				for (let i = 0; i < snakeAddNumber[0]; i++) {
 					let add = new sprite.SnakeAdd();
-					add.setPos(orders[i] * 82.8 + 41, -Const.BLOCK_WIDTH*2);
+					add.setPos(orders[i] * 82.8 + 41, -Const.BLOCK_WIDTH*4);
 					//检测当前位置是否存在Block
 					let Flag = false;
 					for(let j = 0; j < this.latestBlocks.length; j++){
 						let block = this.latestBlocks[j];
-						let x1 = block.PosX + (Const.BLOCK_WIDTH >> 1);
-						let y1 = block.PosY + (Const.BLOCK_WIDTH >> 1);
+						let x1 = block.PosX;
+						let y1 = block.PosY;
 						let x2 = add.PosX;
-						let y2 =add.PosY;
+						let y2 = add.PosY;
 						let calx = x1 - x2;
 						let caly = y1 - y2;
 						let dis = Math.pow(calx*calx + caly*caly, 0.5);
@@ -183,7 +188,7 @@ module view {
 				}
 			}
 			let nextTimeNewAdds = Common.getRandomArrayElements(Const.SNAKE_ADD_NEWTIMES, 1);
-			Laya.timer.frameOnce(50, this, this.updateSnakeAddsStatus);//每个随机帧添加进行游戏状态更新，添加SnakeAdd	
+			Laya.timer.frameOnce(nextTimeNewAdds[0], this, this.updateSnakeAddsStatus);//每个随机帧添加进行游戏状态更新，添加SnakeAdd	
 		}
 
 		// 更新碰撞检测信息
@@ -199,7 +204,7 @@ module view {
 					block.update();
 				}
 
-				if (block.PosY > Const.SCREEN_HEIGHT) {
+				if ((block.PosY-(Const.BLOCK_WIDTH>>1)) > Const.SCREEN_HEIGHT) {
 					block.destory();
 					console.log('destory block');
 					this.blocks.splice(this.blocks.indexOf(block), 1);
@@ -215,7 +220,7 @@ module view {
 					snakeAdd.update();
 				}
 
-				if (snakeAdd.PosY > Const.SCREEN_HEIGHT) {
+				if ((snakeAdd.PosY-Const.SNAKE_BODY_RADIUS*2) > Const.SCREEN_HEIGHT) {
 					snakeAdd.destory();
 					console.log('destory snakeAdd');
 					this.snakeAdds.splice(this.snakeAdds.indexOf(snakeAdd), 1);
@@ -231,7 +236,7 @@ module view {
 					wall.update();
 				}
 
-				if (wall.PosY > Const.SCREEN_HEIGHT) {
+				if ((wall.PosY - (Const.BLOCK_WIDTH>>1)) > Const.SCREEN_HEIGHT) {
 					wall.destory();
 					console.log('destory wall');
 					this.walls.splice(this.walls.indexOf(wall), 1);

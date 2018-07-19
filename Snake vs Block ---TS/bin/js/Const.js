@@ -6,12 +6,12 @@ var Const = /** @class */ (function () {
     }
     Const.SCREEN_WIDTH = 414; // 屏幕宽度
     Const.SCREEN_HEIGHT = 736; // 屏幕高度
-    Const.SNAKE_FLEXIBILITY = 4; // 蛇的柔韧性，越小越不柔韧
-    Const.SNAKE_BODY_RADIUS = 12; // 蛇身半径
-    Const.SNAKE_BODY_DEFALUT_SPACING = 22; // 蛇身体部分之间的默认距离
+    Const.SNAKE_FLEXIBILITY = 1.2; // 蛇的柔韧性，越小越不柔韧
+    Const.SNAKE_BODY_RADIUS = 11.75; // 蛇身半径
+    Const.SNAKE_BODY_DEFALUT_SPACING = 23; // 蛇身体部分之间的默认距离
     Const.SNAKE_BODY_MINIUM_SPACING = 4; // 蛇身体部分之间的最小Y轴距离
     Const.BLOCK_WIDTH = 80; // 方块宽度
-    Const.BLOCK_MIN_CIRCLE_R = 57; //方块最小包围圆半径
+    Const.BLOCK_MIN_CIRCLE_R = 60; //方块最小包围圆半径
     Const.BLOCK_RADIUS = 10; // 方块圆角半径
     Const.WALL_WIDTH = 5; //隔板宽度
     Const.WALL_RADIUS = 2; //隔板圆角半径
@@ -20,7 +20,7 @@ var Const = /** @class */ (function () {
     //每次添加WALL的随机数量【1-3】
     Const.WALL_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3];
     //添加BLOCK的随机帧数
-    Const.BLOCK_WALL_NEWTIMES = [60, 80, 80, 80, 90, 90, 90, 90, 90, 100, 100, 150];
+    Const.BLOCK_WALL_NEWTIMES = [60, 60, 60, 85, 85, 85, 85, 85, 85, 85, 85, 120, 120, 150];
     //每次添加SNAKEADD的随机数量【1-3】
     Const.SNAKE_ADD_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3];
     //添加SNAKEADD的随机帧数
