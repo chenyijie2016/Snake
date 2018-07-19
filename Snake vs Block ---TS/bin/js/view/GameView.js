@@ -23,7 +23,10 @@ var view;
             _this.debugInfo.color = "white";
             _this.addChild(_this.debugInfo);
             _this.blocks = new Array();
+            _this.latestBlocks = new Array();
             _this.snakeAdds = new Array();
+            _this.latestSnakeAdds = new Array();
+            _this.walls = new Array();
             return _this;
         }
         GameView.prototype.setDebugInfo = function (msg) {
@@ -40,7 +43,8 @@ var view;
             Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
             // Laya.timer.frameLoop(100, this, this.updateBlocksStatus);//每300帧添加进行游戏状态更新，添加Block
-            Laya.timer.frameOnce(100, this, this.updateBlocksStatus); //每个随机帧数添加进行游戏状态更新，添加Block
+            Laya.timer.frameOnce(100, this, this.updateBlocks_WALLStatus); //每个随机帧数添加进行游戏状态更新，添加Block、Wall
+            //Laya.timer.frameOnce(100, this, this.updateWallsStatus);//每个随机帧数添加进行游戏状态更新，添加Wall
             Laya.timer.frameOnce(80, this, this.updateSnakeAddsStatus); //每个随机帧添加进行游戏状态更新，添加SnakeAdd
             Laya.timer.frameLoop(300, this.snake, this.snake.updateHeadHistory);
         };
@@ -58,7 +62,11 @@ var view;
             this.snake.updateBody();
             this.updateBlocks();
             this.updateSnakeAdds();
+<<<<<<< HEAD
             console.log('--Main Loop end---');
+=======
+            this.updateWalls();
+>>>>>>> a08349f2294123af71d66c91995bee3e7db2886f
         };
         // 检测触点移动情况
         GameView.prototype.detectMouseMove = function () {
@@ -85,29 +93,86 @@ var view;
             return false;
         };
         // 更新方块集合Blocks
-        GameView.prototype.updateBlocksStatus = function () {
+        GameView.prototype.updateBlocks_WALLStatus = function () {
+            //添加隔板
+            var wallNumber = Common.getRandomArrayElements(Const.WALL_NUMBERS, 1);
+            if (wallNumber[0] > 0) {
+                var orders = Common.getRandomArrayElements([1, 2, 3, 4], wallNumber[0]);
+                for (var i = 0; i < wallNumber[0]; i++) {
+                    var w = new sprite.Wall();
+                    w.setPos(orders[i] * 82.8 + 1, -Const.BLOCK_WIDTH);
+                    this.walls.push(w);
+                    this.addChildren(w);
+                }
+            }
             var blockNumber = Common.getRandomArrayElements(Const.BLOCK_NUMBERS, 1);
             if (blockNumber[0] > 0) {
                 var orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], blockNumber[0]);
+                this.latestBlocks.splice(0, this.latestBlocks.length); //清空
                 for (var i = 0; i < blockNumber[0]; i++) {
                     var b = new sprite.Block();
-                    b.setPos(orders[i] * 82.8 + 41, 0);
+                    b.setPos(orders[i] * 82.8 + 41, -Const.BLOCK_WIDTH * 2);
+                    //检测当前位置是否存在SnakeAdd
+                    var Flag = false;
+                    for (var j = 0; j < this.latestSnakeAdds.length; j++) {
+                        var add = this.latestSnakeAdds[j];
+                        var x1 = b.PosX + (Const.BLOCK_WIDTH >> 1);
+                        var y1 = b.PosY + (Const.BLOCK_WIDTH >> 1);
+                        var x2 = add.PosX;
+                        var y2 = add.PosY;
+                        var calx = x1 - x2;
+                        var caly = y1 - y2;
+                        var dis = Math.pow(calx * calx + caly * caly, 0.5);
+                        if (dis <= (Const.BLOCK_MIN_CIRCLE_R + Const.SNAKE_BODY_RADIUS * 2)) {
+                            b.destory();
+                            Flag = true;
+                            break;
+                        }
+                    }
+                    if (Flag) {
+                        continue;
+                    }
+                    //当前位置不存在SnakeAdd，则...
                     this.blocks.push(b);
+                    this.latestBlocks.push(b);
                     this.addChildren(b);
                 }
             }
-            var nextTimeNewBlocks = Common.getRandomArrayElements(Const.BLOCK_NEWTIMES, 1);
-            Laya.timer.frameOnce(nextTimeNewBlocks[0], this, this.updateBlocksStatus); //每个随机帧数添加进行游戏状态更新，添加Block
+            var nextTimeNewBlocks = Common.getRandomArrayElements(Const.BLOCK_WALL_NEWTIMES, 1);
+            Laya.timer.frameOnce(nextTimeNewBlocks[0], this, this.updateBlocks_WALLStatus); //每个随机帧数添加进行游戏状态更新，添加Block
         };
         // 更新Grow集合SnakeAdds
         GameView.prototype.updateSnakeAddsStatus = function () {
             var snakeAddNumber = Common.getRandomArrayElements(Const.SNAKE_ADD_NUMBERS, 1);
             if (snakeAddNumber[0] > 0) {
                 var orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], snakeAddNumber[0]);
+                this.latestSnakeAdds.splice(0, this.latestSnakeAdds.length); //清空
                 for (var i = 0; i < snakeAddNumber[0]; i++) {
                     var add = new sprite.SnakeAdd();
-                    add.setPos(orders[i] * 82.8 + 41, 0);
+                    add.setPos(orders[i] * 82.8 + 41, -Const.BLOCK_WIDTH * 2);
+                    //检测当前位置是否存在Block
+                    var Flag = false;
+                    for (var j = 0; j < this.latestBlocks.length; j++) {
+                        var block = this.latestBlocks[j];
+                        var x1 = block.PosX + (Const.BLOCK_WIDTH >> 1);
+                        var y1 = block.PosY + (Const.BLOCK_WIDTH >> 1);
+                        var x2 = add.PosX;
+                        var y2 = add.PosY;
+                        var calx = x1 - x2;
+                        var caly = y1 - y2;
+                        var dis = Math.pow(calx * calx + caly * caly, 0.5);
+                        if (dis <= (Const.BLOCK_MIN_CIRCLE_R + Const.SNAKE_BODY_RADIUS * 2)) {
+                            add.destory();
+                            Flag = true;
+                            break;
+                        }
+                    }
+                    if (Flag) {
+                        continue;
+                    }
+                    //当前位置不存在Block，则...
                     this.snakeAdds.push(add);
+                    this.latestSnakeAdds.push(add);
                     this.addChildren(add);
                 }
             }
@@ -144,6 +209,21 @@ var view;
                     snakeAdd.destory();
                     console.log('destory snakeAdd');
                     _this.snakeAdds.splice(_this.snakeAdds.indexOf(snakeAdd), 1);
+                }
+            });
+        };
+        // 更新隔板状态
+        GameView.prototype.updateWalls = function () {
+            var _this = this;
+            this.walls.forEach(function (wall) {
+                if (!_this.isDirectCollision()) {
+                    wall.PosY += _this.gameScrollSpeed;
+                    wall.update();
+                }
+                if (wall.PosY > Const.SCREEN_HEIGHT) {
+                    wall.destory();
+                    console.log('destory wall');
+                    _this.walls.splice(_this.walls.indexOf(wall), 1);
                 }
             });
         };
