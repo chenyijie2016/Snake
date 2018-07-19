@@ -63,6 +63,7 @@ var view;
             this.updateBlocks();
             this.updateSnakeAdds();
             this.updateWalls();
+            this.updateCollisionDetection();
         };
         // 检测触点移动情况
         GameView.prototype.detectMouseMove = function () {
@@ -177,6 +178,14 @@ var view;
         };
         // 更新碰撞检测信息
         GameView.prototype.updateCollisionDetection = function () {
+            var _this = this;
+            this.snakeAdds.forEach(function (snakeAdd) {
+                if (Math.pow((snakeAdd.PosX - _this.snake.bodyPosX[0]), 2) + Math.pow((snakeAdd.PosY - _this.snake.bodyPosY[0]), 2) < Math.pow(Const.SNAKE_BODY_RADIUS, 2) * 4) {
+                    _this.snake.extendBody(snakeAdd.getValue());
+                    snakeAdd.destory();
+                    _this.snakeAdds.splice(_this.snakeAdds.indexOf(snakeAdd), 1);
+                }
+            });
         };
         // 更新方块状态
         GameView.prototype.updateBlocks = function () {

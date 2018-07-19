@@ -5,7 +5,7 @@ module view {
 		private snake: sprite.Snake;
 		private blocks: Array<sprite.Block>;
 		private latestBlocks: Array<sprite.Block>;//最近生成的一行Block
-		private snakeAdds: Array<sprite.SnakeAdd>; 
+		private snakeAdds: Array<sprite.SnakeAdd>;
 		private latestSnakeAdds: Array<sprite.SnakeAdd>; //最近生成的一行SnakeAdds
 		private walls: Array<sprite.Wall>;
 		private lastMouseX: number;
@@ -69,12 +69,13 @@ module view {
 			this.updateBlocks();
 			this.updateSnakeAdds();
 			this.updateWalls();
+			this.updateCollisionDetection();
 		}
 
 		// 检测触点移动情况
 		private detectMouseMove(): void {
 			let currentMouseX = Laya.stage.mouseX;
-		
+
 			if (this.mouseDown) {
 
 				let level = 1;
@@ -106,7 +107,7 @@ module view {
 				let orders = Common.getRandomArrayElements([1, 2, 3, 4], wallNumber[0]);
 				for (let i = 0; i < wallNumber[0]; i++) {
 					let w = new sprite.Wall();
-					w.setPos(orders[i] * 82.8 + 37.2, -Const.BLOCK_WIDTH*3-1.5);
+					w.setPos(orders[i] * 82.8 + 37.2, -Const.BLOCK_WIDTH * 3 - 1.5);
 
 					this.walls.push(w);
 					this.addChildren(w);
@@ -119,10 +120,10 @@ module view {
 				this.latestBlocks.splice(0, this.latestBlocks.length);//清空
 				for (let i = 0; i < blockNumber[0]; i++) {
 					let b = new sprite.Block();
-					b.setPos(orders[i] * 82.8 + 41, -Const.BLOCK_WIDTH*4);
+					b.setPos(orders[i] * 82.8 + 41, -Const.BLOCK_WIDTH * 4);
 					//检测当前位置是否存在SnakeAdd
 					let Flag = false;
-					for(let j = 0; j < this.latestSnakeAdds.length; j++){
+					for (let j = 0; j < this.latestSnakeAdds.length; j++) {
 						let add = this.latestSnakeAdds[j];
 						let x1 = b.PosX;
 						let y1 = b.PosY;
@@ -130,15 +131,15 @@ module view {
 						let y2 = add.PosY;
 						let calx = x1 - x2;
 						let caly = y1 - y2;
-						let dis = Math.pow(calx*calx + caly*caly, 0.5);
+						let dis = Math.pow(calx * calx + caly * caly, 0.5);
 
-						if(dis <= (Const.BLOCK_MIN_CIRCLE_R+Const.SNAKE_BODY_RADIUS*2)){
+						if (dis <= (Const.BLOCK_MIN_CIRCLE_R + Const.SNAKE_BODY_RADIUS * 2)) {
 							b.destory();
 							Flag = true;
 							break;
 						}
 					}
-					if(Flag){
+					if (Flag) {
 						continue;
 					}
 					//当前位置不存在SnakeAdd，则...
@@ -159,10 +160,10 @@ module view {
 				this.latestSnakeAdds.splice(0, this.latestSnakeAdds.length);//清空
 				for (let i = 0; i < snakeAddNumber[0]; i++) {
 					let add = new sprite.SnakeAdd();
-					add.setPos(orders[i] * 82.8 + 41, -Const.BLOCK_WIDTH*4);
+					add.setPos(orders[i] * 82.8 + 41, -Const.BLOCK_WIDTH * 4);
 					//检测当前位置是否存在Block
 					let Flag = false;
-					for(let j = 0; j < this.latestBlocks.length; j++){
+					for (let j = 0; j < this.latestBlocks.length; j++) {
 						let block = this.latestBlocks[j];
 						let x1 = block.PosX;
 						let y1 = block.PosY;
@@ -170,15 +171,15 @@ module view {
 						let y2 = add.PosY;
 						let calx = x1 - x2;
 						let caly = y1 - y2;
-						let dis = Math.pow(calx*calx + caly*caly, 0.5);
+						let dis = Math.pow(calx * calx + caly * caly, 0.5);
 
-						if(dis <= (Const.BLOCK_MIN_CIRCLE_R+Const.SNAKE_BODY_RADIUS*2)){
+						if (dis <= (Const.BLOCK_MIN_CIRCLE_R + Const.SNAKE_BODY_RADIUS * 2)) {
 							add.destory();
 							Flag = true;
 							break;
 						}
 					}
-					if(Flag){
+					if (Flag) {
 						continue;
 					}
 					//当前位置不存在Block，则...
@@ -193,7 +194,13 @@ module view {
 
 		// 更新碰撞检测信息
 		private updateCollisionDetection(): void {
-
+			this.snakeAdds.forEach((snakeAdd) => {
+				if ((snakeAdd.PosX - this.snake.bodyPosX[0]) ** 2 + (snakeAdd.PosY - this.snake.bodyPosY[0]) ** 2 < Const.SNAKE_BODY_RADIUS ** 2 * 4) {
+					this.snake.extendBody(snakeAdd.getValue());
+					snakeAdd.destory();
+					this.snakeAdds.splice(this.snakeAdds.indexOf(snakeAdd), 1);
+				}
+			})
 		}
 
 		// 更新方块状态
@@ -204,7 +211,7 @@ module view {
 					block.update();
 				}
 
-				if ((block.PosY-(Const.BLOCK_WIDTH>>1)) > Const.SCREEN_HEIGHT) {
+				if ((block.PosY - (Const.BLOCK_WIDTH >> 1)) > Const.SCREEN_HEIGHT) {
 					block.destory();
 					console.log('destory block');
 					this.blocks.splice(this.blocks.indexOf(block), 1);
@@ -220,7 +227,7 @@ module view {
 					snakeAdd.update();
 				}
 
-				if ((snakeAdd.PosY-Const.SNAKE_BODY_RADIUS*2) > Const.SCREEN_HEIGHT) {
+				if ((snakeAdd.PosY - Const.SNAKE_BODY_RADIUS * 2) > Const.SCREEN_HEIGHT) {
 					snakeAdd.destory();
 					console.log('destory snakeAdd');
 					this.snakeAdds.splice(this.snakeAdds.indexOf(snakeAdd), 1);
@@ -236,7 +243,7 @@ module view {
 					wall.update();
 				}
 
-				if ((wall.PosY - (Const.BLOCK_WIDTH>>1)) > Const.SCREEN_HEIGHT) {
+				if ((wall.PosY - (Const.BLOCK_WIDTH >> 1)) > Const.SCREEN_HEIGHT) {
 					wall.destory();
 					console.log('destory wall');
 					this.walls.splice(this.walls.indexOf(wall), 1);

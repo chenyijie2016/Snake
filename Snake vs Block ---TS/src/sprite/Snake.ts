@@ -7,6 +7,7 @@ module sprite {
         private PosYOffest: number;
         constructor() {
             super();
+            this.graphics.clipRect(0, 0, Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
             this.bodyPosX = new Array<number>();
             this.bodyPosY = new Array<number>();
             this.headPosXHistory = new Array<number>();

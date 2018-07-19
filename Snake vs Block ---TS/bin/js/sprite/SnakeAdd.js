@@ -21,21 +21,15 @@ var sprite;
             _this.init();
             return _this;
         }
-        SnakeAdd.prototype.isVisible = function () {
-            return this.visible;
+        SnakeAdd.prototype.getValue = function () {
+            return this.value;
+        };
+        SnakeAdd.prototype.setValue = function (value) {
+            this.value = value;
         };
         SnakeAdd.prototype.setPos = function (x, y) {
             this.PosX = x;
             this.PosY = y;
-        };
-        SnakeAdd.prototype.setVisible = function () {
-            this.visible = true;
-        };
-        SnakeAdd.prototype.hidden = function () {
-            this.visible = false;
-        };
-        SnakeAdd.prototype.setValue = function (value) {
-            this.value = value;
         };
         SnakeAdd.prototype.update = function () {
             this.graphics.clear();

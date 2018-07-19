@@ -11,27 +11,23 @@ module sprite {
             super();
             this.init();
         }
-        public isVisible(): boolean {
-            return this.visible;
-        }
-        public setPos(x: number, y: number): void {
-            this.PosX = x;
-            this.PosY = y;
-        }
-        public setVisible(): void {
-            this.visible = true;
-        }
-        public hidden(): void {
-            this.visible = false;
+        
+        public getValue(): number {
+            return this.value;
         }
 
         public setValue(value: number): void {
             this.value = value;
         }
 
+        public setPos(x: number, y: number): void {
+            this.PosX = x;
+            this.PosY = y;
+        }
+
         public update(): void {
             this.graphics.clear();
-            
+
             if (this.visible) {
                 // Using Skin !!!
                 // this is just a demo
@@ -39,7 +35,7 @@ module sprite {
                 this.graphics.fillText(this.value.toString(), this.PosX, this.PosY - 35, '20px Arial', '#FFFFFF', 'center');
 
                 // TODO: Using other image
-            }         
+            }
         }
 
         init(): void {

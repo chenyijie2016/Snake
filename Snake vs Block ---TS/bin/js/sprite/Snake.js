@@ -14,6 +14,7 @@ var sprite;
         __extends(Snake, _super);
         function Snake() {
             var _this = _super.call(this) || this;
+            _this.graphics.clipRect(0, 0, Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
             _this.bodyPosX = new Array();
             _this.bodyPosY = new Array();
             _this.headPosXHistory = new Array();
