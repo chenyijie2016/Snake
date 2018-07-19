@@ -4,14 +4,10 @@ module view {
 	export class GameView extends ui.GameViewUI {
 		private snake: sprite.Snake;
 		private blocks: Array<sprite.Block>;
-<<<<<<< HEAD
-		private snakeAdds: Array<sprite.SnakeAdd>;
-=======
 		private latestBlocks: Array<sprite.Block>;//最近生成的一行Block
 		private snakeAdds: Array<sprite.SnakeAdd>; 
 		private latestSnakeAdds: Array<sprite.SnakeAdd>; //最近生成的一行SnakeAdds
 		private walls: Array<sprite.Wall>;
->>>>>>> a08349f2294123af71d66c91995bee3e7db2886f
 		private lastMouseX: number;
 		private mouseDown: boolean;
 		private debugInfo: Laya.Text;
@@ -72,11 +68,7 @@ module view {
 			this.snake.updateBody();
 			this.updateBlocks();
 			this.updateSnakeAdds();
-<<<<<<< HEAD
-			console.log('--Main Loop end---')
-=======
 			this.updateWalls();
->>>>>>> a08349f2294123af71d66c91995bee3e7db2886f
 		}
 
 		// 检测触点移动情况
