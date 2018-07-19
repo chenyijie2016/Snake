@@ -40,8 +40,8 @@ var view;
             Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
             // Laya.timer.frameLoop(100, this, this.updateBlocksStatus);//每300帧添加进行游戏状态更新，添加Block
-            Laya.timer.frameOnce(100, this, this.updateBlocksStatus); //每个随机帧数添加进行游戏状态更新，添加Block
-            Laya.timer.frameOnce(300, this, this.updateWallsStatus); //每个随机帧数添加进行游戏状态更新，添加Wall
+            Laya.timer.frameOnce(100, this, this.updateBlocks_WALLStatus); //每个随机帧数添加进行游戏状态更新，添加Block、Wall
+            //Laya.timer.frameOnce(100, this, this.updateWallsStatus);//每个随机帧数添加进行游戏状态更新，添加Wall
             Laya.timer.frameOnce(80, this, this.updateSnakeAddsStatus); //每个随机帧添加进行游戏状态更新，添加SnakeAdd
         };
         GameView.prototype.onMouseDown = function () {
@@ -85,14 +85,25 @@ var view;
             return false;
         };
         // 更新方块集合Blocks
-        GameView.prototype.updateBlocksStatus = function () {
+        GameView.prototype.updateBlocks_WALLStatus = function () {
+            //添加隔板
+            var wallNumber = Common.getRandomArrayElements(Const.WALL_NUMBERS, 1);
+            if (wallNumber[0] > 0) {
+                var orders = Common.getRandomArrayElements([1, 2, 3, 4], wallNumber[0]);
+                for (var i = 0; i < wallNumber[0]; i++) {
+                    var w = new sprite.Wall();
+                    w.setPos(orders[i] * 82.8 + 1, -Const.BLOCK_WIDTH);
+                    this.walls.push(w);
+                    this.addChildren(w);
+                }
+            }
             var blockNumber = Common.getRandomArrayElements(Const.BLOCK_NUMBERS, 1);
             if (blockNumber[0] > 0) {
                 var orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], blockNumber[0]);
                 this.latestBlocks.splice(0, this.latestBlocks.length); //清空
                 for (var i = 0; i < blockNumber[0]; i++) {
                     var b = new sprite.Block();
-                    b.setPos(orders[i] * 82.8 + 41, 0);
+                    b.setPos(orders[i] * 82.8 + 41, -Const.BLOCK_WIDTH * 2);
                     //检测当前位置是否存在SnakeAdd
                     var Flag = false;
                     for (var j = 0; j < this.latestSnakeAdds.length; j++) {
@@ -119,8 +130,8 @@ var view;
                     this.addChildren(b);
                 }
             }
-            var nextTimeNewBlocks = Common.getRandomArrayElements(Const.BLOCK_NEWTIMES, 1);
-            Laya.timer.frameOnce(nextTimeNewBlocks[0], this, this.updateBlocksStatus); //每个随机帧数添加进行游戏状态更新，添加Block
+            var nextTimeNewBlocks = Common.getRandomArrayElements(Const.BLOCK_WALL_NEWTIMES, 1);
+            Laya.timer.frameOnce(nextTimeNewBlocks[0], this, this.updateBlocks_WALLStatus); //每个随机帧数添加进行游戏状态更新，添加Block
         };
         // 更新Grow集合SnakeAdds
         GameView.prototype.updateSnakeAddsStatus = function () {
@@ -130,7 +141,7 @@ var view;
                 this.latestSnakeAdds.splice(0, this.latestSnakeAdds.length); //清空
                 for (var i = 0; i < snakeAddNumber[0]; i++) {
                     var add = new sprite.SnakeAdd();
-                    add.setPos(orders[i] * 82.8 + 41, 0);
+                    add.setPos(orders[i] * 82.8 + 41, -Const.BLOCK_WIDTH * 2);
                     //检测当前位置是否存在Block
                     var Flag = false;
                     for (var j = 0; j < this.latestBlocks.length; j++) {
@@ -159,21 +170,6 @@ var view;
             }
             var nextTimeNewAdds = Common.getRandomArrayElements(Const.SNAKE_ADD_NEWTIMES, 1);
             Laya.timer.frameOnce(50, this, this.updateSnakeAddsStatus); //每个随机帧添加进行游戏状态更新，添加SnakeAdd	
-        };
-        // 更新隔板集合Walls
-        GameView.prototype.updateWallsStatus = function () {
-            var wallNumber = Common.getRandomArrayElements(Const.WALL_NUMBERS, 1);
-            if (wallNumber[0] > 0) {
-                var orders = Common.getRandomArrayElements([1, 2, 3, 4], wallNumber[0]);
-                for (var i = 0; i < wallNumber[0]; i++) {
-                    var w = new sprite.Wall();
-                    w.setPos(orders[i] * 82.8 + 1, -Const.BLOCK_WIDTH);
-                    this.walls.push(w);
-                    this.addChildren(w);
-                }
-            }
-            var nextTimeNewWalls = Common.getRandomArrayElements(Const.WALL_NEWTIMES, 1);
-            Laya.timer.frameOnce(nextTimeNewWalls[0], this, this.updateWallsStatus); //每个随机帧数添加进行游戏状态更新，添加Block
         };
         // 更新碰撞检测信息
         GameView.prototype.updateCollisionDetection = function () {
