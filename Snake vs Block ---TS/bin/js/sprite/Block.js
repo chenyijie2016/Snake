@@ -26,6 +26,9 @@ var sprite;
             this.PosX = x;
             this.PosY = y;
         };
+        Block.prototype.getValue = function () {
+            return this.value;
+        };
         Block.prototype.setValue = function (value) {
             this.value = value;
         };
@@ -66,7 +69,7 @@ var sprite;
             return Common.rgbToHex(rgb);
         };
         Block.prototype.init = function () {
-            this.setValue(Common.getRandomNumber(1, 50) + 1);
+            this.setValue(Common.getRandomNumber(1, 50));
             this.PosX = 0;
             this.PosY = 0;
         };

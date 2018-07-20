@@ -33,6 +33,7 @@ var view;
             _this.scoreDisplay.color = "white";
             _this.scoreDisplay.text = _this.score.toString();
             _this.addChild(_this.scoreDisplay);
+            _this.snake = new sprite.Snake();
             _this.blocks = new Array();
             _this.latestBlocks = new Array();
             _this.snakeAdds = new Array();
@@ -44,10 +45,11 @@ var view;
             this.debugInfo.text = msg;
         };
         GameView.prototype.startGame = function () {
-            this.snake = new sprite.Snake();
-            Laya.stage.addChild(this.snake);
-            this.lastMouseX = Laya.stage.mouseX;
+            // console.log('zOrder', this.snake.zOrder);
             this.snake.pos(0, 0);
+            // this.snake.zOrder = 1005;
+            // Laya.stage.updateZOrder();
+            Laya.stage.addChild(this.snake);
             Laya.timer.frameLoop(1, this, this.mainLoop, null, false); // Every Frame
             this.snake.extendBody(15);
             Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
@@ -60,6 +62,7 @@ var view;
         };
         GameView.prototype.onMouseDown = function () {
             this.mouseDown = true;
+            this.lastMouseX = Laya.stage.mouseX;
         };
         GameView.prototype.onMouseUp = function () {
             this.mouseDown = false;
@@ -74,7 +77,7 @@ var view;
         };
         // The Main Loop for the game 
         GameView.prototype.mainLoop = function () {
-            console.log('--Main Loop begin---');
+            //console.log('--Main Loop begin---')
             this.updateScore();
             this.detectMouseMove();
             this.snake.updateBody();
@@ -101,20 +104,72 @@ var view;
         };
         // 检测触点移动情况
         GameView.prototype.detectMouseMove = function () {
+            var _this = this;
             var currentMouseX = Laya.stage.mouseX;
             if (this.mouseDown) {
-                var level = 1;
+                var level_1 = 1;
                 if (Math.abs(currentMouseX - this.lastMouseX) > 20) {
-                    level = 40;
+                    level_1 = 40;
                 }
                 else {
-                    level = Math.abs(currentMouseX - this.lastMouseX) * 2;
+                    level_1 = Math.abs(currentMouseX - this.lastMouseX) * 2;
                 }
-                if (currentMouseX < this.lastMouseX) {
-                    this.snake.moveLeft(level);
-                }
-                else if (currentMouseX > this.lastMouseX) {
-                    this.snake.moveRight(level);
+                var direction_1;
+                if (currentMouseX < this.lastMouseX)
+                    direction_1 = 'left';
+                else if (currentMouseX > this.lastMouseX)
+                    direction_1 = 'right';
+                this.blocks.forEach(function (block) {
+                    if (block.PosY > _this.snake.bodyPosY[0] - Const.BLOCK_WIDTH / 2 - Const.SNAKE_BODY_RADIUS
+                        && block.PosY < _this.snake.bodyPosY[0] + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS) {
+                        //console.log(' block In middle', block.getValue());
+                        switch (direction_1) {
+                            case 'left': {
+                                if (block.PosX < _this.snake.bodyPosX[0] // 方块在蛇头左侧
+                                    && Math.abs(block.PosX - _this.snake.bodyPosX[0]) < level_1 + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS // 超出范围
+                                ) {
+                                    console.log('---Can not Move left!');
+                                    level_1 = Math.min(level_1, Math.abs(block.PosX - _this.snake.bodyPosX[0]) - (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS));
+                                }
+                                break;
+                            }
+                            case 'right': {
+                                if (block.PosX > _this.snake.bodyPosX[0] // 方块在蛇头左侧
+                                    && Math.abs(block.PosX - _this.snake.bodyPosX[0]) < level_1 + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS // 超出范围
+                                ) {
+                                    level_1 = Math.min(level_1, Math.abs(block.PosX - _this.snake.bodyPosX[0]) - (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS));
+                                }
+                                break;
+                            }
+                        }
+                    }
+                });
+                this.walls.forEach(function (wall) {
+                    if (wall.centerPoSY() + wall.len / 2 > _this.snake.bodyPosY[0]
+                        && wall.centerPoSY() - wall.len / 2 < _this.snake.bodyPosY[0]) {
+                        switch (direction_1) {
+                            case 'left': {
+                                if (wall.centerPosX() < _this.snake.bodyPosX[0]
+                                    && Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level_1) {
+                                    level_1 = Math.min(level_1, Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS);
+                                }
+                            }
+                            case 'right': {
+                                if (wall.centerPosX() > _this.snake.bodyPosX[0]
+                                    && Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level_1) {
+                                    level_1 = Math.min(level_1, Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS);
+                                }
+                            }
+                        }
+                    }
+                });
+                switch (direction_1) {
+                    case 'left':
+                        this.snake.moveLeft(level_1);
+                        break;
+                    case 'right':
+                        this.snake.moveRight(level_1);
+                        break;
                 }
             }
             this.lastMouseX = currentMouseX;
@@ -212,7 +267,8 @@ var view;
         GameView.prototype.updateCollisionDetection = function () {
             var _this = this;
             this.snakeAdds.forEach(function (snakeAdd) {
-                if (Math.pow((snakeAdd.PosX - _this.snake.bodyPosX[0]), 2) + Math.pow((snakeAdd.PosY - _this.snake.bodyPosY[0]), 2) < Math.pow(Const.SNAKE_BODY_RADIUS, 2) * 4) {
+                if (Math.pow((snakeAdd.PosX - _this.snake.bodyPosX[0]), 2) + Math.pow((snakeAdd.PosY - _this.snake.bodyPosY[0]), 2)
+                    < Math.pow(Const.SNAKE_BODY_RADIUS, 2) * 4) {
                     _this.snake.extendBody(snakeAdd.getValue());
                     snakeAdd.destory();
                     _this.snakeAdds.splice(_this.snakeAdds.indexOf(snakeAdd), 1);
@@ -229,12 +285,13 @@ var view;
                 // if (block.getBounds().intersection(snakeHead)) {
                 // 	console.log('Collision');
                 // }
-                if (block.PosX - Const.BLOCK_WIDTH / 2 <= _this.snake.bodyPosX[0]
-                    && block.PosX + Const.BLOCK_WIDTH / 2 >= _this.snake.bodyPosX[0]
-                    && Math.abs(block.PosY - _this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)) {
+                if (block.PosX - Const.BLOCK_WIDTH / 2 <= _this.snake.bodyPosX[0] + Const.SNAKE_BODY_RADIUS / 2
+                    && block.PosX + Const.BLOCK_WIDTH / 2 >= _this.snake.bodyPosX[0] - Const.SNAKE_BODY_RADIUS / 2
+                    && Math.abs(block.PosY - _this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)
+                    && block.PosY < _this.snake.bodyPosY[0]) {
                     _this.directCollision = true;
                     if (!block.decreaseValue()) {
-                        console.log('#destory block');
+                        //console.log('#destory block');
                         block.destory();
                         _this.blocks.splice(_this.blocks.indexOf(block), 1);
                     }
@@ -251,7 +308,7 @@ var view;
                 block.update();
                 if ((block.PosY - (Const.BLOCK_WIDTH >> 1)) > Const.SCREEN_HEIGHT) {
                     block.destory();
-                    console.log('destory block');
+                    //console.log('destory block');
                     _this.blocks.splice(_this.blocks.indexOf(block), 1);
                 }
             });
@@ -266,7 +323,7 @@ var view;
                 }
                 if ((snakeAdd.PosY - Const.SNAKE_BODY_RADIUS * 2) > Const.SCREEN_HEIGHT) {
                     snakeAdd.destory();
-                    console.log('destory snakeAdd');
+                    //console.log('destory snakeAdd');
                     _this.snakeAdds.splice(_this.snakeAdds.indexOf(snakeAdd), 1);
                 }
             });
@@ -281,7 +338,7 @@ var view;
                 }
                 if ((wall.PosY - (Const.BLOCK_WIDTH >> 1)) > Const.SCREEN_HEIGHT) {
                     wall.destory();
-                    console.log('destory wall');
+                    //console.log('destory wall');
                     _this.walls.splice(_this.walls.indexOf(wall), 1);
                 }
             });

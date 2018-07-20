@@ -21,6 +21,8 @@ var sprite;
             _this.init();
             return _this;
         }
+        Wall.prototype.centerPosX = function () { return this.PosX - Const.BLOCK_WIDTH / 2 + Const.WALL_WIDTH / 2; };
+        Wall.prototype.centerPoSY = function () { return this.PosY - Const.BLOCK_WIDTH / 2 + this.len / 2; };
         Wall.prototype.isVisible = function () {
             return this.visible;
         };

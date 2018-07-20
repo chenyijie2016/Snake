@@ -14,6 +14,7 @@ module sprite {
             for (let i = 0; i < 300; i++) {
                 this.headPosXHistory.push(207);
             }
+            
             this.init();
         }
 
@@ -52,7 +53,7 @@ module sprite {
             this.headPosXHistory = this.headPosXHistory.slice(0, 300);
         }
         public updateBody(): void {
-            console.log('update body')
+            //console.log('update body')
             this.headPosXHistory.unshift(this.bodyPosX[0]);
             let rate = Const.SNAKE_BODY_RADIUS * 2 / GameMain.gameView.gameScrollSpeed;
             //GameMain.gameView.setDebugInfo(rate.toString());
@@ -117,7 +118,6 @@ module sprite {
         // private concatBody(): void {
         //     for (let i = 1; i < this.length; i++) {
         //         let XDifference = Math.abs(this.bodyPosX[i] - this.bodyPosX[i - 1]);
-
         //         if (this.bodyPosX[i] < this.bodyPosX[i - 1]) {
         //             this.bodyPosX[i] += XDifference / Const.SNAKE_FLEXIBILITY;
         //         }

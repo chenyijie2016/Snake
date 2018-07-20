@@ -17,7 +17,9 @@ module sprite {
             this.PosX = x;
             this.PosY = y;
         }
-
+        public getValue(): number {
+            return this.value;
+        }
         public setValue(value: number): void {
             this.value = value;
         }
@@ -65,7 +67,7 @@ module sprite {
         }
 
         init(): void {
-            this.setValue(Common.getRandomNumber(1, 50) + 1);
+            this.setValue(Common.getRandomNumber(1, 50));
             this.PosX = 0;
             this.PosY = 0;
         }

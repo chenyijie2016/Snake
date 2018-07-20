@@ -37,6 +37,9 @@ module view {
 			this.scoreDisplay.text = this.score.toString();
 			this.addChild(this.scoreDisplay);
 
+			this.snake = new sprite.Snake();
+
+
 
 			this.blocks = new Array<sprite.Block>();
 			this.latestBlocks = new Array<sprite.Block>();
@@ -51,10 +54,13 @@ module view {
 		}
 
 		public startGame(): void {
-			this.snake = new sprite.Snake();
-			Laya.stage.addChild(this.snake);
-			this.lastMouseX = Laya.stage.mouseX;
+
+			// console.log('zOrder', this.snake.zOrder);
 			this.snake.pos(0, 0);
+			// this.snake.zOrder = 1005;
+			// Laya.stage.updateZOrder();
+
+			Laya.stage.addChild(this.snake);
 			Laya.timer.frameLoop(1, this, this.mainLoop, null, false);// Every Frame
 			this.snake.extendBody(15);
 			Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
@@ -69,6 +75,7 @@ module view {
 
 		private onMouseDown(): void {
 			this.mouseDown = true;
+			this.lastMouseX = Laya.stage.mouseX;
 		}
 
 		private onMouseUp(): void {
@@ -85,7 +92,7 @@ module view {
 		}
 		// The Main Loop for the game 
 		private mainLoop(): void {
-			console.log('--Main Loop begin---')
+			//console.log('--Main Loop begin---')
 
 			this.updateScore();
 			this.detectMouseMove();
@@ -96,19 +103,19 @@ module view {
 			this.updateCollisionDetection();
 
 			// 更新方块集合Blocks
-			if(this.nextTimeNewBlocks == 0){
+			if (this.nextTimeNewBlocks == 0) {
 				this.updateBlocks_WALLStatus();
 			}
-			else{
+			else {
 				if (!this.isDirectCollision())
 					this.nextTimeNewBlocks--;
 			}
 			// 更新Grow集合SnakeAdds 
-			if(this.nextTimeNewAdds == 0){
+			if (this.nextTimeNewAdds == 0) {
 				this.updateSnakeAddsStatus();
 			}
-			else{
-				if (!this.isDirectCollision()) 
+			else {
+				if (!this.isDirectCollision())
 					this.nextTimeNewAdds--;
 			}
 
@@ -127,10 +134,61 @@ module view {
 				else {
 					level = Math.abs(currentMouseX - this.lastMouseX) * 2;
 				}
-				if (currentMouseX < this.lastMouseX) {
-					this.snake.moveLeft(level);
-				} else if (currentMouseX > this.lastMouseX) {
-					this.snake.moveRight(level);
+				let direction: string;
+				if (currentMouseX < this.lastMouseX)
+					direction = 'left';
+				else if (currentMouseX > this.lastMouseX)
+					direction = 'right';
+
+				this.blocks.forEach((block) => {
+					if (block.PosY > this.snake.bodyPosY[0] - Const.BLOCK_WIDTH / 2 - Const.SNAKE_BODY_RADIUS
+						&& block.PosY < this.snake.bodyPosY[0] + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS) {
+						//console.log(' block In middle', block.getValue());
+						switch (direction) {
+							case 'left': {
+								if (block.PosX < this.snake.bodyPosX[0] // 方块在蛇头左侧
+									&& Math.abs(block.PosX - this.snake.bodyPosX[0]) < level + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS // 超出范围
+								) {
+									console.log('---Can not Move left!')
+									level = Math.min(level, Math.abs(block.PosX - this.snake.bodyPosX[0]) - (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS));
+								}
+								break;
+							}
+							case 'right': {
+								if (block.PosX > this.snake.bodyPosX[0] // 方块在蛇头左侧
+									&& Math.abs(block.PosX - this.snake.bodyPosX[0]) < level + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS // 超出范围
+								) {
+									level = Math.min(level, Math.abs(block.PosX - this.snake.bodyPosX[0]) - (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS));
+								}
+								break;
+							}
+						}
+					}
+				})
+
+				this.walls.forEach((wall) => {
+					if (wall.centerPoSY() + wall.len / 2 > this.snake.bodyPosY[0]
+						&& wall.centerPoSY() - wall.len / 2 < this.snake.bodyPosY[0]) {
+						switch (direction) {
+							case 'left': {
+								if (wall.centerPosX() < this.snake.bodyPosX[0]
+									&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level) {
+									level = Math.min(level, Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS);
+								}
+							}
+							case 'right': {
+								if (wall.centerPosX() > this.snake.bodyPosX[0]
+									&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level) {
+									level = Math.min(level, Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS);
+								}
+							}
+						}
+					}
+				})
+
+				switch (direction) {
+					case 'left': this.snake.moveLeft(level); break;
+					case 'right': this.snake.moveRight(level); break;
 				}
 			}
 			this.lastMouseX = currentMouseX;
@@ -235,7 +293,8 @@ module view {
 		// 更新碰撞检测信息
 		private updateCollisionDetection(): void {
 			this.snakeAdds.forEach((snakeAdd) => {
-				if ((snakeAdd.PosX - this.snake.bodyPosX[0]) ** 2 + (snakeAdd.PosY - this.snake.bodyPosY[0]) ** 2 < Const.SNAKE_BODY_RADIUS ** 2 * 4) {
+				if ((snakeAdd.PosX - this.snake.bodyPosX[0]) ** 2 + (snakeAdd.PosY - this.snake.bodyPosY[0]) ** 2
+					< Const.SNAKE_BODY_RADIUS ** 2 * 4) {
 					this.snake.extendBody(snakeAdd.getValue());
 					snakeAdd.destory();
 					this.snakeAdds.splice(this.snakeAdds.indexOf(snakeAdd), 1);
@@ -253,12 +312,13 @@ module view {
 				// 	console.log('Collision');
 				// }
 
-				if (block.PosX - Const.BLOCK_WIDTH / 2 <= this.snake.bodyPosX[0]
-					&& block.PosX + Const.BLOCK_WIDTH / 2 >= this.snake.bodyPosX[0]
-					&& Math.abs(block.PosY - this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)) {
+				if (block.PosX - Const.BLOCK_WIDTH / 2 <= this.snake.bodyPosX[0] + Const.SNAKE_BODY_RADIUS / 2
+					&& block.PosX + Const.BLOCK_WIDTH / 2 >= this.snake.bodyPosX[0] - Const.SNAKE_BODY_RADIUS / 2
+					&& Math.abs(block.PosY - this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)
+					&& block.PosY < this.snake.bodyPosY[0]) {
 					this.directCollision = true;
 					if (!block.decreaseValue()) {
-						console.log('#destory block');
+						//console.log('#destory block');
 						block.destory();
 						this.blocks.splice(this.blocks.indexOf(block), 1);
 					}
@@ -276,7 +336,7 @@ module view {
 				block.update();
 				if ((block.PosY - (Const.BLOCK_WIDTH >> 1)) > Const.SCREEN_HEIGHT) {
 					block.destory();
-					console.log('destory block');
+					//console.log('destory block');
 					this.blocks.splice(this.blocks.indexOf(block), 1);
 				}
 			})
@@ -292,7 +352,7 @@ module view {
 
 				if ((snakeAdd.PosY - Const.SNAKE_BODY_RADIUS * 2) > Const.SCREEN_HEIGHT) {
 					snakeAdd.destory();
-					console.log('destory snakeAdd');
+					//console.log('destory snakeAdd');
 					this.snakeAdds.splice(this.snakeAdds.indexOf(snakeAdd), 1);
 				}
 			})
@@ -308,7 +368,7 @@ module view {
 
 				if ((wall.PosY - (Const.BLOCK_WIDTH >> 1)) > Const.SCREEN_HEIGHT) {
 					wall.destory();
-					console.log('destory wall');
+					//console.log('destory wall');
 					this.walls.splice(this.walls.indexOf(wall), 1);
 				}
 			})

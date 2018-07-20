@@ -57,7 +57,7 @@ var sprite;
             this.headPosXHistory = this.headPosXHistory.slice(0, 300);
         };
         Snake.prototype.updateBody = function () {
-            console.log('update body');
+            //console.log('update body')
             this.headPosXHistory.unshift(this.bodyPosX[0]);
             var rate = Const.SNAKE_BODY_RADIUS * 2 / GameMain.gameView.gameScrollSpeed;
             //GameMain.gameView.setDebugInfo(rate.toString());

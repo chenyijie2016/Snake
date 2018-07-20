@@ -4,9 +4,12 @@
 */
 module sprite {
     export class Wall extends Laya.Sprite {
-        private len: number;
+        public len: number;
         public PosX: number;
         public PosY: number;
+
+        public centerPosX(): number { return this.PosX - Const.BLOCK_WIDTH / 2 + Const.WALL_WIDTH / 2; }
+        public centerPoSY(): number { return this.PosY - Const.BLOCK_WIDTH / 2 + this.len / 2; }
         constructor() {
             super();
             this.init();
