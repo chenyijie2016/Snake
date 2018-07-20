@@ -9,6 +9,7 @@ module view {
 			this.createTitle();
 		}
 		public onGameStart(): void {
+			Laya.SoundManager.playSound(Const.BUTTON_SOUND);
 			this.removeSelf();
 			if (!GameMain.gameView) {
 				GameMain.gameView = new GameView();
