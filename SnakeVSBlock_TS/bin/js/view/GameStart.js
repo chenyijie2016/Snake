@@ -21,6 +21,7 @@ var view;
             return _this;
         }
         GameStart.prototype.onGameStart = function () {
+            Laya.SoundManager.playSound(Const.BUTTON_SOUND);
             this.removeSelf();
             if (!GameMain.gameView) {
                 GameMain.gameView = new view.GameView();

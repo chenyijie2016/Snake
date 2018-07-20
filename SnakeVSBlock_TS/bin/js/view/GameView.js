@@ -292,6 +292,11 @@ var view;
                     _this.directCollision = true;
                     if (!block.decreaseValue()) {
                         //console.log('#destory block');
+                        var p = new sprite.ParticleCtn();
+                        p.setPos(block.PosX, block.PosY);
+                        //p.setColor("yellow");
+                        p.update();
+                        _this.addChild(p);
                         block.destory();
                         _this.blocks.splice(_this.blocks.indexOf(block), 1);
                     }

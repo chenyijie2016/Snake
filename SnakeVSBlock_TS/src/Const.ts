@@ -12,15 +12,17 @@ class Const {
     public static BLOCK_MIN_CIRCLE_R: number = 60; //方块最小包围圆半径
     public static BLOCK_RADIUS: number = 10; // 方块圆角半径
     public static WALL_WIDTH: number = 5; //隔板宽度
-    public static WALL_RADIUS: number = 2;//隔板圆角半径
+    public static WALL_RADIUS: number = 2; //隔板圆角半径
+    public static PARTICLE_RADIUS: number = 3; //粒子半径
 
     public static BLOCK_DECREASE_SPEED:number = 3; // 每几帧减少一点
 
     //音效
-    public static  BGM_SOUND: string = "sound/BGM1.mp3"; //背景音乐
+    public static  BGM_SOUND: string = "sound/BGM.mp3"; //背景音乐
     public static  EAT_SNAKE_ADD_SOUND: string = "sound/snakeAdd.mp3"; //吃到snakeAdd音效
     public static  GAME_START_SOUND: string = "sound/gameStart.mp3"; //游戏开始音效
     public static  GAME_OVER_SOUND: string = "sound/gameOver.mp3"; //游戏结束音效
+    public static  BUTTON_SOUND: string = "sound/buttonSound.wav";//按钮音效
 
 
     //每次添加BLOCK的随机数量【1-5】
