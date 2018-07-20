@@ -20,6 +20,7 @@ var GameMain = /** @class */ (function () {
     GameMain.prototype.onLoaded = function () {
         GameMain.gameStart = new view.GameStart();
         Laya.stage.addChild(GameMain.gameStart);
+        Laya.SoundManager.playMusic(Const.BGM_SOUND);
     };
     return GameMain;
 }());

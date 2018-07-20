@@ -27,6 +27,7 @@ var view;
             }
             GameMain.gameView.startGame();
             Laya.stage.addChild(GameMain.gameView);
+            Laya.SoundManager.playSound(Const.GAME_START_SOUND);
         };
         GameStart.prototype.createTitle = function () {
             var Text = Laya.Text;

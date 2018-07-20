@@ -16,6 +16,13 @@ class Const {
 
     public static BLOCK_DECREASE_SPEED:number = 3; // 每几帧减少一点
 
+    //音效
+    public static  BGM_SOUND: string = "sound/BGM1.mp3"; //背景音乐
+    public static  EAT_SNAKE_ADD_SOUND: string = "sound/snakeAdd.mp3"; //吃到snakeAdd音效
+    public static  GAME_START_SOUND: string = "sound/gameStart.mp3"; //游戏开始音效
+    public static  GAME_OVER_SOUND: string = "sound/gameOver.mp3"; //游戏结束音效
+
+
     //每次添加BLOCK的随机数量【1-5】
     public static BLOCK_NUMBERS = [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 5];
     //每次添加WALL的随机数量【1-3】

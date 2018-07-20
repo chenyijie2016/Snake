@@ -16,6 +16,11 @@ var Const = /** @class */ (function () {
     Const.WALL_WIDTH = 5; //隔板宽度
     Const.WALL_RADIUS = 2; //隔板圆角半径
     Const.BLOCK_DECREASE_SPEED = 3; // 每几帧减少一点
+    //音效
+    Const.BGM_SOUND = "sound/BGM1.mp3"; //背景音乐
+    Const.EAT_SNAKE_ADD_SOUND = "sound/snakeAdd.mp3"; //吃到snakeAdd音效
+    Const.GAME_START_SOUND = "sound/gameStart.mp3"; //游戏开始音效
+    Const.GAME_OVER_SOUND = "sound/gameOver.mp3"; //游戏结束音效
     //每次添加BLOCK的随机数量【1-5】
     Const.BLOCK_NUMBERS = [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 5];
     //每次添加WALL的随机数量【1-3】

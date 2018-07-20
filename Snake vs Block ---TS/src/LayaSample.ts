@@ -27,6 +27,7 @@ class GameMain {
     onLoaded(): void {
         GameMain.gameStart = new view.GameStart();
         Laya.stage.addChild(GameMain.gameStart);
+        Laya.SoundManager.playMusic(Const.BGM_SOUND);
     }
 
 }

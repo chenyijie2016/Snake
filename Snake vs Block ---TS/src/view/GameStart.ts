@@ -15,6 +15,7 @@ module view {
 			}
 			GameMain.gameView.startGame();
 			Laya.stage.addChild(GameMain.gameView);
+			Laya.SoundManager.playSound(Const.GAME_START_SOUND);
 		}
 
 		public createTitle(): void{

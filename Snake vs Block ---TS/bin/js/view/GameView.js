@@ -53,9 +53,8 @@ var view;
             Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
             // Laya.timer.frameLoop(100, this, this.updateBlocksStatus);//每300帧添加进行游戏状态更新，添加Block
-            Laya.timer.frameOnce(100, this, this.updateBlocks_WALLStatus); //每个随机帧数添加进行游戏状态更新，添加Block、Wall
-            //Laya.timer.frameOnce(100, this, this.updateWallsStatus);//每个随机帧数添加进行游戏状态更新，添加Wall
-            Laya.timer.frameOnce(80, this, this.updateSnakeAddsStatus); //每个随机帧添加进行游戏状态更新，添加SnakeAdd
+            Laya.timer.frameOnce(100, this, this.updateBlocks_WALLStatus); //第一个100帧添加进行游戏状态更新，添加Block、Wall
+            Laya.timer.frameOnce(80, this, this.updateSnakeAddsStatus); //第一个80帧帧添加进行游戏状态更新，添加SnakeAdd
             Laya.timer.frameLoop(300, this.snake, this.snake.updateHeadHistory);
             Laya.timer.frameLoop(2, this.snake, this.snake.showBody);
         };
@@ -83,6 +82,22 @@ var view;
             this.updateSnakeAdds();
             this.updateWalls();
             this.updateCollisionDetection();
+            // 更新方块集合Blocks
+            if (this.nextTimeNewBlocks == 0) {
+                this.updateBlocks_WALLStatus();
+            }
+            else {
+                if (!this.isDirectCollision())
+                    this.nextTimeNewBlocks--;
+            }
+            // 更新Grow集合SnakeAdds 
+            if (this.nextTimeNewAdds == 0) {
+                this.updateSnakeAddsStatus();
+            }
+            else {
+                if (!this.isDirectCollision())
+                    this.nextTimeNewAdds--;
+            }
         };
         // 检测触点移动情况
         GameView.prototype.detectMouseMove = function () {
@@ -108,7 +123,7 @@ var view;
         GameView.prototype.isDirectCollision = function () {
             return this.directCollision;
         };
-        // 更新方块集合Blocks
+        // 更新方块集合Blocks、隔板集合Walls
         GameView.prototype.updateBlocks_WALLStatus = function () {
             //添加隔板
             var wallNumber = Common.getRandomArrayElements(Const.WALL_NUMBERS, 1);
@@ -154,8 +169,7 @@ var view;
                     this.addChildren(b);
                 }
             }
-            var nextTimeNewBlocks = Common.getRandomArrayElements(Const.BLOCK_WALL_NEWTIMES, 1);
-            Laya.timer.frameOnce(nextTimeNewBlocks[0], this, this.updateBlocks_WALLStatus); //每个随机帧数添加进行游戏状态更新，添加Block
+            this.nextTimeNewBlocks = Common.getRandomArrayElements(Const.BLOCK_WALL_NEWTIMES, 1)[0];
         };
         // 更新Grow集合SnakeAdds
         GameView.prototype.updateSnakeAddsStatus = function () {
@@ -192,8 +206,7 @@ var view;
                     this.addChildren(add);
                 }
             }
-            var nextTimeNewAdds = Common.getRandomArrayElements(Const.SNAKE_ADD_NEWTIMES, 1);
-            Laya.timer.frameOnce(nextTimeNewAdds[0], this, this.updateSnakeAddsStatus); //每个随机帧添加进行游戏状态更新，添加SnakeAdd	
+            this.nextTimeNewAdds = Common.getRandomArrayElements(Const.SNAKE_ADD_NEWTIMES, 1)[0];
         };
         // 更新碰撞检测信息
         GameView.prototype.updateCollisionDetection = function () {
@@ -203,6 +216,7 @@ var view;
                     _this.snake.extendBody(snakeAdd.getValue());
                     snakeAdd.destory();
                     _this.snakeAdds.splice(_this.snakeAdds.indexOf(snakeAdd), 1);
+                    Laya.SoundManager.playSound(Const.EAT_SNAKE_ADD_SOUND);
                 }
             });
             // let snakeHead = new Laya.Rectangle();
