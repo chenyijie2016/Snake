@@ -18,24 +18,29 @@ var sprite;
         __extends(Block, _super);
         function Block() {
             var _this = _super.call(this) || this;
+            _this.decreaseCount = 0;
             _this.init();
             return _this;
         }
-        Block.prototype.isVisible = function () {
-            return this.visible;
-        };
         Block.prototype.setPos = function (x, y) {
             this.PosX = x;
             this.PosY = y;
         };
-        Block.prototype.setVisible = function () {
-            this.visible = true;
-        };
-        Block.prototype.hidden = function () {
-            this.visible = false;
-        };
         Block.prototype.setValue = function (value) {
             this.value = value;
+        };
+        Block.prototype.decreaseValue = function () {
+            this.decreaseCount++;
+            if (this.decreaseCount === Const.BLOCK_DECREASE_SPEED) {
+                this.decreaseCount = 0;
+                if (this.value > 0) {
+                    this.value--;
+                    GameMain.gameView.score++;
+                }
+                if (this.value === 0)
+                    return false;
+            }
+            return true;
         };
         Block.prototype.update = function () {
             this.graphics.clear();
@@ -55,18 +60,10 @@ var sprite;
         Block.prototype.getBlockColor = function () {
             var blockValue = this.value;
             if (blockValue > 50) {
-                blockValue = 50;
+                blockValue = 51;
             }
-            var rgbToHex = function (rgb) {
-                var color = rgb.toString().match(/\d+/g); // 把 x,y,z 推送到 color 数组里
-                var hex = "#";
-                for (var i = 0; i < 3; i++) {
-                    hex += ("0" + Number(color[i]).toString(16)).slice(-2);
-                }
-                return hex;
-            };
             var rgb = Const.BLOCK_COLORS[blockValue - 1];
-            return rgbToHex(rgb);
+            return Common.rgbToHex(rgb);
         };
         Block.prototype.init = function () {
             this.setValue(Common.getRandomNumber(1, 50) + 1);

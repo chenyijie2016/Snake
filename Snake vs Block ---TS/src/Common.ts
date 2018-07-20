@@ -20,6 +20,19 @@ class Common {
         }
         return shuffled.slice(min);
     }
+    public static rgbToHex = function (rgb) {
+        if (!rgb) {
+            console.log('#Error!')
+            return '#FFFFFF';
+        }
+        let color = rgb.toString().match(/\d+/g);
+        let hex = "#";
+
+        for (let i = 0; i < 3; i++) {
+            hex += ("0" + Number(color[i]).toString(16)).slice(-2);
+        }
+        return hex;
+    };
     // public static async sleep(ms) {
     //     return new Promise(async (resolve) => {
     //         await setTimeout(resolve, ms);

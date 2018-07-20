@@ -7,27 +7,35 @@ module sprite {
         private value: number;
         public PosX: number;
         public PosY: number;
+        private decreaseCount: number = 0;
         constructor() {
             super();
             this.init();
         }
-        public isVisible(): boolean {
-            return this.visible;
-        }
+
         public setPos(x: number, y: number): void {
             this.PosX = x;
             this.PosY = y;
-        }
-        public setVisible(): void {
-            this.visible = true;
-        }
-        public hidden(): void {
-            this.visible = false;
         }
 
         public setValue(value: number): void {
             this.value = value;
         }
+
+        public decreaseValue(): boolean {
+            this.decreaseCount++;
+            if (this.decreaseCount === Const.BLOCK_DECREASE_SPEED) {
+                this.decreaseCount = 0;
+                if (this.value > 0) {
+                    this.value--;
+                    GameMain.gameView.score++;
+                }
+                if (this.value === 0)
+                    return false;
+            }
+            return true;
+        }
+
 
         public update(): void {
             this.graphics.clear();
@@ -49,20 +57,11 @@ module sprite {
         public getBlockColor(): string {
             let blockValue = this.value;
             if (blockValue > 50) {
-                blockValue = 50;
+                blockValue = 51;
             }
-            let rgbToHex = function (rgb) {
 
-                let color = rgb.toString().match(/\d+/g); // 把 x,y,z 推送到 color 数组里
-                let hex = "#";
-
-                for (let i = 0; i < 3; i++) {
-                    hex += ("0" + Number(color[i]).toString(16)).slice(-2);
-                }
-                return hex;
-            };
             let rgb = Const.BLOCK_COLORS[blockValue - 1];
-            return rgbToHex(rgb);
+            return Common.rgbToHex(rgb);
         }
 
         init(): void {

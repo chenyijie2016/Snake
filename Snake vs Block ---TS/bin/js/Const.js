@@ -15,6 +15,7 @@ var Const = /** @class */ (function () {
     Const.BLOCK_RADIUS = 10; // 方块圆角半径
     Const.WALL_WIDTH = 5; //隔板宽度
     Const.WALL_RADIUS = 2; //隔板圆角半径
+    Const.BLOCK_DECREASE_SPEED = 3; // 每几帧减少一点
     //每次添加BLOCK的随机数量【1-5】
     Const.BLOCK_NUMBERS = [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 5];
     //每次添加WALL的随机数量【1-3】

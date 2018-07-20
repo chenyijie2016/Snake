@@ -14,7 +14,7 @@ class Const {
     public static WALL_WIDTH: number = 5; //隔板宽度
     public static WALL_RADIUS: number = 2;//隔板圆角半径
 
-
+    public static BLOCK_DECREASE_SPEED:number = 3; // 每几帧减少一点
 
     //每次添加BLOCK的随机数量【1-5】
     public static BLOCK_NUMBERS = [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 5];

@@ -86,7 +86,7 @@ module sprite {
                 }
             }
 
-            this.showBody();
+            //this.showBody();
 
 
             // for (let i = 1; i < this.length; i++) {
@@ -143,9 +143,9 @@ module sprite {
             }
         }
 
-        private showBody(): void {
+        public showBody(): void {
             this.graphics.clear();
-            console.log('show body', this.bodyPosX);
+            //console.log('show body', this.bodyPosX);
             this.graphics.fillText(this.length.toString(), this.bodyPosX[0], this.bodyPosY[0] - 35, '20px Arial', '#FFFFFF', 'center');
 
             for (let i = 0; i < this.length; i++) {

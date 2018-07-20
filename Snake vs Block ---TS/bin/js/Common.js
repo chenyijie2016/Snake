@@ -22,6 +22,18 @@ var Common = /** @class */ (function () {
         }
         return shuffled.slice(min);
     };
+    Common.rgbToHex = function (rgb) {
+        if (!rgb) {
+            console.log('#Error!');
+            return '#FFFFFF';
+        }
+        var color = rgb.toString().match(/\d+/g);
+        var hex = "#";
+        for (var i = 0; i < 3; i++) {
+            hex += ("0" + Number(color[i]).toString(16)).slice(-2);
+        }
+        return hex;
+    };
     return Common;
 }());
 //# sourceMappingURL=Common.js.map

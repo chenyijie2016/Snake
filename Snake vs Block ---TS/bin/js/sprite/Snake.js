@@ -90,7 +90,7 @@ var sprite;
                     }
                 }
             }
-            this.showBody();
+            //this.showBody();
             // for (let i = 1; i < this.length; i++) {
             //     let XDifference = Math.abs(this.bodyPosX[i] - this.headPosXHistory[floor(i * rate)]);
             //     if (XDifference > Const.SNAKE_BODY_RADIUS * 2) {
@@ -138,7 +138,7 @@ var sprite;
         };
         Snake.prototype.showBody = function () {
             this.graphics.clear();
-            console.log('show body', this.bodyPosX);
+            //console.log('show body', this.bodyPosX);
             this.graphics.fillText(this.length.toString(), this.bodyPosX[0], this.bodyPosY[0] - 35, '20px Arial', '#FFFFFF', 'center');
             for (var i = 0; i < this.length; i++) {
                 // Using Skin !!!

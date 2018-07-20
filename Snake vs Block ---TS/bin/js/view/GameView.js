@@ -15,6 +15,9 @@ var view;
         __extends(GameView, _super);
         function GameView() {
             var _this = _super.call(this) || this;
+            _this.gameScrollSpeed = 4;
+            _this.directCollision = false;
+            _this.score = 0;
             /* for debug */
             _this.debugInfo = new Laya.Text();
             _this.debugInfo.width = 300;
@@ -22,6 +25,14 @@ var view;
             _this.debugInfo.fontSize = 20;
             _this.debugInfo.color = "white";
             _this.addChild(_this.debugInfo);
+            _this.scoreDisplay = new Laya.Text();
+            _this.scoreDisplay.width = 100;
+            _this.scoreDisplay.pos(Const.SCREEN_WIDTH - 25, 0);
+            _this.scoreDisplay.font = 'Arial';
+            _this.scoreDisplay.fontSize = 40;
+            _this.scoreDisplay.color = "white";
+            _this.scoreDisplay.text = _this.score.toString();
+            _this.addChild(_this.scoreDisplay);
             _this.blocks = new Array();
             _this.latestBlocks = new Array();
             _this.snakeAdds = new Array();
@@ -33,7 +44,6 @@ var view;
             this.debugInfo.text = msg;
         };
         GameView.prototype.startGame = function () {
-            this.gameScrollSpeed = 3;
             this.snake = new sprite.Snake();
             Laya.stage.addChild(this.snake);
             this.lastMouseX = Laya.stage.mouseX;
@@ -47,6 +57,7 @@ var view;
             //Laya.timer.frameOnce(100, this, this.updateWallsStatus);//每个随机帧数添加进行游戏状态更新，添加Wall
             Laya.timer.frameOnce(80, this, this.updateSnakeAddsStatus); //每个随机帧添加进行游戏状态更新，添加SnakeAdd
             Laya.timer.frameLoop(300, this.snake, this.snake.updateHeadHistory);
+            Laya.timer.frameLoop(2, this.snake, this.snake.showBody);
         };
         GameView.prototype.onMouseDown = function () {
             this.mouseDown = true;
@@ -55,9 +66,17 @@ var view;
             this.mouseDown = false;
             this.debugInfo.text = 'mouseup';
         };
+        GameView.prototype.updateScore = function () {
+            this.scoreDisplay.text = this.score.toString();
+            if (this.score > 0) {
+                var offset = Math.floor(Math.log(this.score) / Math.log(10));
+                this.scoreDisplay.pos(Const.SCREEN_WIDTH - 25 * (offset + 1), 0);
+            }
+        };
         // The Main Loop for the game 
         GameView.prototype.mainLoop = function () {
             console.log('--Main Loop begin---');
+            this.updateScore();
             this.detectMouseMove();
             this.snake.updateBody();
             this.updateBlocks();
@@ -87,7 +106,7 @@ var view;
         };
         // 是否是正在正面碰撞
         GameView.prototype.isDirectCollision = function () {
-            return false;
+            return this.directCollision;
         };
         // 更新方块集合Blocks
         GameView.prototype.updateBlocks_WALLStatus = function () {
@@ -186,6 +205,27 @@ var view;
                     _this.snakeAdds.splice(_this.snakeAdds.indexOf(snakeAdd), 1);
                 }
             });
+            // let snakeHead = new Laya.Rectangle();
+            // snakeHead.x = this.snake.bodyPosX[0] - Const.SNAKE_BODY_RADIUS;
+            // snakeHead.y = this.snake.bodyPosY[0] - Const.SNAKE_BODY_RADIUS;
+            // snakeHead.width = snakeHead.height = 2 * Const.SNAKE_BODY_RADIUS;
+            this.directCollision = false;
+            this.blocks.forEach(function (block) {
+                //console.log();
+                // if (block.getBounds().intersection(snakeHead)) {
+                // 	console.log('Collision');
+                // }
+                if (block.PosX - Const.BLOCK_WIDTH / 2 <= _this.snake.bodyPosX[0]
+                    && block.PosX + Const.BLOCK_WIDTH / 2 >= _this.snake.bodyPosX[0]
+                    && Math.abs(block.PosY - _this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)) {
+                    _this.directCollision = true;
+                    if (!block.decreaseValue()) {
+                        console.log('#destory block');
+                        block.destory();
+                        _this.blocks.splice(_this.blocks.indexOf(block), 1);
+                    }
+                }
+            });
         };
         // 更新方块状态
         GameView.prototype.updateBlocks = function () {
@@ -193,8 +233,8 @@ var view;
             this.blocks.forEach(function (block) {
                 if (!_this.isDirectCollision()) {
                     block.PosY += _this.gameScrollSpeed;
-                    block.update();
                 }
+                block.update();
                 if ((block.PosY - (Const.BLOCK_WIDTH >> 1)) > Const.SCREEN_HEIGHT) {
                     block.destory();
                     console.log('destory block');

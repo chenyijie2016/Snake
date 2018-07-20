@@ -2,7 +2,7 @@
 
 module view {
 	export class GameView extends ui.GameViewUI {
-		private snake: sprite.Snake;
+		public snake: sprite.Snake;
 		private blocks: Array<sprite.Block>;
 		private latestBlocks: Array<sprite.Block>;//最近生成的一行Block
 		private snakeAdds: Array<sprite.SnakeAdd>;
@@ -11,7 +11,11 @@ module view {
 		private lastMouseX: number;
 		private mouseDown: boolean;
 		private debugInfo: Laya.Text;
-		public gameScrollSpeed: number;
+		public gameScrollSpeed: number = 4;
+		public directCollision: boolean = false;
+		public score: number = 0;
+		public scoreDisplay: Laya.Text;
+
 		constructor() {
 			super();
 			/* for debug */
@@ -22,6 +26,16 @@ module view {
 			this.debugInfo.color = "white";
 			this.addChild(this.debugInfo);
 
+			this.scoreDisplay = new Laya.Text();
+			this.scoreDisplay.width = 100;
+			this.scoreDisplay.pos(Const.SCREEN_WIDTH - 25, 0);
+			this.scoreDisplay.font = 'Arial';
+			this.scoreDisplay.fontSize = 40;
+			this.scoreDisplay.color = "white";
+			this.scoreDisplay.text = this.score.toString();
+			this.addChild(this.scoreDisplay);
+
+
 			this.blocks = new Array<sprite.Block>();
 			this.latestBlocks = new Array<sprite.Block>();
 			this.snakeAdds = new Array<sprite.SnakeAdd>();
@@ -29,12 +43,12 @@ module view {
 			this.walls = new Array<sprite.Wall>();
 
 		}
+
 		public setDebugInfo(msg: string): void {
 			this.debugInfo.text = msg;
 		}
 
 		public startGame(): void {
-			this.gameScrollSpeed = 3;
 			this.snake = new sprite.Snake();
 			Laya.stage.addChild(this.snake);
 			this.lastMouseX = Laya.stage.mouseX;
@@ -49,7 +63,7 @@ module view {
 			//Laya.timer.frameOnce(100, this, this.updateWallsStatus);//每个随机帧数添加进行游戏状态更新，添加Wall
 			Laya.timer.frameOnce(80, this, this.updateSnakeAddsStatus);//每个随机帧添加进行游戏状态更新，添加SnakeAdd
 			Laya.timer.frameLoop(300, this.snake, this.snake.updateHeadHistory);
-
+			Laya.timer.frameLoop(2, this.snake, this.snake.showBody);
 		}
 
 		private onMouseDown(): void {
@@ -61,9 +75,18 @@ module view {
 			this.debugInfo.text = 'mouseup'
 		}
 
+		private updateScore(): void {
+			this.scoreDisplay.text = this.score.toString();
+			if (this.score > 0) {
+				let offset = Math.floor(Math.log(this.score) / Math.log(10))
+				this.scoreDisplay.pos(Const.SCREEN_WIDTH - 25 * (offset + 1), 0);
+			}
+		}
 		// The Main Loop for the game 
 		private mainLoop(): void {
 			console.log('--Main Loop begin---')
+
+			this.updateScore();
 			this.detectMouseMove();
 			this.snake.updateBody();
 			this.updateBlocks();
@@ -96,7 +119,7 @@ module view {
 
 		// 是否是正在正面碰撞
 		private isDirectCollision(): boolean {
-			return false;
+			return this.directCollision;
 		}
 
 		// 更新方块集合Blocks
@@ -201,6 +224,29 @@ module view {
 					this.snakeAdds.splice(this.snakeAdds.indexOf(snakeAdd), 1);
 				}
 			})
+			// let snakeHead = new Laya.Rectangle();
+			// snakeHead.x = this.snake.bodyPosX[0] - Const.SNAKE_BODY_RADIUS;
+			// snakeHead.y = this.snake.bodyPosY[0] - Const.SNAKE_BODY_RADIUS;
+			// snakeHead.width = snakeHead.height = 2 * Const.SNAKE_BODY_RADIUS;
+			this.directCollision = false;
+			this.blocks.forEach((block) => {
+				//console.log();
+				// if (block.getBounds().intersection(snakeHead)) {
+				// 	console.log('Collision');
+				// }
+
+				if (block.PosX - Const.BLOCK_WIDTH / 2 <= this.snake.bodyPosX[0]
+					&& block.PosX + Const.BLOCK_WIDTH / 2 >= this.snake.bodyPosX[0]
+					&& Math.abs(block.PosY - this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)) {
+					this.directCollision = true;
+					if (!block.decreaseValue()) {
+						console.log('#destory block');
+						block.destory();
+						this.blocks.splice(this.blocks.indexOf(block), 1);
+					}
+				}
+
+			})
 		}
 
 		// 更新方块状态
@@ -208,9 +254,8 @@ module view {
 			this.blocks.forEach((block) => {
 				if (!this.isDirectCollision()) {
 					block.PosY += this.gameScrollSpeed;
-					block.update();
 				}
-
+				block.update();
 				if ((block.PosY - (Const.BLOCK_WIDTH >> 1)) > Const.SCREEN_HEIGHT) {
 					block.destory();
 					console.log('destory block');
