@@ -35,12 +35,9 @@ module view {
 			this.scoreDisplay.fontSize = 40;
 			this.scoreDisplay.color = "white";
 			this.scoreDisplay.text = this.score.toString();
-			this.addChild(this.scoreDisplay);
+			
 
 			this.snake = new sprite.Snake();
-
-
-
 			this.blocks = new Array<sprite.Block>();
 			this.latestBlocks = new Array<sprite.Block>();
 			this.snakeAdds = new Array<sprite.SnakeAdd>();
@@ -54,6 +51,8 @@ module view {
 		}
 
 		public startGame(): void {
+			this.addChild(this.scoreDisplay);
+			this.score = 0;
 			GameMain.status = GameStatus.Underway;
 			this.snake.bodyPosX[0] = Const.SCREEN_WIDTH / 2;
 			this.snake.length = 1;

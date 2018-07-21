@@ -32,7 +32,6 @@ var view;
             _this.scoreDisplay.fontSize = 40;
             _this.scoreDisplay.color = "white";
             _this.scoreDisplay.text = _this.score.toString();
-            _this.addChild(_this.scoreDisplay);
             _this.snake = new sprite.Snake();
             _this.blocks = new Array();
             _this.latestBlocks = new Array();
@@ -45,6 +44,8 @@ var view;
             this.debugInfo.text = msg;
         };
         GameView.prototype.startGame = function () {
+            this.addChild(this.scoreDisplay);
+            this.score = 0;
             GameMain.status = GameStatus.Underway;
             this.snake.bodyPosX[0] = Const.SCREEN_WIDTH / 2;
             this.snake.length = 1;
