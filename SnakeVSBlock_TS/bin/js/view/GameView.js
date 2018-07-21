@@ -283,9 +283,9 @@ var view;
                     if (!block.decreaseValue()) {
                         var p = new sprite.ParticleCtn();
                         p.setPos(block.PosX, block.PosY);
-                        //p.setColor("yellow");
                         p.update();
                         _this.addChild(p);
+                        Laya.SoundManager.playSound(Const.BLOCK_BREAK);
                         block.destory();
                         _this.blocks.splice(_this.blocks.indexOf(block), 1);
                     }

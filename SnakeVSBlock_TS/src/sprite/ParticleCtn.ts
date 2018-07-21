@@ -4,7 +4,7 @@
 */
 module sprite {
     export class ParticleCtn extends Laya.Sprite {
-        public Color: string;
+        //public Color: string;
         private time: number;
         public Particles: Array<sprite.Particle>
         public PosX: number;
@@ -16,9 +16,9 @@ module sprite {
             this.init();
         }
 
-        public setColor(color: string): void {
-            this.Color = color;
-        }
+        // public setColor(color: string): void {
+        //     this.Color = color;
+        // }
 
         public setPos(x: number, y: number): void {
             this.PosX = x;
@@ -29,10 +29,11 @@ module sprite {
         public update(): void {
             this.graphics.clear();
             if (this.visible) {
-                for(let i = 0; i < 8; i++){
+                for(let i = 0; i < 16; i++){
                     let p = new sprite.Particle();
-                    p.setPos(Math.cos(this.radianUnit * i) * this.layoutRadius, Math.sin(this.radianUnit * i) * this.layoutRadius);
-                    p.setColor(this.Color);
+                    p.setPos(Math.cos(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5), Math.sin(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5));
+                    let color = Common.getRandomArrayElements(Const.PARTICLE_COLORS, 1)[0];
+                    p.setColor(Common.rgbToHex(color));
                     p.update();
                     this.Particles.push(p);
                     this.addChild(p);
@@ -45,17 +46,17 @@ module sprite {
             this.Particles = new Array<sprite.Particle>();
             this.PosX = 0;
             this.PosY = 0;
-            this.Color = "white";
+            //this.Color = "white";
             this.time = 5;
             this.layoutRadius = 50;
-            this.radianUnit = Math.PI / 4;
+            this.radianUnit = Math.PI / 8;
         }
 
         private animate(e: Event): void{
             this.rotation += 10;
             if(this.time == 0){
                 this.timer.clearAll(this);
-                for(let i = 0; i < 8; i++){
+                for(let i = 0; i < 16; i++){
                     this.Particles[i].destory();
                     this.destory();
                 }
@@ -64,9 +65,9 @@ module sprite {
             else{
                 this.time--;
             }
-            for(let i = 0; i < 8; i++){
+            for(let i = 0; i < 16; i++){
                 this.layoutRadius += 2;
-                this.Particles[i].setPos(Math.cos(this.radianUnit * i) * this.layoutRadius, Math.sin(this.radianUnit * i) * this.layoutRadius);
+                this.Particles[i].setPos(Math.cos(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5), Math.sin(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5));
                 this.Particles[i].update();
             }
 

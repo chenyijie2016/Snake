@@ -21,9 +21,9 @@ var sprite;
             _this.init();
             return _this;
         }
-        ParticleCtn.prototype.setColor = function (color) {
-            this.Color = color;
-        };
+        // public setColor(color: string): void {
+        //     this.Color = color;
+        // }
         ParticleCtn.prototype.setPos = function (x, y) {
             this.PosX = x;
             this.PosY = y;
@@ -32,10 +32,11 @@ var sprite;
         ParticleCtn.prototype.update = function () {
             this.graphics.clear();
             if (this.visible) {
-                for (var i = 0; i < 8; i++) {
+                for (var i = 0; i < 16; i++) {
                     var p = new sprite.Particle();
-                    p.setPos(Math.cos(this.radianUnit * i) * this.layoutRadius, Math.sin(this.radianUnit * i) * this.layoutRadius);
-                    p.setColor(this.Color);
+                    p.setPos(Math.cos(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5), Math.sin(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5));
+                    var color = Common.getRandomArrayElements(Const.PARTICLE_COLORS, 1)[0];
+                    p.setColor(Common.rgbToHex(color));
                     p.update();
                     this.Particles.push(p);
                     this.addChild(p);
@@ -47,16 +48,16 @@ var sprite;
             this.Particles = new Array();
             this.PosX = 0;
             this.PosY = 0;
-            this.Color = "white";
+            //this.Color = "white";
             this.time = 5;
             this.layoutRadius = 50;
-            this.radianUnit = Math.PI / 4;
+            this.radianUnit = Math.PI / 8;
         };
         ParticleCtn.prototype.animate = function (e) {
             this.rotation += 10;
             if (this.time == 0) {
                 this.timer.clearAll(this);
-                for (var i = 0; i < 8; i++) {
+                for (var i = 0; i < 16; i++) {
                     this.Particles[i].destory();
                     this.destory();
                 }
@@ -65,9 +66,9 @@ var sprite;
             else {
                 this.time--;
             }
-            for (var i = 0; i < 8; i++) {
+            for (var i = 0; i < 16; i++) {
                 this.layoutRadius += 2;
-                this.Particles[i].setPos(Math.cos(this.radianUnit * i) * this.layoutRadius, Math.sin(this.radianUnit * i) * this.layoutRadius);
+                this.Particles[i].setPos(Math.cos(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5), Math.sin(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5));
                 this.Particles[i].update();
             }
         };

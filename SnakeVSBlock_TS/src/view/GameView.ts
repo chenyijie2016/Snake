@@ -310,9 +310,9 @@ module view {
 					if (!block.decreaseValue()) {
 						let p = new sprite.ParticleCtn();
 						p.setPos(block.PosX, block.PosY);
-						//p.setColor("yellow");
 						p.update();
 						this.addChild(p);
+						Laya.SoundManager.playSound(Const.BLOCK_BREAK);
 
 						block.destory();
 						this.blocks.splice(this.blocks.indexOf(block), 1);
