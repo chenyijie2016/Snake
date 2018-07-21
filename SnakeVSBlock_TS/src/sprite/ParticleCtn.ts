@@ -4,7 +4,6 @@
 */
 module sprite {
     export class ParticleCtn extends Laya.Sprite {
-        //public Color: string;
         private time: number;
         public Particles: Array<sprite.Particle>
         public PosX: number;
@@ -15,10 +14,6 @@ module sprite {
             super();
             this.init();
         }
-
-        // public setColor(color: string): void {
-        //     this.Color = color;
-        // }
 
         public setPos(x: number, y: number): void {
             this.PosX = x;
@@ -46,7 +41,6 @@ module sprite {
             this.Particles = new Array<sprite.Particle>();
             this.PosX = 0;
             this.PosY = 0;
-            //this.Color = "white";
             this.time = 5;
             this.layoutRadius = 50;
             this.radianUnit = Math.PI / 8;

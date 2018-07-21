@@ -21,9 +21,6 @@ var sprite;
             _this.init();
             return _this;
         }
-        // public setColor(color: string): void {
-        //     this.Color = color;
-        // }
         ParticleCtn.prototype.setPos = function (x, y) {
             this.PosX = x;
             this.PosY = y;
@@ -48,7 +45,6 @@ var sprite;
             this.Particles = new Array();
             this.PosX = 0;
             this.PosY = 0;
-            //this.Color = "white";
             this.time = 5;
             this.layoutRadius = 50;
             this.radianUnit = Math.PI / 8;
