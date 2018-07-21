@@ -51,8 +51,13 @@ module view {
 		}
 
 		public startGame(): void {
+<<<<<<< HEAD
 			this.addChild(this.scoreDisplay);
 			this.score = 0;
+=======
+			this.nextTimeNewAdds = undefined;
+			this.nextTimeNewBlocks = undefined;
+>>>>>>> b72c6aa056554fb18a0d6bad2377933bfa023c96
 			GameMain.status = GameStatus.Underway;
 			this.snake.bodyPosX[0] = Const.SCREEN_WIDTH / 2;
 			this.snake.length = 1;
@@ -99,22 +104,33 @@ module view {
 			this.updateCollisionDetection();
 
 			// 更新方块集合Blocks
-			if (this.nextTimeNewBlocks == 0) {
-				this.updateBlocks_WALLStatus();
-			}
-			else {
-				if (!this.isDirectCollision())
-					this.nextTimeNewBlocks--;
-			}
-			// 更新Grow集合SnakeAdds 
-			if (this.nextTimeNewAdds == 0) {
-				this.updateSnakeAddsStatus();
-			}
-			else {
-				if (!this.isDirectCollision())
-					this.nextTimeNewAdds--;
-			}
+			if(this.nextTimeNewBlocks === undefined){
 
+			}
+			else{
+				if (this.nextTimeNewBlocks == 0) {
+					this.updateBlocks_WALLStatus();
+				}
+				else {
+					if (!this.isDirectCollision())
+						this.nextTimeNewBlocks--;
+				}
+			}
+			
+			// 更新Grow集合SnakeAdds 
+			if(this.nextTimeNewAdds === undefined){
+
+			}
+			else{
+				if (this.nextTimeNewAdds == 0) {
+					this.updateSnakeAddsStatus();
+				}
+				else {
+					if (!this.isDirectCollision())
+						this.nextTimeNewAdds--;
+				}
+			}
+			
 		}
 
 		// 检测触点移动情况
@@ -373,8 +389,11 @@ module view {
 		private onGameOver(): void {
 			this.removeChildren();
 			Laya.timer.clearAll(this);
-			this.blocks.splice(0);
-			this.walls.splice(0);
+			this.blocks.splice(0, this.blocks.length);
+			this.walls.splice(0, this.walls.length);
+			this.snakeAdds.splice(0, this.snakeAdds.length);
+			this.latestBlocks.splice(0, this.latestBlocks.length);
+			this.latestSnakeAdds.splice(0, this.latestSnakeAdds.length);
 			GameMain.status = GameStatus.Over;
 			this.removeSelf();
 			if (!GameMain.gameOver) {
