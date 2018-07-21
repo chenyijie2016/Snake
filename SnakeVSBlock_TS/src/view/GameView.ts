@@ -143,13 +143,11 @@ module view {
 				this.blocks.forEach((block) => {
 					if (block.PosY > this.snake.bodyPosY[0] - Const.BLOCK_WIDTH / 2 - Const.SNAKE_BODY_RADIUS
 						&& block.PosY < this.snake.bodyPosY[0] + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS) {
-						//console.log(' block In middle', block.getValue());
 						switch (direction) {
 							case 'left': {
 								if (block.PosX < this.snake.bodyPosX[0] // 方块在蛇头左侧
 									&& Math.abs(block.PosX - this.snake.bodyPosX[0]) < level + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS // 超出范围
 								) {
-									console.log('---Can not Move left!')
 									level = Math.min(level, Math.abs(block.PosX - this.snake.bodyPosX[0]) - (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS));
 								}
 								break;
@@ -301,16 +299,8 @@ module view {
 					Laya.SoundManager.playSound(Const.EAT_SNAKE_ADD_SOUND);
 				}
 			})
-			// let snakeHead = new Laya.Rectangle();
-			// snakeHead.x = this.snake.bodyPosX[0] - Const.SNAKE_BODY_RADIUS;
-			// snakeHead.y = this.snake.bodyPosY[0] - Const.SNAKE_BODY_RADIUS;
-			// snakeHead.width = snakeHead.height = 2 * Const.SNAKE_BODY_RADIUS;
 			this.directCollision = false;
 			this.blocks.forEach((block) => {
-				//console.log();
-				// if (block.getBounds().intersection(snakeHead)) {
-				// 	console.log('Collision');
-				// }
 
 				if (block.PosX - Const.BLOCK_WIDTH / 2 <= this.snake.bodyPosX[0] + Const.SNAKE_BODY_RADIUS / 2
 					&& block.PosX + Const.BLOCK_WIDTH / 2 >= this.snake.bodyPosX[0] - Const.SNAKE_BODY_RADIUS / 2
@@ -318,7 +308,6 @@ module view {
 					&& block.PosY < this.snake.bodyPosY[0]) {
 					this.directCollision = true;
 					if (!block.decreaseValue()) {
-						//console.log('#destory block');
 						let p = new sprite.ParticleCtn();
 						p.setPos(block.PosX, block.PosY);
 						//p.setColor("yellow");
@@ -329,7 +318,13 @@ module view {
 						this.blocks.splice(this.blocks.indexOf(block), 1);
 					}
 				}
-
+			})
+			this.walls.forEach((wall) => {
+				if (wall.centerPosX() - Const.SNAKE_BODY_RADIUS <= this.snake.bodyPosX[0]
+					&& wall.centerPosX() + Const.SNAKE_BODY_RADIUS >= this.snake.bodyPosX[0]
+					&& Math.abs(wall.centerPoSY() + wall.len / 2 - this.snake.bodyPosY[0] + Const.SNAKE_BODY_RADIUS) < 3) {
+					this.directCollision = true;
+				}
 			})
 		}
 
@@ -342,7 +337,6 @@ module view {
 				block.update();
 				if ((block.PosY - (Const.BLOCK_WIDTH >> 1)) > Const.SCREEN_HEIGHT) {
 					block.destory();
-					//console.log('destory block');
 					this.blocks.splice(this.blocks.indexOf(block), 1);
 				}
 			})
@@ -358,7 +352,6 @@ module view {
 
 				if ((snakeAdd.PosY - Const.SNAKE_BODY_RADIUS * 2) > Const.SCREEN_HEIGHT) {
 					snakeAdd.destory();
-					//console.log('destory snakeAdd');
 					this.snakeAdds.splice(this.snakeAdds.indexOf(snakeAdd), 1);
 				}
 			})
@@ -374,7 +367,6 @@ module view {
 
 				if ((wall.PosY - (Const.BLOCK_WIDTH >> 1)) > Const.SCREEN_HEIGHT) {
 					wall.destory();
-					//console.log('destory wall');
 					this.walls.splice(this.walls.indexOf(wall), 1);
 				}
 			})

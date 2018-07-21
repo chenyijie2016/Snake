@@ -48,7 +48,6 @@ var sprite;
         };
         Block.prototype.update = function () {
             this.graphics.clear();
-            //TODO :draw Block
             if (this.visible) {
                 var path = [
                     ["moveTo", Const.BLOCK_RADIUS, 0],
@@ -58,7 +57,10 @@ var sprite;
                     ["arcTo", 0, 0, Const.BLOCK_RADIUS, 0, Const.BLOCK_RADIUS],
                 ];
                 this.graphics.drawPath(this.PosX - Const.BLOCK_WIDTH / 2, this.PosY - Const.BLOCK_WIDTH / 2, path, { fillStyle: this.getBlockColor() });
-                this.graphics.fillText(this.value.toString(), this.PosX - 5, this.PosY - 5, '30px Arial', '#000000', 'center');
+                var Xoffset = 1;
+                if (this.value > 0)
+                    Xoffset = Math.floor(Math.log(this.value) / Math.log(10)) + 1;
+                this.graphics.fillText(this.value.toString(), this.PosX - 3 * (Xoffset - 1), this.PosY - 15, '30px Arial', '#000000', 'center');
             }
         };
         Block.prototype.getBlockColor = function () {
