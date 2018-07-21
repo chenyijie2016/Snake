@@ -45,20 +45,19 @@ var view;
             this.debugInfo.text = msg;
         };
         GameView.prototype.startGame = function () {
-            // console.log('zOrder', this.snake.zOrder);
-            this.snake.pos(0, 0);
-            // this.snake.zOrder = 1005;
-            // Laya.stage.updateZOrder();
+            GameMain.status = GameStatus.Underway;
+            this.snake.bodyPosX[0] = Const.SCREEN_WIDTH / 2;
+            this.snake.length = 1;
+            this.snake.bodyPosY[0] = Const.SCREEN_HEIGHT / 2;
             Laya.stage.addChild(this.snake);
             Laya.timer.frameLoop(1, this, this.mainLoop, null, false); // Every Frame
-            this.snake.extendBody(15);
             Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
             // Laya.timer.frameLoop(100, this, this.updateBlocksStatus);//每300帧添加进行游戏状态更新，添加Block
             Laya.timer.frameOnce(100, this, this.updateBlocks_WALLStatus); //第一个100帧添加进行游戏状态更新，添加Block、Wall
             Laya.timer.frameOnce(80, this, this.updateSnakeAddsStatus); //第一个80帧帧添加进行游戏状态更新，添加SnakeAdd
             Laya.timer.frameLoop(300, this.snake, this.snake.updateHeadHistory);
-            Laya.timer.frameLoop(2, this.snake, this.snake.showBody);
+            //Laya.timer.frameLoop(2, this.snake, this.snake.showBody);
         };
         GameView.prototype.onMouseDown = function () {
             this.mouseDown = true;
@@ -77,10 +76,10 @@ var view;
         };
         // The Main Loop for the game 
         GameView.prototype.mainLoop = function () {
-            //console.log('--Main Loop begin---')
             this.updateScore();
             this.detectMouseMove();
             this.snake.updateBody();
+            this.snake.showBody();
             this.updateBlocks();
             this.updateSnakeAdds();
             this.updateWalls();
@@ -289,6 +288,9 @@ var view;
                         block.destory();
                         _this.blocks.splice(_this.blocks.indexOf(block), 1);
                     }
+                    if (_this.snake.length <= 0) {
+                        _this.onGameOver();
+                    }
                 }
             });
             this.walls.forEach(function (wall) {
@@ -340,6 +342,20 @@ var view;
                     _this.walls.splice(_this.walls.indexOf(wall), 1);
                 }
             });
+        };
+        GameView.prototype.onGameOver = function () {
+            this.removeChildren();
+            Laya.timer.clearAll(this);
+            this.blocks.splice(0);
+            this.walls.splice(0);
+            GameMain.status = GameStatus.Over;
+            this.removeSelf();
+            if (!GameMain.gameOver) {
+                GameMain.gameOver = new view.GameOver();
+            }
+            Laya.stage.removeChildren();
+            Laya.stage.addChild(GameMain.gameOver);
+            GameMain.gameOver.drawUI();
         };
         return GameView;
     }(ui.GameViewUI));

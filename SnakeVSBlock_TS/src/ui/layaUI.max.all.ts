@@ -2,6 +2,21 @@
 import View=laya.ui.View;
 import Dialog=laya.ui.Dialog;
 module ui {
+    export class GameOverUI extends View {
+
+        public static  uiView:any ={"type":"View","props":{"width":414,"height":736}};
+        constructor(){ super()}
+        createChildren():void {
+        
+            super.createChildren();
+            this.createView(ui.GameOverUI.uiView);
+
+        }
+
+    }
+}
+
+module ui {
     export class GameStartUI extends View {
 		public gameStartButton:Laya.Button;
 

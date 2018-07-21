@@ -12,6 +12,21 @@ var View = laya.ui.View;
 var Dialog = laya.ui.Dialog;
 var ui;
 (function (ui) {
+    var GameOverUI = /** @class */ (function (_super) {
+        __extends(GameOverUI, _super);
+        function GameOverUI() {
+            return _super.call(this) || this;
+        }
+        GameOverUI.prototype.createChildren = function () {
+            _super.prototype.createChildren.call(this);
+            this.createView(ui.GameOverUI.uiView);
+        };
+        GameOverUI.uiView = { "type": "View", "props": { "width": 414, "height": 736 } };
+        return GameOverUI;
+    }(View));
+    ui.GameOverUI = GameOverUI;
+})(ui || (ui = {}));
+(function (ui) {
     var GameStartUI = /** @class */ (function (_super) {
         __extends(GameStartUI, _super);
         function GameStartUI() {
