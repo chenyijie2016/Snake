@@ -350,7 +350,7 @@ module view {
 					block.PosY += this.gameScrollSpeed;
 				}
 				block.update();
-				if ((block.PosY - (Const.BLOCK_WIDTH >> 1)) > Const.SCREEN_HEIGHT) {
+				if ((block.PosY - (Const.BLOCK_WIDTH)) > Const.SCREEN_HEIGHT) {
 					block.destory();
 					this.blocks.splice(this.blocks.indexOf(block), 1);
 				}
@@ -380,7 +380,7 @@ module view {
 					wall.update();
 				}
 
-				if ((wall.PosY - (Const.BLOCK_WIDTH >> 1)) > Const.SCREEN_HEIGHT) {
+				if ((wall.PosY - (wall.len >> 1)) > Const.SCREEN_HEIGHT) {
 					wall.destory();
 					this.walls.splice(this.walls.indexOf(wall), 1);
 				}

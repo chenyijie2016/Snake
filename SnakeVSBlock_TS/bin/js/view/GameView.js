@@ -323,7 +323,7 @@ var view;
                     block.PosY += _this.gameScrollSpeed;
                 }
                 block.update();
-                if ((block.PosY - (Const.BLOCK_WIDTH >> 1)) > Const.SCREEN_HEIGHT) {
+                if ((block.PosY - (Const.BLOCK_WIDTH)) > Const.SCREEN_HEIGHT) {
                     block.destory();
                     _this.blocks.splice(_this.blocks.indexOf(block), 1);
                 }
@@ -351,7 +351,7 @@ var view;
                     wall.PosY += _this.gameScrollSpeed;
                     wall.update();
                 }
-                if ((wall.PosY - (Const.BLOCK_WIDTH >> 1)) > Const.SCREEN_HEIGHT) {
+                if ((wall.PosY - (wall.len >> 1)) > Const.SCREEN_HEIGHT) {
                     wall.destory();
                     _this.walls.splice(_this.walls.indexOf(wall), 1);
                 }

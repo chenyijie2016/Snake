@@ -14,7 +14,7 @@ module sprite {
             for (let i = 0; i < 300; i++) {
                 this.headPosXHistory.push(207);
             }
-            
+
             this.init();
         }
 
@@ -61,16 +61,16 @@ module sprite {
             //this.showBody();
 
 
-            // for (let i = 1; i < this.length; i++) {
-            //     let XDifference = Math.abs(this.bodyPosX[i] - this.headPosXHistory[floor(i * rate)]);
+            // for (let i = 1; i < this.length && i <= 15; i++) {
+            //     let XDifference = Math.abs(this.bodyPosX[i] - this.bodyPosX[i - 1]);
             //     if (XDifference > Const.SNAKE_BODY_RADIUS * 2) {
             //         //this.concatBody();
             //         // return;
             //     }
-            //     if (this.bodyPosX[i] < this.headPosXHistory[floor(i * rate)]) {
+            //     if (this.bodyPosX[i] < this.bodyPosX[i - 1]) {
             //         this.bodyPosX[i] += XDifference / Const.SNAKE_FLEXIBILITY;
             //     }
-            //     else if (this.bodyPosX[i] > this.headPosXHistory[floor(i * rate)]) {
+            //     else if (this.bodyPosX[i] > this.bodyPosX[i - 1]) {
             //         this.bodyPosX[i] -= XDifference / Const.SNAKE_FLEXIBILITY;
             //     }
             //     let YDifference = Const.SNAKE_BODY_MINIUM_SPACING;
@@ -79,7 +79,7 @@ module sprite {
             //     }
             //     this.bodyPosY[i] = this.bodyPosY[i - 1] + YDifference;
 
-            //     this.showBody();
+            //     //this.showBody();
             // }
 
         }
