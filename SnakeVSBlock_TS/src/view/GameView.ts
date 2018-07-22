@@ -35,7 +35,7 @@ module view {
 			this.scoreDisplay.fontSize = 40;
 			this.scoreDisplay.color = "white";
 			this.scoreDisplay.text = this.score.toString();
-			
+
 
 			this.snake = new sprite.Snake();
 			this.blocks = new Array<sprite.Block>();
@@ -87,6 +87,9 @@ module view {
 				let offset = Math.floor(Math.log(this.score) / Math.log(10))
 				this.scoreDisplay.pos(Const.SCREEN_WIDTH - 25 * (offset + 1), 0);
 			}
+			else {
+				this.scoreDisplay.pos(Const.SCREEN_WIDTH - 25, 0);
+			}
 		}
 		// The Main Loop for the game 
 		private mainLoop(): void {
@@ -101,10 +104,10 @@ module view {
 			this.updateCollisionDetection();
 
 			// 更新方块集合Blocks
-			if(this.nextTimeNewBlocks === undefined){
+			if (this.nextTimeNewBlocks === undefined) {
 
 			}
-			else{
+			else {
 				if (this.nextTimeNewBlocks == 0) {
 					this.updateBlocks_WALLStatus();
 				}
@@ -113,12 +116,12 @@ module view {
 						this.nextTimeNewBlocks--;
 				}
 			}
-			
+
 			// 更新Grow集合SnakeAdds 
-			if(this.nextTimeNewAdds === undefined){
+			if (this.nextTimeNewAdds === undefined) {
 
 			}
-			else{
+			else {
 				if (this.nextTimeNewAdds == 0) {
 					this.updateSnakeAddsStatus();
 				}
@@ -127,7 +130,7 @@ module view {
 						this.nextTimeNewAdds--;
 				}
 			}
-			
+
 		}
 
 		// 检测触点移动情况

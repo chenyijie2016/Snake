@@ -76,6 +76,9 @@ var view;
                 var offset = Math.floor(Math.log(this.score) / Math.log(10));
                 this.scoreDisplay.pos(Const.SCREEN_WIDTH - 25 * (offset + 1), 0);
             }
+            else {
+                this.scoreDisplay.pos(Const.SCREEN_WIDTH - 25, 0);
+            }
         };
         // The Main Loop for the game 
         GameView.prototype.mainLoop = function () {
