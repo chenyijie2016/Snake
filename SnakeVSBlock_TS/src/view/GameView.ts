@@ -51,13 +51,10 @@ module view {
 		}
 
 		public startGame(): void {
-<<<<<<< HEAD
 			this.addChild(this.scoreDisplay);
 			this.score = 0;
-=======
 			this.nextTimeNewAdds = undefined;
 			this.nextTimeNewBlocks = undefined;
->>>>>>> b72c6aa056554fb18a0d6bad2377933bfa023c96
 			GameMain.status = GameStatus.Underway;
 			this.snake.bodyPosX[0] = Const.SCREEN_WIDTH / 2;
 			this.snake.length = 1;
