@@ -25,9 +25,13 @@ var sprite;
             return _this;
         }
         Snake.prototype.init = function () {
+            this.bodyColor = '#FFFF00';
             this.length = 1;
             this.bodyPosX.push(Const.SCREEN_WIDTH / 2);
             this.bodyPosY.push(Const.SCREEN_HEIGHT / 2);
+        };
+        Snake.prototype.setBodyColor = function (color) {
+            this.bodyColor = color;
         };
         Snake.prototype.updateHeadHistory = function () {
             this.headPosXHistory = this.headPosXHistory.slice(0, 300);
@@ -97,7 +101,7 @@ var sprite;
             for (var i = 0; i < this.length; i++) {
                 // Using Skin !!!
                 // this is just a demo
-                this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, '#FFFF00');
+                this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, this.bodyColor);
                 // TODO: Using other image
             }
         };

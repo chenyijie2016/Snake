@@ -20,6 +20,7 @@ class Const {
     //音效
     public static  BGM_SOUND: string = "sound/BGM.mp3"; //背景音乐
     public static  EAT_SNAKE_ADD_SOUND: string = "sound/snakeAdd.mp3"; //吃到snakeAdd音效
+    public static  EAT_SHIELD_SOUND: string = "sound/eatShield.mp3"; //吃到Shield音效
     public static  GAME_START_SOUND: string = "sound/gameStart.mp3"; //游戏开始音效
     public static  GAME_OVER_SOUND: string = "sound/gameOver.mp3"; //游戏结束音效
     public static  BUTTON_SOUND: string = "sound/buttonSound.wav";//按钮音效
@@ -33,8 +34,8 @@ class Const {
     //添加BLOCK的随机帧数
     public static BLOCK_WALL_NEWTIMES = [60, 60, 60, 85, 85, 85, 85, 85, 85, 85, 85, 120, 120, 150];
 
-    //每次添加SNAKEADD的随机数量【1-3】
-    public static SNAKE_ADD_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3];
+    //每次添加SNAKEADD的随机数量【1-3】 ---为4时有一个随机为SHIELD
+    public static SNAKE_ADD_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4 , 4, 4];
     //添加SNAKEADD的随机帧数
     public static SNAKE_ADD_NEWTIMES = [50, 70, 70, 70, 90, 90, 90, 90, 90, 95, 130];
 

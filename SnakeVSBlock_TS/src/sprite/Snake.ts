@@ -3,6 +3,7 @@ module sprite {
         public length: number;
         public bodyPosX: Array<number>;
         public bodyPosY: Array<number>;
+        public bodyColor: string;
         public headPosXHistory: Array<number>;
         private PosYOffest: number;
         constructor() {
@@ -19,9 +20,14 @@ module sprite {
         }
 
         private init(): void {
+            this.bodyColor = '#FFFF00';
             this.length = 1;
             this.bodyPosX.push(Const.SCREEN_WIDTH / 2);
             this.bodyPosY.push(Const.SCREEN_HEIGHT / 2);
+        }
+
+        public setBodyColor(color: string): void    {
+            this.bodyColor = color;
         }
 
         public updateHeadHistory(): void {
@@ -102,7 +108,7 @@ module sprite {
             for (let i = 0; i < this.length; i++) {
                 // Using Skin !!!
                 // this is just a demo
-                this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, '#FFFF00');
+                this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, this.bodyColor);
 
                 // TODO: Using other image
             }

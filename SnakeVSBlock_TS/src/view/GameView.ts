@@ -8,6 +8,7 @@ module view {
 		private snakeAdds: Array<sprite.SnakeAdd>;
 		private latestSnakeAdds: Array<sprite.SnakeAdd>; //最近生成的一行SnakeAdds
 		private walls: Array<sprite.Wall>;
+		private shields: Array<sprite.Shield>; 
 		private lastMouseX: number;
 		private mouseDown: boolean;
 		private debugInfo: Laya.Text;
@@ -43,6 +44,7 @@ module view {
 			this.snakeAdds = new Array<sprite.SnakeAdd>();
 			this.latestSnakeAdds = new Array<sprite.SnakeAdd>();
 			this.walls = new Array<sprite.Wall>();
+			this.shields = new Array<sprite.Shield>();
 
 		}
 
@@ -100,6 +102,7 @@ module view {
 			this.snake.showBody();
 			this.updateBlocks();
 			this.updateSnakeAdds();
+			this.updateShields();
 			this.updateWalls();
 			this.updateCollisionDetection();
 
@@ -261,14 +264,24 @@ module view {
 			this.nextTimeNewBlocks = Common.getRandomArrayElements(Const.BLOCK_WALL_NEWTIMES, 1)[0];
 		}
 
-		// 更新Grow集合SnakeAdds
+		// 更新Grow集合SnakeAdds、Shields
 		private updateSnakeAddsStatus(): void {
 			let snakeAddNumber = Common.getRandomArrayElements(Const.SNAKE_ADD_NUMBERS, 1);
+			let shield_order;
+			if(snakeAddNumber[0] == 4){
+				shield_order = Common.getRandomNumber(0, snakeAddNumber[0]-1);
+			}
 			if (snakeAddNumber[0] > 0) {
 				let orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], snakeAddNumber[0]);
 				this.latestSnakeAdds.splice(0, this.latestSnakeAdds.length);//清空
 				for (let i = 0; i < snakeAddNumber[0]; i++) {
-					let add = new sprite.SnakeAdd();
+					let add;
+					if(snakeAddNumber[0] == 4 && i == shield_order){
+						add = new sprite.Shield();
+					}
+					else{
+						add = new sprite.SnakeAdd();
+					}
 					add.setPos(orders[i] * 82.8 + 41, -Const.BLOCK_WIDTH * 4);
 					//检测当前位置是否存在Block
 					let Flag = false;
@@ -292,7 +305,12 @@ module view {
 						continue;
 					}
 					//当前位置不存在Block，则...
-					this.snakeAdds.push(add);
+					if(snakeAddNumber[0] == 4 && i == shield_order){
+						this.shields.push(add);
+					}
+					else{
+						this.snakeAdds.push(add);
+					}	
 					this.latestSnakeAdds.push(add);
 					this.addChildren(add);
 				}
@@ -311,20 +329,37 @@ module view {
 					Laya.SoundManager.playSound(Const.EAT_SNAKE_ADD_SOUND);
 				}
 			})
+
+			this.shields.forEach((shield) => {
+				if ((shield.PosX - this.snake.bodyPosX[0]) ** 2 + (shield.PosY - this.snake.bodyPosY[0]) ** 2
+					< Const.SNAKE_BODY_RADIUS ** 2 * 4) {
+					Laya.SoundManager.playSound(Const.EAT_SHIELD_SOUND);//音效	
+					//TODO: change the body color of this.snake OR someother specile effect
+					this.snake.setBodyColor('red');
+
+					shield.destory();
+					this.shields.splice(this.shields.indexOf(shield), 1);
+				}
+			})
+
 			this.directCollision = false;
 			this.blocks.forEach((block) => {
 
 				if (block.PosX - Const.BLOCK_WIDTH / 2 <= this.snake.bodyPosX[0] + Const.SNAKE_BODY_RADIUS / 2
-					&& block.PosX + Const.BLOCK_WIDTH / 2 >= this.snake.bodyPosX[0] - Const.SNAKE_BODY_RADIUS / 2
-					&& Math.abs(block.PosY - this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)
-					&& block.PosY < this.snake.bodyPosY[0]) {
+				&& block.PosX + Const.BLOCK_WIDTH / 2 >= this.snake.bodyPosX[0] - Const.SNAKE_BODY_RADIUS / 2
+				&& Math.abs(block.PosY - this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)
+				&& block.PosY < this.snake.bodyPosY[0]) {
+					if(this.snake.bodyColor == 'red'){
+						this.snake.setBodyColor('#FFFF00');
+						block.setValue(0);
+					}
 					this.directCollision = true;
 					if (!block.decreaseValue()) {
 						let p = new sprite.ParticleCtn();
 						p.setPos(block.PosX, block.PosY);
 						p.update();
 						this.addChild(p);
-						Laya.SoundManager.playSound(Const.BLOCK_BREAK);
+						Laya.SoundManager.playSound(Const.BLOCK_BREAK);//音效
 
 						block.destory();
 						this.blocks.splice(this.blocks.indexOf(block), 1);
@@ -368,6 +403,21 @@ module view {
 				if ((snakeAdd.PosY - Const.SNAKE_BODY_RADIUS * 2) > Const.SCREEN_HEIGHT) {
 					snakeAdd.destory();
 					this.snakeAdds.splice(this.snakeAdds.indexOf(snakeAdd), 1);
+				}
+			})
+		}
+
+		// 更新Shield状态
+		private updateShields(): void {
+			this.shields.forEach((shield) => {
+				if (!this.isDirectCollision()) {
+					shield.PosY += this.gameScrollSpeed;
+					shield.update();
+				}
+
+				if ((shield.PosY - Const.SNAKE_BODY_RADIUS * 2) > Const.SCREEN_HEIGHT) {
+					shield.destory();
+					this.shields.splice(this.shields.indexOf(shield), 1);
 				}
 			})
 		}

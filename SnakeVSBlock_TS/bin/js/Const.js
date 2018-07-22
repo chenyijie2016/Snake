@@ -20,6 +20,7 @@ var Const = /** @class */ (function () {
     //音效
     Const.BGM_SOUND = "sound/BGM.mp3"; //背景音乐
     Const.EAT_SNAKE_ADD_SOUND = "sound/snakeAdd.mp3"; //吃到snakeAdd音效
+    Const.EAT_SHIELD_SOUND = "sound/eatShield.mp3"; //吃到Shield音效
     Const.GAME_START_SOUND = "sound/gameStart.mp3"; //游戏开始音效
     Const.GAME_OVER_SOUND = "sound/gameOver.mp3"; //游戏结束音效
     Const.BUTTON_SOUND = "sound/buttonSound.wav"; //按钮音效
@@ -30,8 +31,8 @@ var Const = /** @class */ (function () {
     Const.WALL_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3];
     //添加BLOCK的随机帧数
     Const.BLOCK_WALL_NEWTIMES = [60, 60, 60, 85, 85, 85, 85, 85, 85, 85, 85, 120, 120, 150];
-    //每次添加SNAKEADD的随机数量【1-3】
-    Const.SNAKE_ADD_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3];
+    //每次添加SNAKEADD的随机数量【1-3】 ---为4时有一个随机为SHIELD
+    Const.SNAKE_ADD_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 4, 4];
     //添加SNAKEADD的随机帧数
     Const.SNAKE_ADD_NEWTIMES = [50, 70, 70, 70, 90, 90, 90, 90, 90, 95, 130];
     //粒子颜色
