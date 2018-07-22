@@ -33,6 +33,8 @@ module view {
 			this.hintText2.fontSize = 20;
 			this.hintText2.pos(Const.SCREEN_WIDTH / 2 - 130, 180);
 			this.addChild(this.hintText2);
+
+			Laya.SoundManager.playSound(Const.GAME_OVER_SOUND);
 		}
 		private onRestartGame(): void {
 			console.log('restart game');
