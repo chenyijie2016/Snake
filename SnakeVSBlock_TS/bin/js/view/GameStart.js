@@ -16,10 +16,19 @@ var view;
         function GameStart() {
             var _this = _super.call(this) || this;
             _this.gameStartButton.on(Laya.Event.CLICK, _this, _this.onGameStart);
+            _this.leaderBoardButton.on(Laya.Event.CLICK, _this, _this.onShowLeaderBoard);
             //绘制游戏名称
             _this.createTitle();
             return _this;
         }
+        GameStart.prototype.onShowLeaderBoard = function () {
+            if (!GameMain.leaderBoard) {
+                GameMain.leaderBoard = new view.LeaderBoard();
+            }
+            _super.prototype.removeSelf.call(this);
+            Laya.stage.addChild(GameMain.leaderBoard);
+            GameMain.leaderBoard.setLeaderBoard(null);
+        };
         GameStart.prototype.onGameStart = function () {
             Laya.SoundManager.playSound(Const.BUTTON_SOUND);
             this.removeSelf();
@@ -50,7 +59,9 @@ var view;
                 letter.x = (i == 0 ? (Laya.stage.width >> 1) - 27 : (Laya.stage.width >> 1) + 5);
                 letter.y = 0;
                 //字符缓动动画
-                Laya.Tween.to(letter, { y: Laya.stage.height * 0.16, update: new Laya.Handler(this, updateColor, [letter]) }, 1500, Laya.Ease.bounceIn, Laya.Handler.create(this, changeColor, [letter]), i * 200);
+                Laya.Tween.to(letter, {
+                    y: Laya.stage.height * 0.16, update: new Laya.Handler(this, updateColor, [letter])
+                }, 1500, Laya.Ease.bounceIn, Laya.Handler.create(this, changeColor, [letter]), i * 200);
             }
             function updateColor(txt) {
                 var c = Math.floor(Math.random() * 3);

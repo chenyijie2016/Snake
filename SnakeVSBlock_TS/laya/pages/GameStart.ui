@@ -2,7 +2,7 @@
     "x":0,
     "type":"View",
     "selectedBox":1,
-    "selecteID":7,
+    "selecteID":8,
     "props":{"sceneWidth":414,"sceneColor":"#000000","height":736},
     "nodeParent":-1,
     "label":"View",
@@ -22,6 +22,19 @@
             "isAniNode":true,
             "hasChild":false,
             "compId":7,
+            "child":[
+                ]
+        },
+        {
+            "x":15,
+            "type":"Button",
+            "props":{"y":544,"x":125,"width":164,"var":"leaderBoardButton","labelStroke":32,"labelSize":30,"labelFont":"Arial","labelColors":"#FFF,#F00,#F00,#F00","labelBold":true,"label":"排行榜","height":42,"gray":false},
+            "nodeParent":1,
+            "label":"Button(leaderBoardButton)",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":8,
             "child":[
                 ]
         }],

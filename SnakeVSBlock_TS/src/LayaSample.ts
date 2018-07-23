@@ -9,7 +9,7 @@ class GameMain {
     public static gameStart: view.GameStart;
     public static gameView: view.GameView;
     public static gameOver: view.GameOver;
-
+    public static leaderBoard: view.LeaderBoard;
     public static status: GameStatus;
     constructor() {
         GameMain.status = GameStatus.Start;
