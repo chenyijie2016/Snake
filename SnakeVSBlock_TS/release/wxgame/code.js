@@ -45644,6 +45644,7 @@ var Const = /** @class */ (function () {
     //音效
     Const.BGM_SOUND = "sound/BGM.mp3"; //背景音乐
     Const.EAT_SNAKE_ADD_SOUND = "sound/snakeAdd.mp3"; //吃到snakeAdd音效
+    Const.EAT_SHIELD_SOUND = "sound/eatShield.mp3"; //吃到Shield音效
     Const.GAME_START_SOUND = "sound/gameStart.mp3"; //游戏开始音效
     Const.GAME_OVER_SOUND = "sound/gameOver.mp3"; //游戏结束音效
     Const.BUTTON_SOUND = "sound/buttonSound.wav"; //按钮音效
@@ -45654,8 +45655,8 @@ var Const = /** @class */ (function () {
     Const.WALL_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3];
     //添加BLOCK的随机帧数
     Const.BLOCK_WALL_NEWTIMES = [60, 60, 60, 85, 85, 85, 85, 85, 85, 85, 85, 120, 120, 150];
-    //每次添加SNAKEADD的随机数量【1-3】
-    Const.SNAKE_ADD_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3];
+    //每次添加SNAKEADD的随机数量【1-3】 ---为4时有一个随机为SHIELD
+    Const.SNAKE_ADD_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 4, 4];
     //添加SNAKEADD的随机帧数
     Const.SNAKE_ADD_NEWTIMES = [50, 70, 70, 70, 90, 90, 90, 90, 90, 95, 130];
     //粒子颜色
@@ -45980,6 +45981,63 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+/*
+轴心点：
+    (this.PosX,  this.PosY)
+*/
+/*
+示例：
+    let p = new sprite.Shield();
+    p.setPos(100, 100);
+    p.update();
+    this.addChild(p);
+*/
+var sprite;
+(function (sprite) {
+    var Shield = /** @class */ (function (_super) {
+        __extends(Shield, _super);
+        function Shield() {
+            var _this = _super.call(this) || this;
+            _this.init();
+            return _this;
+        }
+        Shield.prototype.setPos = function (x, y) {
+            this.PosX = x;
+            this.PosY = y;
+        };
+        Shield.prototype.update = function () {
+            //this.graphics.clear();
+            if (this.visible) {
+                // Using Skin !!!
+                // this is just a demo
+                this.loadImage("ui/shield.png");
+                this.scale(0.1, 0.1);
+                this.pos(this.PosX, this.PosY);
+                // TODO: Using other image
+            }
+        };
+        Shield.prototype.init = function () {
+            this.PosX = 0;
+            this.PosY = 0;
+        };
+        Shield.prototype.destory = function () {
+            _super.prototype.removeSelf.call(this);
+        };
+        return Shield;
+    }(Laya.Sprite));
+    sprite.Shield = Shield;
+})(sprite || (sprite = {}));
+//# sourceMappingURL=Shield.js.map
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var sprite;
 (function (sprite) {
     var Snake = /** @class */ (function (_super) {
@@ -45997,9 +46055,13 @@ var sprite;
             return _this;
         }
         Snake.prototype.init = function () {
+            this.bodyColor = '#FFFF00';
             this.length = 1;
             this.bodyPosX.push(Const.SCREEN_WIDTH / 2);
             this.bodyPosY.push(Const.SCREEN_HEIGHT / 2);
+        };
+        Snake.prototype.setBodyColor = function (color) {
+            this.bodyColor = color;
         };
         Snake.prototype.updateHeadHistory = function () {
             this.headPosXHistory = this.headPosXHistory.slice(0, 300);
@@ -46069,7 +46131,7 @@ var sprite;
             for (var i = 0; i < this.length; i++) {
                 // Using Skin !!!
                 // this is just a demo
-                this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, '#FFFF00');
+                this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, this.bodyColor);
                 // TODO: Using other image
             }
         };
@@ -46386,6 +46448,7 @@ var view;
             this.hintText2.fontSize = 20;
             this.hintText2.pos(Const.SCREEN_WIDTH / 2 - 130, 180);
             this.addChild(this.hintText2);
+            Laya.SoundManager.playSound(Const.GAME_OVER_SOUND);
         };
         GameOver.prototype.onRestartGame = function () {
             console.log('restart game');
@@ -46538,6 +46601,7 @@ var view;
             _this.snakeAdds = new Array();
             _this.latestSnakeAdds = new Array();
             _this.walls = new Array();
+            _this.shields = new Array();
             return _this;
         }
         GameView.prototype.setDebugInfo = function (msg) {
@@ -46588,6 +46652,7 @@ var view;
             this.snake.showBody();
             this.updateBlocks();
             this.updateSnakeAdds();
+            this.updateShields();
             this.updateWalls();
             this.updateCollisionDetection();
             // 更新方块集合Blocks
@@ -46737,14 +46802,24 @@ var view;
             }
             this.nextTimeNewBlocks = Common.getRandomArrayElements(Const.BLOCK_WALL_NEWTIMES, 1)[0];
         };
-        // 更新Grow集合SnakeAdds
+        // 更新Grow集合SnakeAdds、Shields
         GameView.prototype.updateSnakeAddsStatus = function () {
             var snakeAddNumber = Common.getRandomArrayElements(Const.SNAKE_ADD_NUMBERS, 1);
+            var shield_order;
+            if (snakeAddNumber[0] == 4) {
+                shield_order = Common.getRandomNumber(0, snakeAddNumber[0] - 1);
+            }
             if (snakeAddNumber[0] > 0) {
                 var orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], snakeAddNumber[0]);
                 this.latestSnakeAdds.splice(0, this.latestSnakeAdds.length); //清空
                 for (var i = 0; i < snakeAddNumber[0]; i++) {
-                    var add = new sprite.SnakeAdd();
+                    var add = void 0;
+                    if (snakeAddNumber[0] == 4 && i == shield_order) {
+                        add = new sprite.Shield();
+                    }
+                    else {
+                        add = new sprite.SnakeAdd();
+                    }
                     add.setPos(orders[i] * 82.8 + 41, -Const.BLOCK_WIDTH * 4);
                     //检测当前位置是否存在Block
                     var Flag = false;
@@ -46767,7 +46842,12 @@ var view;
                         continue;
                     }
                     //当前位置不存在Block，则...
-                    this.snakeAdds.push(add);
+                    if (snakeAddNumber[0] == 4 && i == shield_order) {
+                        this.shields.push(add);
+                    }
+                    else {
+                        this.snakeAdds.push(add);
+                    }
                     this.latestSnakeAdds.push(add);
                     this.addChildren(add);
                 }
@@ -46786,19 +46866,33 @@ var view;
                     Laya.SoundManager.playSound(Const.EAT_SNAKE_ADD_SOUND);
                 }
             });
+            this.shields.forEach(function (shield) {
+                if (Math.pow((shield.PosX - _this.snake.bodyPosX[0]), 2) + Math.pow((shield.PosY - _this.snake.bodyPosY[0]), 2)
+                    < Math.pow(Const.SNAKE_BODY_RADIUS, 2) * 4) {
+                    Laya.SoundManager.playSound(Const.EAT_SHIELD_SOUND); //音效	
+                    //TODO: change the body color of this.snake OR someother specile effect
+                    _this.snake.setBodyColor('red');
+                    shield.destory();
+                    _this.shields.splice(_this.shields.indexOf(shield), 1);
+                }
+            });
             this.directCollision = false;
             this.blocks.forEach(function (block) {
                 if (block.PosX - Const.BLOCK_WIDTH / 2 <= _this.snake.bodyPosX[0] + Const.SNAKE_BODY_RADIUS / 2
                     && block.PosX + Const.BLOCK_WIDTH / 2 >= _this.snake.bodyPosX[0] - Const.SNAKE_BODY_RADIUS / 2
                     && Math.abs(block.PosY - _this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)
                     && block.PosY < _this.snake.bodyPosY[0]) {
+                    if (_this.snake.bodyColor == 'red') {
+                        _this.snake.setBodyColor('#FFFF00');
+                        block.setValue(0);
+                    }
                     _this.directCollision = true;
                     if (!block.decreaseValue()) {
                         var p = new sprite.ParticleCtn();
                         p.setPos(block.PosX, block.PosY);
                         p.update();
                         _this.addChild(p);
-                        Laya.SoundManager.playSound(Const.BLOCK_BREAK);
+                        Laya.SoundManager.playSound(Const.BLOCK_BREAK); //音效
                         block.destory();
                         _this.blocks.splice(_this.blocks.indexOf(block), 1);
                     }
@@ -46840,6 +46934,20 @@ var view;
                 if ((snakeAdd.PosY - Const.SNAKE_BODY_RADIUS * 2) > Const.SCREEN_HEIGHT) {
                     snakeAdd.destory();
                     _this.snakeAdds.splice(_this.snakeAdds.indexOf(snakeAdd), 1);
+                }
+            });
+        };
+        // 更新Shield状态
+        GameView.prototype.updateShields = function () {
+            var _this = this;
+            this.shields.forEach(function (shield) {
+                if (!_this.isDirectCollision()) {
+                    shield.PosY += _this.gameScrollSpeed;
+                    shield.update();
+                }
+                if ((shield.PosY - Const.SNAKE_BODY_RADIUS * 2) > Const.SCREEN_HEIGHT) {
+                    shield.destory();
+                    _this.shields.splice(_this.shields.indexOf(shield), 1);
                 }
             });
         };

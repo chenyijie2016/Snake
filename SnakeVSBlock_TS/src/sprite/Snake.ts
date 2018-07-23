@@ -26,7 +26,7 @@ module sprite {
             this.bodyPosY.push(Const.SCREEN_HEIGHT / 2);
         }
 
-        public setBodyColor(color: string): void    {
+        public setBodyColor(color: string): void {
             this.bodyColor = color;
         }
 
@@ -42,7 +42,7 @@ module sprite {
             let j = 0;
             let DiffY = GameMain.gameView.gameScrollSpeed;
 
-            while (i < this.length && j < 240) {
+            while (i < this.length && i < Const.SNAKE_MAX_PARTS && j < 240) {
                 j++;
                 Len += Math.sqrt(Math.abs(this.headPosXHistory[j] - this.headPosXHistory[j - 1]) ** 2 + DiffY ** 2);
                 while (Len > Const.SNAKE_BODY_DEFALUT_SPACING) {
@@ -105,7 +105,7 @@ module sprite {
             //console.log('show body', this.bodyPosX);
             this.graphics.fillText(this.length.toString(), this.bodyPosX[0], this.bodyPosY[0] - 35, '20px Arial', '#FFFFFF', 'center');
 
-            for (let i = 0; i < this.length; i++) {
+            for (let i = 0; i < this.length && i < Const.SNAKE_MAX_PARTS; i++) {
                 // Using Skin !!!
                 // this is just a demo
                 this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, this.bodyColor);

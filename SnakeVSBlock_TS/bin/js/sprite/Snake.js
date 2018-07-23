@@ -43,7 +43,7 @@ var sprite;
             var i = 0;
             var j = 0;
             var DiffY = GameMain.gameView.gameScrollSpeed;
-            while (i < this.length && j < 240) {
+            while (i < this.length && i < Const.SNAKE_MAX_PARTS && j < 240) {
                 j++;
                 Len += Math.sqrt(Math.pow(Math.abs(this.headPosXHistory[j] - this.headPosXHistory[j - 1]), 2) + Math.pow(DiffY, 2));
                 while (Len > Const.SNAKE_BODY_DEFALUT_SPACING) {
@@ -98,7 +98,7 @@ var sprite;
             this.graphics.clear();
             //console.log('show body', this.bodyPosX);
             this.graphics.fillText(this.length.toString(), this.bodyPosX[0], this.bodyPosY[0] - 35, '20px Arial', '#FFFFFF', 'center');
-            for (var i = 0; i < this.length; i++) {
+            for (var i = 0; i < this.length && i < Const.SNAKE_MAX_PARTS; i++) {
                 // Using Skin !!!
                 // this is just a demo
                 this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, this.bodyColor);

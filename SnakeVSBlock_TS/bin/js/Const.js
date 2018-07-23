@@ -10,6 +10,7 @@ var Const = /** @class */ (function () {
     Const.SNAKE_BODY_RADIUS = 11.75; // 蛇身半径
     Const.SNAKE_BODY_DEFALUT_SPACING = 23; // 蛇身体部分之间的默认距离
     Const.SNAKE_BODY_MINIUM_SPACING = 4; // 蛇身体部分之间的最小Y轴距离
+    Const.SNAKE_MAX_PARTS = 25;
     Const.BLOCK_WIDTH = 80; // 方块宽度
     Const.BLOCK_MIN_CIRCLE_R = 60; //方块最小包围圆半径
     Const.BLOCK_RADIUS = 10; // 方块圆角半径

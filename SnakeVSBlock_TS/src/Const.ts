@@ -8,6 +8,7 @@ class Const {
     public static SNAKE_BODY_RADIUS: number = 11.75; // 蛇身半径
     public static SNAKE_BODY_DEFALUT_SPACING: number = 23; // 蛇身体部分之间的默认距离
     public static SNAKE_BODY_MINIUM_SPACING: number = 4; // 蛇身体部分之间的最小Y轴距离
+    public static SNAKE_MAX_PARTS:number = 25;
     public static BLOCK_WIDTH: number = 80; // 方块宽度
     public static BLOCK_MIN_CIRCLE_R: number = 60; //方块最小包围圆半径
     public static BLOCK_RADIUS: number = 10; // 方块圆角半径
