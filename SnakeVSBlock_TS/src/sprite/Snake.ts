@@ -1,5 +1,6 @@
 module sprite {
     export class Snake extends Laya.Sprite {
+        public state: string;
         public length: number;
         public bodyPosX: Array<number>;
         public bodyPosY: Array<number>;
@@ -20,7 +21,7 @@ module sprite {
         }
 
         private init(): void {
-            this.bodyColor = '#FFFF00';
+            this.state = Const.SNAKE_STATE_NORMAL;
             this.length = 1;
             this.bodyPosX.push(Const.SCREEN_WIDTH / 2);
             this.bodyPosY.push(Const.SCREEN_HEIGHT / 2);
@@ -105,6 +106,20 @@ module sprite {
             //console.log('show body', this.bodyPosX);
             this.graphics.fillText(this.length.toString(), this.bodyPosX[0], this.bodyPosY[0] - 35, '20px Arial', '#FFFFFF', 'center');
 
+            switch(this.state){
+                case Const.SNAKE_STATE_SHIELD: {
+                    this.bodyColor = "red";
+                    break;
+                }
+                case Const.SNAKE_STATE_NORMAL: {
+                    this.bodyColor = "#FFFF00";
+                    break;
+                }
+                default: {
+                    this.bodyColor = "#FFFF00";
+                    break;
+                }
+            }
             for (let i = 0; i < this.length && i < Const.SNAKE_MAX_PARTS; i++) {
                 // Using Skin !!!
                 // this is just a demo

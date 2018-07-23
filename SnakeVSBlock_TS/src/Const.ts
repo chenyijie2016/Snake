@@ -18,6 +18,11 @@ class Const {
 
     public static BLOCK_DECREASE_SPEED:number = 3; // 每几帧减少一点
 
+    //snake状态集
+    public static SNAKE_STATE_NORMAL: string = "normal";
+    public static SNAKE_STATE_SHIELD: string = "shield";
+    
+
     //音效
     public static  BGM_SOUND: string = "sound/BGM.mp3"; //背景音乐
     public static  EAT_SNAKE_ADD_SOUND: string = "sound/snakeAdd.mp3"; //吃到snakeAdd音效
@@ -36,7 +41,7 @@ class Const {
     public static BLOCK_WALL_NEWTIMES = [60, 60, 60, 85, 85, 85, 85, 85, 85, 85, 85, 120, 120, 150];
 
     //每次添加SNAKEADD的随机数量【1-3】 ---为4时有一个随机为SHIELD
-    public static SNAKE_ADD_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4 , 4, 4];
+    public static SNAKE_ADD_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4];
     //添加SNAKEADD的随机帧数
     public static SNAKE_ADD_NEWTIMES = [50, 70, 70, 70, 90, 90, 90, 90, 90, 95, 130];
 

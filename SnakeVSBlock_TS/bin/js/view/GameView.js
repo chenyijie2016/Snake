@@ -308,7 +308,8 @@ var view;
                     < Math.pow(Const.SNAKE_BODY_RADIUS, 2) * 4) {
                     Laya.SoundManager.playSound(Const.EAT_SHIELD_SOUND); //音效	
                     //TODO: change the body color of this.snake OR someother specile effect
-                    _this.snake.setBodyColor('red');
+                    _this.snake.state = Const.SNAKE_STATE_SHIELD;
+                    //this.snake.setBodyColor('red');
                     shield.destory();
                     _this.shields.splice(_this.shields.indexOf(shield), 1);
                 }
@@ -319,8 +320,9 @@ var view;
                     && block.PosX + Const.BLOCK_WIDTH / 2 >= _this.snake.bodyPosX[0] - Const.SNAKE_BODY_RADIUS / 2
                     && Math.abs(block.PosY - _this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)
                     && block.PosY < _this.snake.bodyPosY[0]) {
-                    if (_this.snake.bodyColor == 'red') {
-                        _this.snake.setBodyColor('#FFFF00');
+                    if (_this.snake.state === Const.SNAKE_STATE_SHIELD) {
+                        _this.snake.state = Const.SNAKE_STATE_NORMAL;
+                        _this.score += block.getValue();
                         block.setValue(0);
                     }
                     _this.directCollision = true;
