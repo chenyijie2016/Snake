@@ -29,9 +29,13 @@ var sprite;
             this.length = 1;
             this.bodyPosX.push(Const.SCREEN_WIDTH / 2);
             this.bodyPosY.push(Const.SCREEN_HEIGHT / 2);
+            this.superTime = Const.SNAKE_SUPER_TIME;
         };
         Snake.prototype.setBodyColor = function (color) {
             this.bodyColor = color;
+        };
+        Snake.prototype.setState = function (state) {
+            this.state = state;
         };
         Snake.prototype.updateHeadHistory = function () {
             this.headPosXHistory = this.headPosXHistory.slice(0, 300);
@@ -101,6 +105,10 @@ var sprite;
             switch (this.state) {
                 case Const.SNAKE_STATE_SHIELD: {
                     this.bodyColor = "red";
+                    break;
+                }
+                case Const.SNAKE_STATE_SUPER: {
+                    this.bodyColor = Common.getRandomArrayElements(["red", "yellow"], 1)[0];
                     break;
                 }
                 case Const.SNAKE_STATE_NORMAL: {

@@ -92,6 +92,16 @@ var view;
             this.updateShields();
             this.updateWalls();
             this.updateCollisionDetection();
+            //更新snake_superTime
+            if (this.snake.state === Const.SNAKE_STATE_SUPER) {
+                if (this.snake.superTime === 0) {
+                    this.snake.setState(Const.SNAKE_STATE_NORMAL);
+                    this.snake.superTime = Const.SNAKE_SUPER_TIME;
+                }
+                else {
+                    this.snake.superTime--;
+                }
+            }
             // 更新方块集合Blocks
             if (this.nextTimeNewBlocks === undefined) {
             }
@@ -205,6 +215,12 @@ var view;
                 }
             }
             var blockNumber = Common.getRandomArrayElements(Const.BLOCK_NUMBERS, 1);
+            var starBlock_order = undefined;
+            if (blockNumber[0] === 5 || blockNumber[0] === 4) {
+                if (Common.getRandomNumber(0, 1) === 1) {
+                    starBlock_order = Common.getRandomNumber(0, blockNumber[0] - 1);
+                }
+            }
             if (blockNumber[0] > 0) {
                 var orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], blockNumber[0]);
                 this.latestBlocks.splice(0, this.latestBlocks.length); //清空
@@ -232,9 +248,17 @@ var view;
                         continue;
                     }
                     //当前位置不存在SnakeAdd，则...
-                    this.blocks.push(b);
-                    this.latestBlocks.push(b);
-                    this.addChildren(b);
+                    if (starBlock_order === i) {
+                        b.setState(Const.BLOCK_STATE_SPECIAL);
+                        this.blocks.push(b);
+                        this.latestBlocks.push(b);
+                        this.addChildren(b);
+                    }
+                    else {
+                        this.blocks.push(b);
+                        this.latestBlocks.push(b);
+                        this.addChildren(b);
+                    }
                 }
             }
             this.nextTimeNewBlocks = Common.getRandomArrayElements(Const.BLOCK_WALL_NEWTIMES, 1)[0];
@@ -308,8 +332,9 @@ var view;
                     < Math.pow(Const.SNAKE_BODY_RADIUS, 2) * 4) {
                     Laya.SoundManager.playSound(Const.EAT_SHIELD_SOUND); //音效	
                     //TODO: change the body color of this.snake OR someother specile effect
-                    _this.snake.state = Const.SNAKE_STATE_SHIELD;
-                    //this.snake.setBodyColor('red');
+                    if (_this.snake.state === Const.SNAKE_STATE_NORMAL) {
+                        _this.snake.setState(Const.SNAKE_STATE_SHIELD);
+                    }
                     shield.destory();
                     _this.shields.splice(_this.shields.indexOf(shield), 1);
                 }
@@ -321,7 +346,11 @@ var view;
                     && Math.abs(block.PosY - _this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)
                     && block.PosY < _this.snake.bodyPosY[0]) {
                     if (_this.snake.state === Const.SNAKE_STATE_SHIELD) {
-                        _this.snake.state = Const.SNAKE_STATE_NORMAL;
+                        _this.snake.setState(Const.SNAKE_STATE_NORMAL);
+                        _this.score += block.getValue();
+                        block.setValue(0);
+                    }
+                    else if (_this.snake.state === Const.SNAKE_STATE_SUPER) {
                         _this.score += block.getValue();
                         block.setValue(0);
                     }
@@ -331,7 +360,15 @@ var view;
                         p.setPos(block.PosX, block.PosY);
                         p.update();
                         _this.addChild(p);
-                        Laya.SoundManager.playSound(Const.BLOCK_BREAK); //音效
+                        if (block.state === Const.BLOCK_STATE_NORMAL) {
+                            Laya.SoundManager.playSound(Const.BLOCK_BREAK); //音效
+                        }
+                        else if (block.state === Const.BLOCK_STATE_SPECIAL) {
+                            //TODU: change the state of snake to Super mode
+                            _this.snake.superTime = Const.SNAKE_SUPER_TIME;
+                            _this.snake.setState(Const.SNAKE_STATE_SUPER);
+                            Laya.SoundManager.playSound(Const.EAT_SHIELD_SOUND); //音效
+                        }
                         block.destory();
                         _this.blocks.splice(_this.blocks.indexOf(block), 1);
                     }

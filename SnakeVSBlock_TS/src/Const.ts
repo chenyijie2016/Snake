@@ -21,7 +21,12 @@ class Const {
     //snake状态集
     public static SNAKE_STATE_NORMAL: string = "normal";
     public static SNAKE_STATE_SHIELD: string = "shield";
+    public static SNAKE_STATE_SUPER: string = "super";
+    public static SNAKE_SUPER_TIME: number = 600;
     
+    //block状态集
+    public static BLOCK_STATE_NORMAL: string = "normal";
+    public static BLOCK_STATE_SPECIAL: string = "special";
 
     //音效
     public static  BGM_SOUND: string = "sound/BGM.mp3"; //背景音乐
@@ -33,8 +38,10 @@ class Const {
     public static  BLOCK_BREAK: string = "sound/buttonSound.wav";//方块解体音效
 
 
+    //特殊BLOCK的随机Value
+    public static BLOCK_SPECIAL_VALUE = [20, 25, 30];
     //每次添加BLOCK的随机数量【1-5】
-    public static BLOCK_NUMBERS = [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 5];
+    public static BLOCK_NUMBERS = [1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5];
     //每次添加WALL的随机数量【1-3】
     public static WALL_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3];
     //添加BLOCK的随机帧数

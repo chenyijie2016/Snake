@@ -7,6 +7,7 @@ module sprite {
         public bodyColor: string;
         public headPosXHistory: Array<number>;
         private PosYOffest: number;
+        public superTime: number
         constructor() {
             super();
             this.graphics.clipRect(0, 0, Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
@@ -25,10 +26,15 @@ module sprite {
             this.length = 1;
             this.bodyPosX.push(Const.SCREEN_WIDTH / 2);
             this.bodyPosY.push(Const.SCREEN_HEIGHT / 2);
+            this.superTime = Const.SNAKE_SUPER_TIME;
         }
 
         public setBodyColor(color: string): void {
             this.bodyColor = color;
+        }
+
+        public setState(state: string): void {
+            this.state = state;
         }
 
         public updateHeadHistory(): void {
@@ -109,6 +115,10 @@ module sprite {
             switch(this.state){
                 case Const.SNAKE_STATE_SHIELD: {
                     this.bodyColor = "red";
+                    break;
+                }
+                case Const.SNAKE_STATE_SUPER: {
+                    this.bodyColor = Common.getRandomArrayElements(["red", "yellow"], 1)[0];
                     break;
                 }
                 case Const.SNAKE_STATE_NORMAL: {

@@ -60,7 +60,14 @@ var sprite;
                 var Xoffset = 1;
                 if (this.value > 0)
                     Xoffset = Math.floor(Math.log(this.value) / Math.log(10)) + 1;
-                this.graphics.fillText(this.value.toString(), this.PosX - 3 * (Xoffset - 1), this.PosY - 15, '30px Arial', '#000000', 'center');
+                if (this.state === Const.BLOCK_STATE_NORMAL) {
+                    this.graphics.fillText(this.value.toString(), this.PosX - 3 * (Xoffset - 1), this.PosY - 15, '30px Arial', '#000000', 'center');
+                }
+                else if (this.state === Const.BLOCK_STATE_SPECIAL) {
+                    this.graphics.fillText(this.value.toString(), this.PosX - 3 * (Xoffset - 1), this.PosY - 35, '30px Arial', '#000000', 'center');
+                    var starPath = [0, 0, 5, 10, 16, 10, 6, 16, 11, 27, 0, 21, -11, 27, -6, 16, -16, 10, -5, 10];
+                    this.graphics.drawPoly(this.PosX - 3 * (Xoffset - 1), this.PosY, starPath, "black");
+                }
             }
         };
         Block.prototype.getBlockColor = function () {
@@ -71,8 +78,16 @@ var sprite;
             var rgb = Const.BLOCK_COLORS[blockValue - 1];
             return Common.rgbToHex(rgb);
         };
+        Block.prototype.setState = function (state) {
+            this.state = state;
+            if (this.state === Const.BLOCK_STATE_SPECIAL) {
+                this.value = Common.getRandomArrayElements(Const.BLOCK_SPECIAL_VALUE, 1)[0];
+            }
+        };
         Block.prototype.init = function () {
+            this.state = Const.BLOCK_STATE_NORMAL;
             this.setValue(Common.getRandomNumber(1, 50));
+            //this.setState(Const.BLOCK_STATE_SPECIAL);
             this.PosX = 0;
             this.PosY = 0;
         };

@@ -21,6 +21,11 @@ var Const = /** @class */ (function () {
     //snake状态集
     Const.SNAKE_STATE_NORMAL = "normal";
     Const.SNAKE_STATE_SHIELD = "shield";
+    Const.SNAKE_STATE_SUPER = "super";
+    Const.SNAKE_SUPER_TIME = 600;
+    //block状态集
+    Const.BLOCK_STATE_NORMAL = "normal";
+    Const.BLOCK_STATE_SPECIAL = "special";
     //音效
     Const.BGM_SOUND = "sound/BGM.mp3"; //背景音乐
     Const.EAT_SNAKE_ADD_SOUND = "sound/snakeAdd.mp3"; //吃到snakeAdd音效
@@ -29,8 +34,10 @@ var Const = /** @class */ (function () {
     Const.GAME_OVER_SOUND = "sound/gameOver.mp3"; //游戏结束音效
     Const.BUTTON_SOUND = "sound/buttonSound.wav"; //按钮音效
     Const.BLOCK_BREAK = "sound/buttonSound.wav"; //方块解体音效
+    //特殊BLOCK的随机Value
+    Const.BLOCK_SPECIAL_VALUE = [20, 25, 30];
     //每次添加BLOCK的随机数量【1-5】
-    Const.BLOCK_NUMBERS = [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 5];
+    Const.BLOCK_NUMBERS = [1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5];
     //每次添加WALL的随机数量【1-3】
     Const.WALL_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3];
     //添加BLOCK的随机帧数
