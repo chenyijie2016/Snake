@@ -449,6 +449,7 @@ var view;
             this.snakeAdds.splice(0, this.snakeAdds.length);
             this.latestBlocks.splice(0, this.latestBlocks.length);
             this.latestSnakeAdds.splice(0, this.latestSnakeAdds.length);
+            this.shields.splice(0, this.shields.length);
             GameMain.status = GameStatus.Over;
             this.removeSelf();
             if (!GameMain.gameOver) {
