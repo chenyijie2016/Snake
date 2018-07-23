@@ -17,10 +17,21 @@ var view;
             var _this = _super.call(this) || this;
             _this.gameStartButton.on(Laya.Event.CLICK, _this, _this.onGameStart);
             _this.leaderBoardButton.on(Laya.Event.CLICK, _this, _this.onShowLeaderBoard);
+            _this.colorModeButton.on(Laya.Event.CLICK, _this, _this.onGameMode);
             //绘制游戏名称
             _this.createTitle();
             return _this;
         }
+        GameStart.prototype.onGameMode = function () {
+            if (Const.GAME_MODE === "normalMode") {
+                Const.GAME_MODE = "colorMode";
+                this.colorModeButton.selected = true;
+            }
+            else if (Const.GAME_MODE === "colorMode") {
+                Const.GAME_MODE = "normalMode";
+                this.colorModeButton.selected = false;
+            }
+        };
         GameStart.prototype.onShowLeaderBoard = function () {
             if (!GameMain.leaderBoard) {
                 GameMain.leaderBoard = new view.LeaderBoard();
@@ -32,12 +43,21 @@ var view;
         GameStart.prototype.onGameStart = function () {
             Laya.SoundManager.playSound(Const.BUTTON_SOUND);
             this.removeSelf();
-            if (!GameMain.gameView) {
-                GameMain.gameView = new view.GameView();
+            if (Const.GAME_MODE === "normalMode") {
+                if (!GameMain.gameView) {
+                    GameMain.gameView = new view.GameView();
+                }
+                GameMain.gameView.startGame();
+                Laya.stage.addChild(GameMain.gameView);
             }
-            GameMain.gameView.startGame();
-            Laya.stage.addChild(GameMain.gameView);
-            Laya.SoundManager.playSound(Const.GAME_START_SOUND);
+            else if (Const.GAME_MODE === "colorMode") {
+                if (!GameMain.gameColorMode) {
+                    GameMain.gameColorMode = new view.GameColorMode();
+                }
+                GameMain.gameColorMode.startGame();
+                Laya.stage.addChild(GameMain.gameColorMode);
+                Laya.SoundManager.playSound(Const.GAME_START_SOUND);
+            }
         };
         GameStart.prototype.createTitle = function () {
             var Text = Laya.Text;

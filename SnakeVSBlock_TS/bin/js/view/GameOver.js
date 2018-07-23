@@ -22,7 +22,16 @@ var view;
         }
         GameOver.prototype.drawUI = function () {
             Laya.stage.once(Laya.Event.MOUSE_DOWN, this, this.onRestartGame);
-            this.gameScoreText.text = GameMain.gameView.score.toString();
+            if (Const.GAME_MODE === "normalMode") {
+                this.gameScoreText.text = GameMain.gameView.score.toString();
+                GameMain.gameView.snake.removeSelf();
+                GameMain.gameView.removeSelf();
+            }
+            else if (Const.GAME_MODE === "colorMode") {
+                this.gameScoreText.text = GameMain.gameColorMode.score.toString();
+                GameMain.gameColorMode.snake.removeSelf();
+                GameMain.gameColorMode.removeSelf();
+            }
             this.gameScoreText.font = 'Arial';
             this.gameScoreText.color = 'white';
             this.gameScoreText.fontSize = 40;

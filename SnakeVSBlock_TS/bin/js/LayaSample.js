@@ -19,7 +19,7 @@ var GameMain = /** @class */ (function () {
         Laya.stage.scaleMode = Laya.Stage.SCALE_SHOWALL;
         Laya.stage.bgColor = "#000000";
         var resArray = [
-            { url: "ui/btn_start.png", type: Laya.Loader.IMAGE }
+            { url: "ui/btn_start.png", type: Laya.Loader.IMAGE },
         ];
         Laya.loader.load(resArray, Laya.Handler.create(this, this.onLoaded));
     }

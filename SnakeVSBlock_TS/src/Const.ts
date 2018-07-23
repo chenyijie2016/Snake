@@ -2,6 +2,8 @@
 * name Const Values;
 */
 class Const {
+    public static GAME_MODE: string = "normalMode"; //游戏模式
+
     public static SCREEN_WIDTH: number = 414; // 屏幕宽度
     public static SCREEN_HEIGHT: number = 736; // 屏幕高度
     public static SNAKE_FLEXIBILITY: number = 2; // 蛇的柔韧性，越小越不柔韧
@@ -15,6 +17,7 @@ class Const {
     public static WALL_WIDTH: number = 5; //隔板宽度
     public static WALL_RADIUS: number = 2; //隔板圆角半径
     public static PARTICLE_RADIUS: number = 3; //粒子半径
+    public static GAME_SCROLL_SPEED: number = 4; //
 
     public static BLOCK_DECREASE_SPEED:number = 3; // 每几帧减少一点
 

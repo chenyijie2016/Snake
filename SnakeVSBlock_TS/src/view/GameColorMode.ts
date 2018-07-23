@@ -1,7 +1,6 @@
 /**Created by the LayaAirIDE*/
-
-module view {
-	export class GameView extends ui.GameViewUI {
+module view{
+	export class GameColorMode extends ui.GameColorModeUI{
 		public snake: sprite.Snake;
 		private blocks: Array<sprite.Block>;
 		private latestBlocks: Array<sprite.Block>;//最近生成的一行Block
@@ -12,7 +11,7 @@ module view {
 		private lastMouseX: number;
 		private mouseDown: boolean;
 		private debugInfo: Laya.Text;
-		public gameScrollSpeed: number = Const.GAME_SCROLL_SPEED;
+		public gameScrollSpeed: number = 4;
 		public directCollision: boolean = false;
 		public score: number = 0;
 		public scoreDisplay: Laya.Text;

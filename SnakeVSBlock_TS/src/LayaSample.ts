@@ -10,6 +10,7 @@ class GameMain {
     public static gameView: view.GameView;
     public static gameOver: view.GameOver;
     public static leaderBoard: view.LeaderBoard;
+    public static gameColorMode: view.GameColorMode;
     public static status: GameStatus;
     constructor() {
         GameMain.status = GameStatus.Start;
@@ -21,7 +22,7 @@ class GameMain {
         Laya.stage.scaleMode = Laya.Stage.SCALE_SHOWALL;
         Laya.stage.bgColor = "#000000";
         let resArray: Array<any> = [
-            { url: "ui/btn_start.png", type: Laya.Loader.IMAGE }
+            { url: "ui/btn_start.png", type: Laya.Loader.IMAGE },
         ];
 
         Laya.loader.load(resArray, Laya.Handler.create(this, this.onLoaded));

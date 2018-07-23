@@ -1,4 +1,3 @@
-/**Created by the LayaAirIDE*/
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9,13 +8,14 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+/**Created by the LayaAirIDE*/
 var view;
 (function (view) {
-    var GameView = /** @class */ (function (_super) {
-        __extends(GameView, _super);
-        function GameView() {
+    var GameColorMode = /** @class */ (function (_super) {
+        __extends(GameColorMode, _super);
+        function GameColorMode() {
             var _this = _super.call(this) || this;
-            _this.gameScrollSpeed = Const.GAME_SCROLL_SPEED;
+            _this.gameScrollSpeed = 4;
             _this.directCollision = false;
             _this.score = 0;
             /* for debug */
@@ -41,10 +41,10 @@ var view;
             _this.shields = new Array();
             return _this;
         }
-        GameView.prototype.setDebugInfo = function (msg) {
+        GameColorMode.prototype.setDebugInfo = function (msg) {
             this.debugInfo.text = msg;
         };
-        GameView.prototype.startGame = function () {
+        GameColorMode.prototype.startGame = function () {
             this.addChild(this.scoreDisplay);
             this.score = 0;
             this.nextTimeNewAdds = undefined;
@@ -63,15 +63,15 @@ var view;
             Laya.timer.frameLoop(300, this.snake, this.snake.updateHeadHistory);
             //Laya.timer.frameLoop(2, this.snake, this.snake.showBody);
         };
-        GameView.prototype.onMouseDown = function () {
+        GameColorMode.prototype.onMouseDown = function () {
             this.mouseDown = true;
             this.lastMouseX = Laya.stage.mouseX;
         };
-        GameView.prototype.onMouseUp = function () {
+        GameColorMode.prototype.onMouseUp = function () {
             this.mouseDown = false;
             this.debugInfo.text = 'mouseup';
         };
-        GameView.prototype.updateScore = function () {
+        GameColorMode.prototype.updateScore = function () {
             this.scoreDisplay.text = this.score.toString();
             if (this.score > 0) {
                 var offset = Math.floor(Math.log(this.score) / Math.log(10));
@@ -82,7 +82,7 @@ var view;
             }
         };
         // The Main Loop for the game 
-        GameView.prototype.mainLoop = function () {
+        GameColorMode.prototype.mainLoop = function () {
             this.updateScore();
             this.detectMouseMove();
             this.snake.updateBody();
@@ -128,7 +128,7 @@ var view;
             }
         };
         // 检测触点移动情况
-        GameView.prototype.detectMouseMove = function () {
+        GameColorMode.prototype.detectMouseMove = function () {
             var _this = this;
             var currentMouseX = Laya.stage.mouseX;
             if (this.mouseDown) {
@@ -198,11 +198,11 @@ var view;
             this.lastMouseX = currentMouseX;
         };
         // 是否是正在正面碰撞
-        GameView.prototype.isDirectCollision = function () {
+        GameColorMode.prototype.isDirectCollision = function () {
             return this.directCollision;
         };
         // 更新方块集合Blocks、隔板集合Walls
-        GameView.prototype.updateBlocks_WALLStatus = function () {
+        GameColorMode.prototype.updateBlocks_WALLStatus = function () {
             //添加隔板
             var wallNumber = Common.getRandomArrayElements(Const.WALL_NUMBERS, 1);
             if (wallNumber[0] > 0) {
@@ -264,7 +264,7 @@ var view;
             this.nextTimeNewBlocks = Common.getRandomArrayElements(Const.BLOCK_WALL_NEWTIMES, 1)[0];
         };
         // 更新Grow集合SnakeAdds、Shields
-        GameView.prototype.updateSnakeAddsStatus = function () {
+        GameColorMode.prototype.updateSnakeAddsStatus = function () {
             var snakeAddNumber = Common.getRandomArrayElements(Const.SNAKE_ADD_NUMBERS, 1);
             var shield_order;
             if (snakeAddNumber[0] == 4) {
@@ -316,7 +316,7 @@ var view;
             this.nextTimeNewAdds = Common.getRandomArrayElements(Const.SNAKE_ADD_NEWTIMES, 1)[0];
         };
         // 更新碰撞检测信息
-        GameView.prototype.updateCollisionDetection = function () {
+        GameColorMode.prototype.updateCollisionDetection = function () {
             var _this = this;
             this.snakeAdds.forEach(function (snakeAdd) {
                 if (Math.pow((snakeAdd.PosX - _this.snake.bodyPosX[0]), 2) + Math.pow((snakeAdd.PosY - _this.snake.bodyPosY[0]), 2)
@@ -386,7 +386,7 @@ var view;
             });
         };
         // 更新方块状态
-        GameView.prototype.updateBlocks = function () {
+        GameColorMode.prototype.updateBlocks = function () {
             var _this = this;
             this.blocks.forEach(function (block) {
                 if (!_this.isDirectCollision()) {
@@ -400,7 +400,7 @@ var view;
             });
         };
         // 更新SnakeAdd状态
-        GameView.prototype.updateSnakeAdds = function () {
+        GameColorMode.prototype.updateSnakeAdds = function () {
             var _this = this;
             this.snakeAdds.forEach(function (snakeAdd) {
                 if (!_this.isDirectCollision()) {
@@ -414,7 +414,7 @@ var view;
             });
         };
         // 更新Shield状态
-        GameView.prototype.updateShields = function () {
+        GameColorMode.prototype.updateShields = function () {
             var _this = this;
             this.shields.forEach(function (shield) {
                 if (!_this.isDirectCollision()) {
@@ -428,7 +428,7 @@ var view;
             });
         };
         // 更新隔板状态
-        GameView.prototype.updateWalls = function () {
+        GameColorMode.prototype.updateWalls = function () {
             var _this = this;
             this.walls.forEach(function (wall) {
                 if (!_this.isDirectCollision()) {
@@ -441,7 +441,7 @@ var view;
                 }
             });
         };
-        GameView.prototype.onGameOver = function () {
+        GameColorMode.prototype.onGameOver = function () {
             this.removeChildren();
             Laya.timer.clearAll(this);
             this.blocks.splice(0, this.blocks.length);
@@ -458,8 +458,8 @@ var view;
             Laya.stage.addChild(GameMain.gameOver);
             GameMain.gameOver.drawUI();
         };
-        return GameView;
-    }(ui.GameViewUI));
-    view.GameView = GameView;
+        return GameColorMode;
+    }(ui.GameColorModeUI));
+    view.GameColorMode = GameColorMode;
 })(view || (view = {}));
-//# sourceMappingURL=GameView.js.map
+//# sourceMappingURL=GameColorMode.js.map

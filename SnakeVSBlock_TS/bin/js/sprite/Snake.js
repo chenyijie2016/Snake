@@ -42,11 +42,11 @@ var sprite;
         };
         Snake.prototype.updateBody = function () {
             this.headPosXHistory.unshift(this.bodyPosX[0]);
-            var rate = Const.SNAKE_BODY_RADIUS * 2 / GameMain.gameView.gameScrollSpeed;
+            var rate = Const.SNAKE_BODY_RADIUS * 2 / Const.GAME_SCROLL_SPEED;
             var Len = 0;
             var i = 0;
             var j = 0;
-            var DiffY = GameMain.gameView.gameScrollSpeed;
+            var DiffY = Const.GAME_SCROLL_SPEED;
             while (i < this.length && i < Const.SNAKE_MAX_PARTS && j < 240) {
                 j++;
                 Len += Math.sqrt(Math.pow(Math.abs(this.headPosXHistory[j] - this.headPosXHistory[j - 1]), 2) + Math.pow(DiffY, 2));

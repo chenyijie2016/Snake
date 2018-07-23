@@ -43,11 +43,11 @@ module sprite {
         public updateBody(): void {
 
             this.headPosXHistory.unshift(this.bodyPosX[0]);
-            let rate = Const.SNAKE_BODY_RADIUS * 2 / GameMain.gameView.gameScrollSpeed;
+            let rate = Const.SNAKE_BODY_RADIUS * 2 / Const.GAME_SCROLL_SPEED;
             let Len = 0;
             let i = 0;
             let j = 0;
-            let DiffY = GameMain.gameView.gameScrollSpeed;
+            let DiffY = Const.GAME_SCROLL_SPEED;
 
             while (i < this.length && i < Const.SNAKE_MAX_PARTS && j < 240) {
                 j++;

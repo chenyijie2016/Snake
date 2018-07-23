@@ -5,8 +5,20 @@ module view {
 			super();
 			this.gameStartButton.on(Laya.Event.CLICK, this, this.onGameStart);
 			this.leaderBoardButton.on(Laya.Event.CLICK, this, this.onShowLeaderBoard)
+			this.colorModeButton.on(Laya.Event.CLICK, this, this.onGameMode);
 			//绘制游戏名称
 			this.createTitle();
+		}
+
+		public onGameMode(): void {
+			if(Const.GAME_MODE === "normalMode"){
+				Const.GAME_MODE = "colorMode";
+				this.colorModeButton.selected = true;
+			}
+			else if(Const.GAME_MODE === "colorMode"){
+				Const.GAME_MODE = "normalMode";
+				this.colorModeButton.selected = false;
+			}
 		}
 
 		public onShowLeaderBoard(): void {
@@ -22,12 +34,22 @@ module view {
 		public onGameStart(): void {
 			Laya.SoundManager.playSound(Const.BUTTON_SOUND);
 			this.removeSelf();
-			if (!GameMain.gameView) {
-				GameMain.gameView = new GameView();
+
+			if(Const.GAME_MODE === "normalMode"){
+				if (!GameMain.gameView) {
+					GameMain.gameView = new GameView();
+				}
+				GameMain.gameView.startGame();
+				Laya.stage.addChild(GameMain.gameView);
 			}
-			GameMain.gameView.startGame();
-			Laya.stage.addChild(GameMain.gameView);
-			Laya.SoundManager.playSound(Const.GAME_START_SOUND);
+			else if(Const.GAME_MODE === "colorMode"){
+				if (!GameMain.gameColorMode) {
+					GameMain.gameColorMode = new GameColorMode();
+				}
+				GameMain.gameColorMode.startGame();
+				Laya.stage.addChild(GameMain.gameColorMode);
+				Laya.SoundManager.playSound(Const.GAME_START_SOUND);
+			}					
 		}
 
 		public createTitle(): void {

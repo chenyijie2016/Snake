@@ -38,8 +38,14 @@ var sprite;
                 this.decreaseCount = 0;
                 if (this.value > 0) {
                     this.value--;
-                    GameMain.gameView.score++;
-                    GameMain.gameView.snake.length--;
+                    if (Const.GAME_MODE === "normalMode") {
+                        GameMain.gameView.score++;
+                        GameMain.gameView.snake.length--;
+                    }
+                    else if (Const.GAME_MODE === "colorMode") {
+                        GameMain.gameColorMode.score++;
+                        GameMain.gameColorMode.snake.length--;
+                    }
                 }
                 if (this.value === 0)
                     return false;

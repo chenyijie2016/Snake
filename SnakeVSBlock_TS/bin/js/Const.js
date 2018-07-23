@@ -4,6 +4,7 @@
 var Const = /** @class */ (function () {
     function Const() {
     }
+    Const.GAME_MODE = "normalMode"; //游戏模式
     Const.SCREEN_WIDTH = 414; // 屏幕宽度
     Const.SCREEN_HEIGHT = 736; // 屏幕高度
     Const.SNAKE_FLEXIBILITY = 2; // 蛇的柔韧性，越小越不柔韧
@@ -17,6 +18,7 @@ var Const = /** @class */ (function () {
     Const.WALL_WIDTH = 5; //隔板宽度
     Const.WALL_RADIUS = 2; //隔板圆角半径
     Const.PARTICLE_RADIUS = 3; //粒子半径
+    Const.GAME_SCROLL_SPEED = 4; //
     Const.BLOCK_DECREASE_SPEED = 3; // 每几帧减少一点
     //snake状态集
     Const.SNAKE_STATE_NORMAL = "normal";
