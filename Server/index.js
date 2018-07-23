@@ -36,15 +36,17 @@ const logger = createLogger({
         })
     ]
 });
+
 app.use(bodyParser.json());
 
 const dbUrl = 'mongodb://localhost:27017';
-const dbName = 'userdata';
+const dbName = 'SnakeVSBlock';
 
-let collection = null;
+let userCollection = null;
 MongoClient.connect(dbUrl, function (err, client) {
     assert.equal(null, err);
-    collection = client.db(dbName).collection('data');
+    userCollection = client.db(dbName).collection('user');
+    scoreCollection = client.db(dbName).collection('score');
 });
 
 
@@ -59,6 +61,7 @@ app.get('/', function (req, res) {
     })
 })
 
+// 微信前端的登录交互，获取openID
 app.get('/api/v1/login', function (req, res) {
     let code = req.query.code;
     let url = util.format(code2accessToken_URL, appid, appsecret, code)
@@ -70,11 +73,13 @@ app.get('/api/v1/login', function (req, res) {
     })
 })
 
+
+
+// 提交用户公开信息
 app.post('/api/v1/user', function (req, res) {
     let openid = req.body.openid;
     console.log(req.body)
-    logger.info('openid', openid)
-    collection.findOne({
+    userCollection.findOne({
         openid: openid
     }, (err, result) => {
         if (err) {
@@ -82,14 +87,80 @@ app.post('/api/v1/user', function (req, res) {
             return;
         }
         if (!result) {
-            collection.insertOne(req.body);
+            userCollection.insertOne(req.body, (err, _result) => {
+                if (err) {
+                    logger.warn('Insert Failed')
+                    res.json({
+                        msg: 'insert failed'
+                    })
+                } else {
+                    res.json({
+                        msg: 'ok'
+                    })
+                }
+            });
+        }
+        logger.info('/api/v1/user openid exits')
+    })
+})
+
+// 获取用户公开信息
+app.get('/api/v1/user', function (req, res) {
+    let openid = req.query.openid;
+    userCollection.findOne({
+        openid: openid
+    }, function (err, result) {
+        if (!err) {
             res.json({
-                msg: 'ok'
+                nickName: result.nickname,
+                avatarUrl: result.avatarUrl
+            }) //只返回昵称和头像url
+        }
+    })
+})
+
+
+// 获取排行榜
+app.get('/api/v1/leaderboard', function (req, res) {
+    scoreCollection.find().sort({
+        score: -1
+    }).limit(10).toArray(function (err, result) {
+        if (!err)
+            res.json(result)
+    })
+})
+
+// 提交分数
+app.post('/api/v1/score', function (req, res) {
+    // 提交分数的openid对应的用户应该已经存在于数据库中
+    userCollection.findOne({
+        openid: req.body.openid
+    }, function (err, result) {
+        if (!err && result) {
+            scoreCollection.insertOne({
+                openid: req.body.openid,
+                score: parseInt(req.body.score),
+                time: new Date().getTime()
+            }, function (err, _result) {
+                if (err) {
+                    logger.warn('Insert Score Failed');
+                    res.json({
+                        msg: 'failed'
+                    })
+                } else {
+                    logger.info('Insert Score');
+                    res.json({
+                        msg: 'ok'
+                    })
+                }
+            })
+        } else {
+            logger.warn('Insert Score Failed');
+            res.json({
+                msg: 'failed'
             })
         }
     })
-
-
 })
 
 

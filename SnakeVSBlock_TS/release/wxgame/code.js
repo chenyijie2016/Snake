@@ -46999,6 +46999,7 @@ var GameStatus;
 })(GameStatus || (GameStatus = {}));
 var GameMain = /** @class */ (function () {
     function GameMain() {
+        window.test.test();
         GameMain.status = GameStatus.Start;
         Laya.MiniAdpter.init();
         Laya.init(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);

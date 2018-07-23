@@ -1,4 +1,5 @@
-const API_URL = 'https://chenyiji16.iterator-traits.com:12306'
+//const API_URL = 'https://chenyiji16.iterator-traits.com:12306'
+const API_URL = 'https://127.0.0.1:12306'
 class Test {
     constructor() {
 
