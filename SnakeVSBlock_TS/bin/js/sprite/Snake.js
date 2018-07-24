@@ -25,6 +25,7 @@ var sprite;
             return _this;
         }
         Snake.prototype.init = function () {
+            // 默认长度为1，放在屏幕正中间
             this.state = Const.SNAKE_STATE_NORMAL;
             this.length = 1;
             this.bodyPosX.push(Const.SCREEN_WIDTH / 2);
@@ -38,6 +39,7 @@ var sprite;
             this.state = state;
         };
         Snake.prototype.updateHeadHistory = function () {
+            // 每300帧刷新一下headPosXHistory数组
             this.headPosXHistory = this.headPosXHistory.slice(0, 300);
         };
         Snake.prototype.updateBody = function () {
@@ -47,6 +49,7 @@ var sprite;
             var i = 0;
             var j = 0;
             var DiffY = Const.GAME_SCROLL_SPEED;
+            // 根据历史坐标求移动长度，每达到一段蛇身长度就将该段蛇身的位置进行更新
             while (i < this.length && i < Const.SNAKE_MAX_PARTS && j < 240) {
                 j++;
                 Len += Math.sqrt(Math.pow(Math.abs(this.headPosXHistory[j] - this.headPosXHistory[j - 1]), 2) + Math.pow(DiffY, 2));
@@ -90,6 +93,7 @@ var sprite;
             //     //this.showBody();
             // }
         };
+        // 延长蛇身
         Snake.prototype.extendBody = function (parts) {
             var lastPosX = this.bodyPosX[this.length - 1];
             this.length += parts;
@@ -98,6 +102,7 @@ var sprite;
                 this.bodyPosY.push(this.bodyPosY[this.bodyPosY.length - 1] + Const.SNAKE_BODY_DEFALUT_SPACING);
             }
         };
+        //显示蛇身
         Snake.prototype.showBody = function () {
             this.graphics.clear();
             //console.log('show body', this.bodyPosX);
@@ -127,17 +132,21 @@ var sprite;
                 // TODO: Using other image
             }
         };
+        // 向左移动
         Snake.prototype.moveLeft = function (level) {
-            this.bodyPosX[0] -= level;
-            if (this.bodyPosX[0] < 0) {
+            if (this.bodyPosX[0] - level < Const.SNAKE_BODY_RADIUS) {
                 this.bodyPosX[0] = Const.SNAKE_BODY_RADIUS;
             }
+            else
+                this.bodyPosX[0] -= level;
         };
+        // 向右移动
         Snake.prototype.moveRight = function (level) {
-            this.bodyPosX[0] += level;
-            if (this.bodyPosX[0] > Const.SCREEN_WIDTH) {
+            if (this.bodyPosX[0] + level > Const.SCREEN_WIDTH - Const.SNAKE_BODY_RADIUS) {
                 this.bodyPosX[0] = Const.SCREEN_WIDTH - Const.SNAKE_BODY_RADIUS;
             }
+            else
+                this.bodyPosX[0] += level;
         };
         return Snake;
     }(Laya.Sprite));

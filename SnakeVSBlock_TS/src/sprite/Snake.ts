@@ -1,13 +1,14 @@
 module sprite {
     export class Snake extends Laya.Sprite {
         public state: string;
-        public length: number;
-        public bodyPosX: Array<number>;
+        public length: number; // 长度
+        public bodyPosX: Array<number>; // 每段身体的中心坐标
         public bodyPosY: Array<number>;
         public bodyColor: string;
-        public headPosXHistory: Array<number>;
-        private PosYOffest: number;
+        public headPosXHistory: Array<number>; // 记录每帧蛇头的历史轨迹(记录X坐标)
         public superTime: number
+
+        //TODO 显然还需要给每段蛇的颜色建一个数组
         constructor() {
             super();
             this.graphics.clipRect(0, 0, Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
@@ -22,6 +23,7 @@ module sprite {
         }
 
         private init(): void {
+            // 默认长度为1，放在屏幕正中间
             this.state = Const.SNAKE_STATE_NORMAL;
             this.length = 1;
             this.bodyPosX.push(Const.SCREEN_WIDTH / 2);
@@ -38,6 +40,7 @@ module sprite {
         }
 
         public updateHeadHistory(): void {
+            // 每300帧刷新一下headPosXHistory数组
             this.headPosXHistory = this.headPosXHistory.slice(0, 300);
         }
         public updateBody(): void {
@@ -48,7 +51,7 @@ module sprite {
             let i = 0;
             let j = 0;
             let DiffY = Const.GAME_SCROLL_SPEED;
-
+            // 根据历史坐标求移动长度，每达到一段蛇身长度就将该段蛇身的位置进行更新
             while (i < this.length && i < Const.SNAKE_MAX_PARTS && j < 240) {
                 j++;
                 Len += Math.sqrt(Math.abs(this.headPosXHistory[j] - this.headPosXHistory[j - 1]) ** 2 + DiffY ** 2);
@@ -96,7 +99,7 @@ module sprite {
             // }
 
         }
-
+        // 延长蛇身
         public extendBody(parts: number): void {
             let lastPosX = this.bodyPosX[this.length - 1];
 
@@ -107,12 +110,13 @@ module sprite {
             }
         }
 
+        //显示蛇身
         public showBody(): void {
             this.graphics.clear();
             //console.log('show body', this.bodyPosX);
             this.graphics.fillText(this.length.toString(), this.bodyPosX[0], this.bodyPosY[0] - 35, '20px Arial', '#FFFFFF', 'center');
 
-            switch(this.state){
+            switch (this.state) {
                 case Const.SNAKE_STATE_SHIELD: {
                     this.bodyColor = "red";
                     break;
@@ -139,18 +143,22 @@ module sprite {
             }
         }
 
+        // 向左移动
         public moveLeft(level: number): void {
-            this.bodyPosX[0] -= level;
-            if (this.bodyPosX[0] < 0) {
+            if (this.bodyPosX[0] - level < Const.SNAKE_BODY_RADIUS) {
                 this.bodyPosX[0] = Const.SNAKE_BODY_RADIUS;
             }
+            else
+                this.bodyPosX[0] -= level;
         }
 
+        // 向右移动
         public moveRight(level: number): void {
-            this.bodyPosX[0] += level;
-            if (this.bodyPosX[0] > Const.SCREEN_WIDTH) {
+            if (this.bodyPosX[0] + level > Const.SCREEN_WIDTH - Const.SNAKE_BODY_RADIUS) {
                 this.bodyPosX[0] = Const.SCREEN_WIDTH - Const.SNAKE_BODY_RADIUS;
             }
+            else
+                this.bodyPosX[0] += level;
         }
     }
 }
