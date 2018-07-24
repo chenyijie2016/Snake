@@ -38,7 +38,6 @@ var view;
             _this.snakeAdds = new Array();
             _this.latestSnakeAdds = new Array();
             _this.walls = new Array();
-            _this.shields = new Array();
             return _this;
         }
         GameColorMode.prototype.setDebugInfo = function (msg) {
@@ -89,19 +88,8 @@ var view;
             this.snake.showBody();
             this.updateBlocks();
             this.updateSnakeAdds();
-            this.updateShields();
             this.updateWalls();
             this.updateCollisionDetection();
-            //更新snake_superTime
-            if (this.snake.state === Const.SNAKE_STATE_SUPER) {
-                if (this.snake.superTime === 0) {
-                    this.snake.setState(Const.SNAKE_STATE_NORMAL);
-                    this.snake.superTime = Const.SNAKE_SUPER_TIME;
-                }
-                else {
-                    this.snake.superTime--;
-                }
-            }
             // 更新方块集合Blocks
             if (this.nextTimeNewBlocks === undefined) {
             }
@@ -215,12 +203,6 @@ var view;
                 }
             }
             var blockNumber = Common.getRandomArrayElements(Const.BLOCK_NUMBERS, 1);
-            var starBlock_order = undefined;
-            if (blockNumber[0] === 5 || blockNumber[0] === 4) {
-                if (Common.getRandomNumber(0, 1) === 1) {
-                    starBlock_order = Common.getRandomNumber(0, blockNumber[0] - 1);
-                }
-            }
             if (blockNumber[0] > 0) {
                 var orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], blockNumber[0]);
                 this.latestBlocks.splice(0, this.latestBlocks.length); //清空
@@ -248,17 +230,9 @@ var view;
                         continue;
                     }
                     //当前位置不存在SnakeAdd，则...
-                    if (starBlock_order === i) {
-                        b.setState(Const.BLOCK_STATE_SPECIAL);
-                        this.blocks.push(b);
-                        this.latestBlocks.push(b);
-                        this.addChildren(b);
-                    }
-                    else {
-                        this.blocks.push(b);
-                        this.latestBlocks.push(b);
-                        this.addChildren(b);
-                    }
+                    this.blocks.push(b);
+                    this.latestBlocks.push(b);
+                    this.addChildren(b);
                 }
             }
             this.nextTimeNewBlocks = Common.getRandomArrayElements(Const.BLOCK_WALL_NEWTIMES, 1)[0];
@@ -266,21 +240,12 @@ var view;
         // 更新Grow集合SnakeAdds、Shields
         GameColorMode.prototype.updateSnakeAddsStatus = function () {
             var snakeAddNumber = Common.getRandomArrayElements(Const.SNAKE_ADD_NUMBERS, 1);
-            var shield_order;
-            if (snakeAddNumber[0] == 4) {
-                shield_order = Common.getRandomNumber(0, snakeAddNumber[0] - 1);
-            }
             if (snakeAddNumber[0] > 0) {
                 var orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], snakeAddNumber[0]);
                 this.latestSnakeAdds.splice(0, this.latestSnakeAdds.length); //清空
                 for (var i = 0; i < snakeAddNumber[0]; i++) {
                     var add = void 0;
-                    if (snakeAddNumber[0] == 4 && i == shield_order) {
-                        add = new sprite.Shield();
-                    }
-                    else {
-                        add = new sprite.SnakeAdd();
-                    }
+                    add = new sprite.SnakeAdd();
                     add.setPos(orders[i] * 82.8 + 41, -Const.BLOCK_WIDTH * 4);
                     //检测当前位置是否存在Block
                     var Flag = false;
@@ -303,12 +268,7 @@ var view;
                         continue;
                     }
                     //当前位置不存在Block，则...
-                    if (snakeAddNumber[0] == 4 && i == shield_order) {
-                        this.shields.push(add);
-                    }
-                    else {
-                        this.snakeAdds.push(add);
-                    }
+                    this.snakeAdds.push(add);
                     this.latestSnakeAdds.push(add);
                     this.addChildren(add);
                 }
@@ -325,18 +285,6 @@ var view;
                     snakeAdd.destory();
                     _this.snakeAdds.splice(_this.snakeAdds.indexOf(snakeAdd), 1);
                     Laya.SoundManager.playSound(Const.EAT_SNAKE_ADD_SOUND);
-                }
-            });
-            this.shields.forEach(function (shield) {
-                if (Math.pow((shield.PosX - _this.snake.bodyPosX[0]), 2) + Math.pow((shield.PosY - _this.snake.bodyPosY[0]), 2)
-                    < Math.pow(Const.SNAKE_BODY_RADIUS, 2) * 4) {
-                    Laya.SoundManager.playSound(Const.EAT_SHIELD_SOUND); //音效	
-                    //TODO: change the body color of this.snake OR someother specile effect
-                    if (_this.snake.state === Const.SNAKE_STATE_NORMAL) {
-                        _this.snake.setState(Const.SNAKE_STATE_SHIELD);
-                    }
-                    shield.destory();
-                    _this.shields.splice(_this.shields.indexOf(shield), 1);
                 }
             });
             this.directCollision = false;
@@ -360,15 +308,7 @@ var view;
                         p.setPos(block.PosX, block.PosY);
                         p.update();
                         _this.addChild(p);
-                        if (block.state === Const.BLOCK_STATE_NORMAL) {
-                            Laya.SoundManager.playSound(Const.BLOCK_BREAK); //音效
-                        }
-                        else if (block.state === Const.BLOCK_STATE_SPECIAL) {
-                            //TODU: change the state of snake to Super mode
-                            _this.snake.superTime = Const.SNAKE_SUPER_TIME;
-                            _this.snake.setState(Const.SNAKE_STATE_SUPER);
-                            Laya.SoundManager.playSound(Const.EAT_SHIELD_SOUND); //音效
-                        }
+                        Laya.SoundManager.playSound(Const.BLOCK_BREAK); //音效
                         block.destory();
                         _this.blocks.splice(_this.blocks.indexOf(block), 1);
                     }
@@ -413,20 +353,6 @@ var view;
                 }
             });
         };
-        // 更新Shield状态
-        GameColorMode.prototype.updateShields = function () {
-            var _this = this;
-            this.shields.forEach(function (shield) {
-                if (!_this.isDirectCollision()) {
-                    shield.PosY += _this.gameScrollSpeed;
-                    shield.update();
-                }
-                if ((shield.PosY - Const.SNAKE_BODY_RADIUS * 2) > Const.SCREEN_HEIGHT) {
-                    shield.destory();
-                    _this.shields.splice(_this.shields.indexOf(shield), 1);
-                }
-            });
-        };
         // 更新隔板状态
         GameColorMode.prototype.updateWalls = function () {
             var _this = this;
@@ -449,7 +375,6 @@ var view;
             this.snakeAdds.splice(0, this.snakeAdds.length);
             this.latestBlocks.splice(0, this.latestBlocks.length);
             this.latestSnakeAdds.splice(0, this.latestSnakeAdds.length);
-            this.shields.splice(0, this.shields.length);
             GameMain.status = GameStatus.Over;
             this.removeSelf();
             if (!GameMain.gameOver) {

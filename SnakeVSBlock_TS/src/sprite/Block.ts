@@ -64,10 +64,10 @@ module sprite {
                 if (this.value > 0)
                     Xoffset = Math.floor(Math.log(this.value) / Math.log(10)) + 1;
 
-                if(this.state === Const.BLOCK_STATE_NORMAL){
+                if(this.state === Const.BLOCK_STATE_NORMAL && Const.GAME_MODE === "normalMode"){
                     this.graphics.fillText(this.value.toString(), this.PosX - 3 * (Xoffset-1), this.PosY - 15, '30px Arial', '#000000', 'center');
                 }
-                else if(this.state === Const.BLOCK_STATE_SPECIAL){
+                else if(this.state === Const.BLOCK_STATE_SPECIAL && Const.GAME_MODE === "normalMode"){
                     this.graphics.fillText(this.value.toString(), this.PosX - 3 * (Xoffset-1), this.PosY - 35, '30px Arial', '#000000', 'center');
                     let starPath: any = [0, 0, 5, 10, 16, 10, 6, 16, 11, 27, 0, 21, -11, 27, -6, 16, -16, 10, -5, 10];
                     this.graphics.drawPoly(this.PosX - 3 * (Xoffset-1), this.PosY, starPath, "black");
@@ -77,13 +77,20 @@ module sprite {
 
         }
         public getBlockColor(): string {
-            let blockValue = this.value;
-            if (blockValue > 50) {
-                blockValue = 51;
-            }
+            if(Const.GAME_MODE === "normalMode"){
+                let blockValue = this.value;
+                if (blockValue > 50) {
+                    blockValue = 51;
+                }
 
-            let rgb = Const.BLOCK_COLORS[blockValue - 1];
-            return Common.rgbToHex(rgb);
+                let rgb = Const.BLOCK_COLORS[blockValue - 1];
+                return Common.rgbToHex(rgb);
+            }
+            else if(Const.GAME_MODE === "colorMode"){
+                let blockValue = this.value;
+                let rgb = Const.COLORS_COLORMODE[blockValue - 1];
+                return Common.rgbToHex(rgb);
+            }
         }
 
         public setState(state: string) {
@@ -95,7 +102,12 @@ module sprite {
 
         init(): void {
             this.state = Const.BLOCK_STATE_NORMAL;
-            this.setValue(Common.getRandomNumber(1, 50));
+            if(Const.GAME_MODE === "normalMode"){
+                this.setValue(Common.getRandomNumber(1, 50));
+            }
+            else if(Const.GAME_MODE === "colorMode"){
+                this.setValue(Common.getRandomNumber(1, 4));
+            }
             //this.setState(Const.BLOCK_STATE_SPECIAL);
             this.PosX = 0;
             this.PosY = 0;

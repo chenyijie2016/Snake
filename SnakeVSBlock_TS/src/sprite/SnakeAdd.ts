@@ -31,15 +31,38 @@ module sprite {
             if (this.visible) {
                 // Using Skin !!!
                 // this is just a demo
-                this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, '#FFFF00');
-                this.graphics.fillText(this.value.toString(), this.PosX, this.PosY - 35, '20px Arial', '#FFFFFF', 'center');
+                if(Const.GAME_MODE === "normalMode"){
+                    this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getBlockColor());
+                    this.graphics.fillText(this.value.toString(), this.PosX, this.PosY - 35, '20px Arial', '#FFFFFF', 'center');
+                }
+                else if(Const.GAME_MODE === "colorMode"){
+                    this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getBlockColor());
+                }
+
+                
 
                 // TODO: Using other image
             }
         }
 
+        public getBlockColor(): string {
+            if(Const.GAME_MODE === "normalMode"){
+                return '#FFFF00';
+            }
+            else if(Const.GAME_MODE === "colorMode"){
+                let blockValue = this.value;
+                let rgb = Const.COLORS_COLORMODE[blockValue - 1];
+                return Common.rgbToHex(rgb);
+            }
+        }
+
         init(): void {
-            this.setValue(Common.getRandomNumber(1, 5));
+            if(Const.GAME_MODE === "normalMode"){
+                this.setValue(Common.getRandomNumber(1, 5));
+            }
+            else if(Const.GAME_MODE === "colorMode"){
+                this.setValue(Common.getRandomNumber(1, 4));
+            }
             this.PosX = 0;
             this.PosY = 0;
         }
