@@ -45676,6 +45676,8 @@ var Const = /** @class */ (function () {
     Const.PARTICLE_COLORS = [[255, 0, 0], [255, 128, 0], [255, 255, 0], [0, 255, 0], [0, 255, 255], [0, 0, 255], [128, 0, 255]];
     //方块颜色
     Const.BLOCK_COLORS = [[59, 255, 253], [61, 255, 254], [57, 255, 229], [58, 255, 218], [59, 255, 204], [55, 255, 189], [59, 255, 178], [59, 255, 178], [59, 255, 155], [57, 255, 139], [57, 255, 139], [56, 255, 115], [56, 255, 105], [57, 255, 90], [58, 255, 78], [57, 255, 61], [65, 255, 48], [73, 255, 47], [82, 255, 47], [90, 255, 47], [99, 255, 48], [113, 255, 49], [126, 255, 47], [135, 255, 48], [151, 255, 51], [156, 255, 52], [172, 255, 47], [186, 255, 47], [198, 255, 47], [208, 255, 48], [222, 255, 49], [222, 255, 49], [245, 255, 50], [252, 255, 47], [251, 250, 46], [249, 234, 47], [249, 219, 47], [248, 204, 47], [249, 188, 48], [247, 172, 47], [246, 159, 46], [246, 144, 46], [246, 126, 48], [244, 112, 47], [243, 96, 46], [244, 84, 46], [239, 67, 43], [238, 51, 44], [239, 35, 46], [237, 21, 45]];
+    //彩色模式block和snake颜色
+    Const.COLORS_COLORMODE = [[255, 0, 0], [255, 255, 0], [0, 255, 255], [255, 0, 255]];
     Const.API_URL = 'https://chenyiji16.iterator-traits.com:12306';
     return Const;
 }());
@@ -45787,10 +45789,10 @@ var sprite;
                 var Xoffset = 1;
                 if (this.value > 0)
                     Xoffset = Math.floor(Math.log(this.value) / Math.log(10)) + 1;
-                if (this.state === Const.BLOCK_STATE_NORMAL) {
+                if (this.state === Const.BLOCK_STATE_NORMAL && Const.GAME_MODE === "normalMode") {
                     this.graphics.fillText(this.value.toString(), this.PosX - 3 * (Xoffset - 1), this.PosY - 15, '30px Arial', '#000000', 'center');
                 }
-                else if (this.state === Const.BLOCK_STATE_SPECIAL) {
+                else if (this.state === Const.BLOCK_STATE_SPECIAL && Const.GAME_MODE === "normalMode") {
                     this.graphics.fillText(this.value.toString(), this.PosX - 3 * (Xoffset - 1), this.PosY - 35, '30px Arial', '#000000', 'center');
                     var starPath = [0, 0, 5, 10, 16, 10, 6, 16, 11, 27, 0, 21, -11, 27, -6, 16, -16, 10, -5, 10];
                     this.graphics.drawPoly(this.PosX - 3 * (Xoffset - 1), this.PosY, starPath, "black");
@@ -45798,12 +45800,19 @@ var sprite;
             }
         };
         Block.prototype.getBlockColor = function () {
-            var blockValue = this.value;
-            if (blockValue > 50) {
-                blockValue = 51;
+            if (Const.GAME_MODE === "normalMode") {
+                var blockValue = this.value;
+                if (blockValue > 50) {
+                    blockValue = 51;
+                }
+                var rgb = Const.BLOCK_COLORS[blockValue - 1];
+                return Common.rgbToHex(rgb);
             }
-            var rgb = Const.BLOCK_COLORS[blockValue - 1];
-            return Common.rgbToHex(rgb);
+            else if (Const.GAME_MODE === "colorMode") {
+                var blockValue = this.value;
+                var rgb = Const.COLORS_COLORMODE[blockValue - 1];
+                return Common.rgbToHex(rgb);
+            }
         };
         Block.prototype.setState = function (state) {
             this.state = state;
@@ -45813,7 +45822,12 @@ var sprite;
         };
         Block.prototype.init = function () {
             this.state = Const.BLOCK_STATE_NORMAL;
-            this.setValue(Common.getRandomNumber(1, 50));
+            if (Const.GAME_MODE === "normalMode") {
+                this.setValue(Common.getRandomNumber(1, 50));
+            }
+            else if (Const.GAME_MODE === "colorMode") {
+                this.setValue(Common.getRandomNumber(1, 4));
+            }
             //this.setState(Const.BLOCK_STATE_SPECIAL);
             this.PosX = 0;
             this.PosY = 0;
@@ -46246,13 +46260,33 @@ var sprite;
             if (this.visible) {
                 // Using Skin !!!
                 // this is just a demo
-                this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, '#FFFF00');
-                this.graphics.fillText(this.value.toString(), this.PosX, this.PosY - 35, '20px Arial', '#FFFFFF', 'center');
+                if (Const.GAME_MODE === "normalMode") {
+                    this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getSnakeAddColor());
+                    this.graphics.fillText(this.value.toString(), this.PosX, this.PosY - 35, '20px Arial', '#FFFFFF', 'center');
+                }
+                else if (Const.GAME_MODE === "colorMode") {
+                    this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getSnakeAddColor());
+                }
                 // TODO: Using other image
             }
         };
+        SnakeAdd.prototype.getSnakeAddColor = function () {
+            if (Const.GAME_MODE === "normalMode") {
+                return '#FFFF00';
+            }
+            else if (Const.GAME_MODE === "colorMode") {
+                var blockValue = this.value;
+                var rgb = Const.COLORS_COLORMODE[blockValue - 1];
+                return Common.rgbToHex(rgb);
+            }
+        };
         SnakeAdd.prototype.init = function () {
-            this.setValue(Common.getRandomNumber(1, 5));
+            if (Const.GAME_MODE === "normalMode") {
+                this.setValue(Common.getRandomNumber(1, 5));
+            }
+            else if (Const.GAME_MODE === "colorMode") {
+                this.setValue(Common.getRandomNumber(1, 4));
+            }
             this.PosX = 0;
             this.PosY = 0;
         };
@@ -46532,7 +46566,6 @@ var view;
             _this.snakeAdds = new Array();
             _this.latestSnakeAdds = new Array();
             _this.walls = new Array();
-            _this.shields = new Array();
             return _this;
         }
         GameColorMode.prototype.setDebugInfo = function (msg) {
@@ -46583,19 +46616,8 @@ var view;
             this.snake.showBody();
             this.updateBlocks();
             this.updateSnakeAdds();
-            this.updateShields();
             this.updateWalls();
             this.updateCollisionDetection();
-            //更新snake_superTime
-            if (this.snake.state === Const.SNAKE_STATE_SUPER) {
-                if (this.snake.superTime === 0) {
-                    this.snake.setState(Const.SNAKE_STATE_NORMAL);
-                    this.snake.superTime = Const.SNAKE_SUPER_TIME;
-                }
-                else {
-                    this.snake.superTime--;
-                }
-            }
             // 更新方块集合Blocks
             if (this.nextTimeNewBlocks === undefined) {
             }
@@ -46709,12 +46731,6 @@ var view;
                 }
             }
             var blockNumber = Common.getRandomArrayElements(Const.BLOCK_NUMBERS, 1);
-            var starBlock_order = undefined;
-            if (blockNumber[0] === 5 || blockNumber[0] === 4) {
-                if (Common.getRandomNumber(0, 1) === 1) {
-                    starBlock_order = Common.getRandomNumber(0, blockNumber[0] - 1);
-                }
-            }
             if (blockNumber[0] > 0) {
                 var orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], blockNumber[0]);
                 this.latestBlocks.splice(0, this.latestBlocks.length); //清空
@@ -46742,17 +46758,9 @@ var view;
                         continue;
                     }
                     //当前位置不存在SnakeAdd，则...
-                    if (starBlock_order === i) {
-                        b.setState(Const.BLOCK_STATE_SPECIAL);
-                        this.blocks.push(b);
-                        this.latestBlocks.push(b);
-                        this.addChildren(b);
-                    }
-                    else {
-                        this.blocks.push(b);
-                        this.latestBlocks.push(b);
-                        this.addChildren(b);
-                    }
+                    this.blocks.push(b);
+                    this.latestBlocks.push(b);
+                    this.addChildren(b);
                 }
             }
             this.nextTimeNewBlocks = Common.getRandomArrayElements(Const.BLOCK_WALL_NEWTIMES, 1)[0];
@@ -46760,21 +46768,12 @@ var view;
         // 更新Grow集合SnakeAdds、Shields
         GameColorMode.prototype.updateSnakeAddsStatus = function () {
             var snakeAddNumber = Common.getRandomArrayElements(Const.SNAKE_ADD_NUMBERS, 1);
-            var shield_order;
-            if (snakeAddNumber[0] == 4) {
-                shield_order = Common.getRandomNumber(0, snakeAddNumber[0] - 1);
-            }
             if (snakeAddNumber[0] > 0) {
                 var orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], snakeAddNumber[0]);
                 this.latestSnakeAdds.splice(0, this.latestSnakeAdds.length); //清空
                 for (var i = 0; i < snakeAddNumber[0]; i++) {
                     var add = void 0;
-                    if (snakeAddNumber[0] == 4 && i == shield_order) {
-                        add = new sprite.Shield();
-                    }
-                    else {
-                        add = new sprite.SnakeAdd();
-                    }
+                    add = new sprite.SnakeAdd();
                     add.setPos(orders[i] * 82.8 + 41, -Const.BLOCK_WIDTH * 4);
                     //检测当前位置是否存在Block
                     var Flag = false;
@@ -46797,12 +46796,7 @@ var view;
                         continue;
                     }
                     //当前位置不存在Block，则...
-                    if (snakeAddNumber[0] == 4 && i == shield_order) {
-                        this.shields.push(add);
-                    }
-                    else {
-                        this.snakeAdds.push(add);
-                    }
+                    this.snakeAdds.push(add);
                     this.latestSnakeAdds.push(add);
                     this.addChildren(add);
                 }
@@ -46819,18 +46813,6 @@ var view;
                     snakeAdd.destory();
                     _this.snakeAdds.splice(_this.snakeAdds.indexOf(snakeAdd), 1);
                     Laya.SoundManager.playSound(Const.EAT_SNAKE_ADD_SOUND);
-                }
-            });
-            this.shields.forEach(function (shield) {
-                if (Math.pow((shield.PosX - _this.snake.bodyPosX[0]), 2) + Math.pow((shield.PosY - _this.snake.bodyPosY[0]), 2)
-                    < Math.pow(Const.SNAKE_BODY_RADIUS, 2) * 4) {
-                    Laya.SoundManager.playSound(Const.EAT_SHIELD_SOUND); //音效	
-                    //TODO: change the body color of this.snake OR someother specile effect
-                    if (_this.snake.state === Const.SNAKE_STATE_NORMAL) {
-                        _this.snake.setState(Const.SNAKE_STATE_SHIELD);
-                    }
-                    shield.destory();
-                    _this.shields.splice(_this.shields.indexOf(shield), 1);
                 }
             });
             this.directCollision = false;
@@ -46854,15 +46836,7 @@ var view;
                         p.setPos(block.PosX, block.PosY);
                         p.update();
                         _this.addChild(p);
-                        if (block.state === Const.BLOCK_STATE_NORMAL) {
-                            Laya.SoundManager.playSound(Const.BLOCK_BREAK); //音效
-                        }
-                        else if (block.state === Const.BLOCK_STATE_SPECIAL) {
-                            //TODU: change the state of snake to Super mode
-                            _this.snake.superTime = Const.SNAKE_SUPER_TIME;
-                            _this.snake.setState(Const.SNAKE_STATE_SUPER);
-                            Laya.SoundManager.playSound(Const.EAT_SHIELD_SOUND); //音效
-                        }
+                        Laya.SoundManager.playSound(Const.BLOCK_BREAK); //音效
                         block.destory();
                         _this.blocks.splice(_this.blocks.indexOf(block), 1);
                     }
@@ -46904,20 +46878,6 @@ var view;
                 if ((snakeAdd.PosY - Const.SNAKE_BODY_RADIUS * 2) > Const.SCREEN_HEIGHT) {
                     snakeAdd.destory();
                     _this.snakeAdds.splice(_this.snakeAdds.indexOf(snakeAdd), 1);
-                }
-            });
-        };
-        // 更新Shield状态
-        GameColorMode.prototype.updateShields = function () {
-            var _this = this;
-            this.shields.forEach(function (shield) {
-                if (!_this.isDirectCollision()) {
-                    shield.PosY += _this.gameScrollSpeed;
-                    shield.update();
-                }
-                if ((shield.PosY - Const.SNAKE_BODY_RADIUS * 2) > Const.SCREEN_HEIGHT) {
-                    shield.destory();
-                    _this.shields.splice(_this.shields.indexOf(shield), 1);
                 }
             });
         };
@@ -47603,6 +47563,7 @@ var view;
             this.snakeAdds.splice(0, this.snakeAdds.length);
             this.latestBlocks.splice(0, this.latestBlocks.length);
             this.latestSnakeAdds.splice(0, this.latestSnakeAdds.length);
+            this.shields.splice(0, this.shields.length);
             GameMain.status = GameStatus.Over;
             this.removeSelf();
             if (!GameMain.gameOver) {

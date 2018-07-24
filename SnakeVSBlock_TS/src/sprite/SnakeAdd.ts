@@ -32,11 +32,11 @@ module sprite {
                 // Using Skin !!!
                 // this is just a demo
                 if(Const.GAME_MODE === "normalMode"){
-                    this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getBlockColor());
+                    this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getSnakeAddColor());
                     this.graphics.fillText(this.value.toString(), this.PosX, this.PosY - 35, '20px Arial', '#FFFFFF', 'center');
                 }
                 else if(Const.GAME_MODE === "colorMode"){
-                    this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getBlockColor());
+                    this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getSnakeAddColor());
                 }
 
                 
@@ -45,7 +45,7 @@ module sprite {
             }
         }
 
-        public getBlockColor(): string {
+        public getSnakeAddColor(): string {
             if(Const.GAME_MODE === "normalMode"){
                 return '#FFFF00';
             }
