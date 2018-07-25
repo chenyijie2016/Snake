@@ -126,12 +126,12 @@ module view {
 
 			}
 			else {
-				if (this.nextTimeNewBlocks == 0) {
+				if (this.nextTimeNewBlocks <= 0) {
 					this.updateBlocks_WALLStatus();
 				}
 				else {
 					if (!this.isDirectCollision())
-						this.nextTimeNewBlocks--;
+						this.nextTimeNewBlocks -= this.gameScrollSpeed;;
 				}
 			}
 
@@ -140,12 +140,12 @@ module view {
 
 			}
 			else {
-				if (this.nextTimeNewAdds == 0) {
+				if (this.nextTimeNewAdds <= 0) {
 					this.updateSnakeAddsStatus();
 				}
 				else {
 					if (!this.isDirectCollision())
-						this.nextTimeNewAdds--;
+						this.nextTimeNewAdds -= this.gameScrollSpeed;
 				}
 			}
 
