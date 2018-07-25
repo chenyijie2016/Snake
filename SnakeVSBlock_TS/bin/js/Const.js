@@ -1,10 +1,20 @@
 /*
 * name Const Values;
 */
+var GameStatus;
+(function (GameStatus) {
+    GameStatus[GameStatus["Start"] = 0] = "Start";
+    GameStatus[GameStatus["Underway"] = 1] = "Underway";
+    GameStatus[GameStatus["Over"] = 2] = "Over";
+})(GameStatus || (GameStatus = {}));
+var GameMode;
+(function (GameMode) {
+    GameMode[GameMode["Normal"] = 0] = "Normal";
+    GameMode[GameMode["Color"] = 1] = "Color";
+})(GameMode || (GameMode = {})); //游戏模式
 var Const = /** @class */ (function () {
     function Const() {
     }
-    Const.GAME_MODE = "normalMode"; //游戏模式
     Const.SCREEN_WIDTH = 414; // 屏幕宽度
     Const.SCREEN_HEIGHT = 736; // 屏幕高度
     Const.SNAKE_FLEXIBILITY = 2; // 蛇的柔韧性，越小越不柔韧

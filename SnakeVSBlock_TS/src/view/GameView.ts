@@ -8,7 +8,7 @@ module view {
 		private snakeAdds: Array<sprite.SnakeAdd>;
 		private latestSnakeAdds: Array<sprite.SnakeAdd>; //最近生成的一行SnakeAdds
 		private walls: Array<sprite.Wall>;
-		private shields: Array<sprite.Shield>; 
+		private shields: Array<sprite.Shield>;
 		private lastMouseX: number;
 		private mouseDown: boolean;
 		private debugInfo: Laya.Text;
@@ -92,9 +92,14 @@ module view {
 				this.scoreDisplay.pos(Const.SCREEN_WIDTH - 25, 0);
 			}
 		}
+
+		private updateGameStatus() {
+			this.gameScrollSpeed = Const.GAME_SCROLL_SPEED + Math.floor(this.snake.length / 10) * 0.5;
+		}
+
 		// The Main Loop for the game 
 		private mainLoop(): void {
-
+			this.updateGameStatus()
 			this.updateScore();
 			this.detectMouseMove();
 			this.snake.updateBody();
@@ -106,13 +111,12 @@ module view {
 			this.updateCollisionDetection();
 
 			//更新snake_superTime
-			if(this.snake.state === Const.SNAKE_STATE_SUPER){
-				if(this.snake.superTime === 0)
-				{
+			if (this.snake.state === Const.SNAKE_STATE_SUPER) {
+				if (this.snake.superTime === 0) {
 					this.snake.setState(Const.SNAKE_STATE_NORMAL);
-					this.snake.superTime = Const.SNAKE_SUPER_TIME;	
+					this.snake.superTime = Const.SNAKE_SUPER_TIME;
 				}
-				else{
+				else {
 					this.snake.superTime--;
 				}
 			}
@@ -152,7 +156,6 @@ module view {
 			let currentMouseX = Laya.stage.mouseX;
 
 			if (this.mouseDown) {
-
 				let level = 1;
 				if (Math.abs(currentMouseX - this.lastMouseX) > 20) {
 					level = 40;
@@ -240,10 +243,10 @@ module view {
 
 			let blockNumber = Common.getRandomArrayElements(Const.BLOCK_NUMBERS, 1);
 			let starBlock_order = undefined;
-			if(blockNumber[0] === 5 || blockNumber[0] === 4){
-				if(Common.getRandomNumber(0, 1) === 1){
-					starBlock_order = Common.getRandomNumber(0, blockNumber[0]-1);
-				}	
+			if (blockNumber[0] === 5 || blockNumber[0] === 4) {
+				if (Common.getRandomNumber(0, 1) === 1) {
+					starBlock_order = Common.getRandomNumber(0, blockNumber[0] - 1);
+				}
 			}
 			if (blockNumber[0] > 0) {
 				let orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], blockNumber[0]);
@@ -273,18 +276,18 @@ module view {
 						continue;
 					}
 					//当前位置不存在SnakeAdd，则...
-					if(starBlock_order === i){
+					if (starBlock_order === i) {
 						b.setState(Const.BLOCK_STATE_SPECIAL);
 						this.blocks.push(b);
 						this.latestBlocks.push(b);
 						this.addChildren(b);
 					}
-					else{
+					else {
 						this.blocks.push(b);
 						this.latestBlocks.push(b);
 						this.addChildren(b);
 					}
-					
+
 				}
 			}
 			this.nextTimeNewBlocks = Common.getRandomArrayElements(Const.BLOCK_WALL_NEWTIMES, 1)[0];
@@ -294,18 +297,18 @@ module view {
 		private updateSnakeAddsStatus(): void {
 			let snakeAddNumber = Common.getRandomArrayElements(Const.SNAKE_ADD_NUMBERS, 1);
 			let shield_order;
-			if(snakeAddNumber[0] == 4){
-				shield_order = Common.getRandomNumber(0, snakeAddNumber[0]-1);
+			if (snakeAddNumber[0] == 4) {
+				shield_order = Common.getRandomNumber(0, snakeAddNumber[0] - 1);
 			}
 			if (snakeAddNumber[0] > 0) {
 				let orders = Common.getRandomArrayElements([0, 1, 2, 3, 4], snakeAddNumber[0]);
 				this.latestSnakeAdds.splice(0, this.latestSnakeAdds.length);//清空
 				for (let i = 0; i < snakeAddNumber[0]; i++) {
 					let add;
-					if(snakeAddNumber[0] == 4 && i == shield_order){
+					if (snakeAddNumber[0] == 4 && i == shield_order) {
 						add = new sprite.Shield();
 					}
-					else{
+					else {
 						add = new sprite.SnakeAdd();
 					}
 					add.setPos(orders[i] * 82.8 + 41, -Const.BLOCK_WIDTH * 4);
@@ -331,12 +334,12 @@ module view {
 						continue;
 					}
 					//当前位置不存在Block，则...
-					if(snakeAddNumber[0] == 4 && i == shield_order){
+					if (snakeAddNumber[0] == 4 && i == shield_order) {
 						this.shields.push(add);
 					}
-					else{
+					else {
 						this.snakeAdds.push(add);
-					}	
+					}
 					this.latestSnakeAdds.push(add);
 					this.addChildren(add);
 				}
@@ -361,7 +364,7 @@ module view {
 					< Const.SNAKE_BODY_RADIUS ** 2 * 4) {
 					Laya.SoundManager.playSound(Const.EAT_SHIELD_SOUND);//音效	
 					//TODO: change the body color of this.snake OR someother specile effect
-					if(this.snake.state === Const.SNAKE_STATE_NORMAL){
+					if (this.snake.state === Const.SNAKE_STATE_NORMAL) {
 						this.snake.setState(Const.SNAKE_STATE_SHIELD);
 					}
 
@@ -374,15 +377,15 @@ module view {
 			this.blocks.forEach((block) => {
 
 				if (block.PosX - Const.BLOCK_WIDTH / 2 <= this.snake.bodyPosX[0] + Const.SNAKE_BODY_RADIUS / 2
-				&& block.PosX + Const.BLOCK_WIDTH / 2 >= this.snake.bodyPosX[0] - Const.SNAKE_BODY_RADIUS / 2
-				&& Math.abs(block.PosY - this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)
-				&& block.PosY < this.snake.bodyPosY[0]) {
-					if(this.snake.state === Const.SNAKE_STATE_SHIELD){
+					&& block.PosX + Const.BLOCK_WIDTH / 2 >= this.snake.bodyPosX[0] - Const.SNAKE_BODY_RADIUS / 2
+					&& Math.abs(block.PosY - this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)
+					&& block.PosY < this.snake.bodyPosY[0]) {
+					if (this.snake.state === Const.SNAKE_STATE_SHIELD) {
 						this.snake.setState(Const.SNAKE_STATE_NORMAL);
 						this.score += block.getValue();
 						block.setValue(0);
 					}
-					else if(this.snake.state === Const.SNAKE_STATE_SUPER){
+					else if (this.snake.state === Const.SNAKE_STATE_SUPER) {
 						this.score += block.getValue();
 						block.setValue(0);
 					}
@@ -392,16 +395,16 @@ module view {
 						p.setPos(block.PosX, block.PosY);
 						p.update();
 						this.addChild(p);
-						if(block.state === Const.BLOCK_STATE_NORMAL){
+						if (block.state === Const.BLOCK_STATE_NORMAL) {
 							Laya.SoundManager.playSound(Const.BLOCK_BREAK);//音效
 						}
-						else if(block.state === Const.BLOCK_STATE_SPECIAL){
+						else if (block.state === Const.BLOCK_STATE_SPECIAL) {
 							//TODU: change the state of snake to Super mode
 							this.snake.superTime = Const.SNAKE_SUPER_TIME;
 							this.snake.setState(Const.SNAKE_STATE_SUPER);
 							Laya.SoundManager.playSound(Const.EAT_SHIELD_SOUND);//音效
 						}
-						
+
 
 						block.destory();
 						this.blocks.splice(this.blocks.indexOf(block), 1);

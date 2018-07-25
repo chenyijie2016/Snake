@@ -36,32 +36,42 @@ var sprite;
             if (this.visible) {
                 // Using Skin !!!
                 // this is just a demo
-                if (Const.GAME_MODE === "normalMode") {
-                    this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getSnakeAddColor());
-                    this.graphics.fillText(this.value.toString(), this.PosX, this.PosY - 35, '20px Arial', '#FFFFFF', 'center');
-                }
-                else if (Const.GAME_MODE === "colorMode") {
-                    this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getSnakeAddColor());
+                switch (GameMain.mode) {
+                    case GameMode.Normal: {
+                        this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getSnakeAddColor());
+                        this.graphics.fillText(this.value.toString(), this.PosX, this.PosY - 35, '20px Arial', '#FFFFFF', 'center');
+                        break;
+                    }
+                    case GameMode.Color: {
+                        this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getSnakeAddColor());
+                        break;
+                    }
                 }
                 // TODO: Using other image
             }
         };
         SnakeAdd.prototype.getSnakeAddColor = function () {
-            if (Const.GAME_MODE === "normalMode") {
-                return '#FFFF00';
-            }
-            else if (Const.GAME_MODE === "colorMode") {
-                var blockValue = this.value;
-                var rgb = Const.COLORS_COLORMODE[blockValue - 1];
-                return Common.rgbToHex(rgb);
+            switch (GameMain.mode) {
+                case GameMode.Normal: {
+                    return '#FFFF00';
+                }
+                case GameMode.Color: {
+                    var blockValue = this.value;
+                    var rgb = Const.COLORS_COLORMODE[blockValue - 1];
+                    return Common.rgbToHex(rgb);
+                }
             }
         };
         SnakeAdd.prototype.init = function () {
-            if (Const.GAME_MODE === "normalMode") {
-                this.setValue(Common.getRandomNumber(1, 5));
-            }
-            else if (Const.GAME_MODE === "colorMode") {
-                this.setValue(Common.getRandomNumber(1, 4));
+            switch (GameMain.mode) {
+                case GameMode.Normal: {
+                    this.setValue(Common.getRandomNumber(1, 5));
+                    break;
+                }
+                case GameMode.Color: {
+                    this.setValue(Common.getRandomNumber(1, 4));
+                    break;
+                }
             }
             this.PosX = 0;
             this.PosY = 0;

@@ -1,9 +1,10 @@
 /*
 * name Const Values;
 */
-class Const {
-    public static GAME_MODE: string = "normalMode"; //游戏模式
+enum GameStatus { Start, Underway, Over }
+enum GameMode {Normal, Color} //游戏模式
 
+class Const {
     public static SCREEN_WIDTH: number = 414; // 屏幕宽度
     public static SCREEN_HEIGHT: number = 736; // 屏幕高度
     public static SNAKE_FLEXIBILITY: number = 2; // 蛇的柔韧性，越小越不柔韧

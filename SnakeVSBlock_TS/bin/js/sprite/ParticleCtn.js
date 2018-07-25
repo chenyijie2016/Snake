@@ -31,28 +31,30 @@ var sprite;
         };
         ParticleCtn.prototype.update = function () {
             this.graphics.clear();
-            if (Const.GAME_MODE === "normalMode") {
-                if (this.visible) {
-                    for (var i = 0; i < 16; i++) {
-                        var p = new sprite.Particle();
-                        p.setPos(Math.cos(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5), Math.sin(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5));
-                        var color = Common.getRandomArrayElements(Const.PARTICLE_COLORS, 1)[0];
-                        p.setColor(Common.rgbToHex(color));
-                        p.update();
-                        this.Particles.push(p);
-                        this.addChild(p);
+            if (this.visible) {
+                switch (GameMain.mode) {
+                    case GameMode.Normal: {
+                        for (var i = 0; i < 16; i++) {
+                            var p = new sprite.Particle();
+                            p.setPos(Math.cos(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5), Math.sin(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5));
+                            var color = Common.getRandomArrayElements(Const.PARTICLE_COLORS, 1)[0];
+                            p.setColor(Common.rgbToHex(color));
+                            p.update();
+                            this.Particles.push(p);
+                            this.addChild(p);
+                        }
+                        break;
                     }
-                }
-            }
-            else if (Const.GAME_MODE === "colorMode") {
-                if (this.visible) {
-                    for (var i = 0; i < 16; i++) {
-                        var p = new sprite.Particle();
-                        p.setPos(Math.cos(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5), Math.sin(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5));
-                        p.setColor(this.Color);
-                        p.update();
-                        this.Particles.push(p);
-                        this.addChild(p);
+                    case GameMode.Color: {
+                        for (var i = 0; i < 16; i++) {
+                            var p = new sprite.Particle();
+                            p.setPos(Math.cos(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5), Math.sin(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5));
+                            p.setColor(this.Color);
+                            p.update();
+                            this.Particles.push(p);
+                            this.addChild(p);
+                        }
+                        break;
                     }
                 }
             }

@@ -81,8 +81,12 @@ var view;
                 this.scoreDisplay.pos(Const.SCREEN_WIDTH - 25, 0);
             }
         };
+        GameView.prototype.updateGameStatus = function () {
+            this.gameScrollSpeed = Const.GAME_SCROLL_SPEED + Math.floor(this.snake.length / 10) * 0.5;
+        };
         // The Main Loop for the game 
         GameView.prototype.mainLoop = function () {
+            this.updateGameStatus();
             this.updateScore();
             this.detectMouseMove();
             this.snake.updateBody();

@@ -20,7 +20,7 @@ var sprite;
             _this.headPosXHistory = new Array();
             _this.eachBodyColor = new Array();
             for (var i = 0; i < 300; i++) {
-                _this.headPosXHistory.push(207);
+                _this.headPosXHistory.push(Const.SCREEN_WIDTH / 2);
             }
             _this.init();
             return _this;
@@ -96,25 +96,28 @@ var sprite;
         };
         // 延长蛇身
         Snake.prototype.extendBody = function (parts) {
-            if (Const.GAME_MODE === "normalMode") {
-                var lastPosX = this.bodyPosX[this.length - 1];
-                this.length += parts;
-                for (var i = 0; i < parts; i++) {
+            switch (GameMain.mode) {
+                case GameMode.Normal: {
+                    var lastPosX = this.bodyPosX[this.length - 1];
+                    this.length += parts;
+                    for (var i = 0; i < parts; i++) {
+                        this.bodyPosX.push(lastPosX);
+                        this.bodyPosY.push(this.bodyPosY[this.bodyPosY.length - 1] + Const.SNAKE_BODY_DEFALUT_SPACING);
+                    }
+                    break;
+                }
+                case GameMode.Color: {
+                    var lastPosX = this.bodyPosX[this.length - 1];
+                    this.length += 1;
                     this.bodyPosX.push(lastPosX);
                     this.bodyPosY.push(this.bodyPosY[this.bodyPosY.length - 1] + Const.SNAKE_BODY_DEFALUT_SPACING);
+                    break;
                 }
-            }
-            else if (Const.GAME_MODE === "colorMode") {
-                var lastPosX = this.bodyPosX[this.length - 1];
-                this.length += 1;
-                this.bodyPosX.push(lastPosX);
-                this.bodyPosY.push(this.bodyPosY[this.bodyPosY.length - 1] + Const.SNAKE_BODY_DEFALUT_SPACING);
             }
         };
         //显示蛇身
         Snake.prototype.showBody = function () {
             this.graphics.clear();
-            //console.log('show body', this.bodyPosX);
             this.graphics.fillText(this.length.toString(), this.bodyPosX[0], this.bodyPosY[0] - 35, '20px Arial', '#FFFFFF', 'center');
             switch (this.state) {
                 case Const.SNAKE_STATE_SHIELD: {
@@ -139,6 +142,20 @@ var sprite;
                 // this is just a demo
                 this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, this.bodyColor);
                 // TODO: Using other image
+            }
+        };
+        Snake.prototype.shortenBody = function () {
+            switch (GameMain.mode) {
+                case GameMode.Normal:
+                    {
+                        this.length--;
+                        break;
+                    }
+                case GameMode.Color:
+                    {
+                        this.length--; //TODO : 蛇头数组的第一个移除！
+                        break;
+                    }
             }
         };
         // 向左移动

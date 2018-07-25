@@ -23,12 +23,12 @@ var view;
             return _this;
         }
         GameStart.prototype.onGameMode = function () {
-            if (Const.GAME_MODE === "normalMode") {
-                Const.GAME_MODE = "colorMode";
+            if (GameMain.mode === GameMode.Normal) {
+                GameMain.mode = GameMode.Color;
                 this.colorModeButton.selected = true;
             }
-            else if (Const.GAME_MODE === "colorMode") {
-                Const.GAME_MODE = "normalMode";
+            else if (GameMain.mode === GameMode.Color) {
+                GameMain.mode = GameMode.Normal;
                 this.colorModeButton.selected = false;
             }
         };
@@ -43,14 +43,14 @@ var view;
         GameStart.prototype.onGameStart = function () {
             Laya.SoundManager.playSound(Const.BUTTON_SOUND);
             this.removeSelf();
-            if (Const.GAME_MODE === "normalMode") {
+            if (GameMain.mode === GameMode.Normal) {
                 if (!GameMain.gameView) {
                     GameMain.gameView = new view.GameView();
                 }
                 GameMain.gameView.startGame();
                 Laya.stage.addChild(GameMain.gameView);
             }
-            else if (Const.GAME_MODE === "colorMode") {
+            else if (GameMain.mode === GameMode.Color) {
                 if (!GameMain.gameColorMode) {
                     GameMain.gameColorMode = new view.GameColorMode();
                 }

@@ -12,12 +12,15 @@ module view {
 		}
 		public drawUI(): void {
 			Laya.stage.once(Laya.Event.MOUSE_DOWN, this, this.onRestartGame);
-			if(Const.GAME_MODE === "normalMode"){
+
+			
+
+			if(GameMain.mode === GameMode.Normal){
 				this.gameScoreText.text = GameMain.gameView.score.toString();
 				GameMain.gameView.snake.removeSelf();
 				GameMain.gameView.removeSelf();
 			}
-			else if(Const.GAME_MODE === "colorMode"){
+			else if(GameMain.mode === GameMode.Color){
 				this.gameScoreText.text = GameMain.gameColorMode.score.toString();
 				GameMain.gameColorMode.snake.removeSelf();
 				GameMain.gameColorMode.removeSelf();

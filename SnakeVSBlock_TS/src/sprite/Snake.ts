@@ -19,7 +19,7 @@ module sprite {
             this.headPosXHistory = new Array<number>();
             this.eachBodyColor = new Array<string>();
             for (let i = 0; i < 300; i++) {
-                this.headPosXHistory.push(207);
+                this.headPosXHistory.push(Const.SCREEN_WIDTH / 2);
             }
 
             this.init();
@@ -104,28 +104,33 @@ module sprite {
         }
         // 延长蛇身
         public extendBody(parts: number): void {
-            if(Const.GAME_MODE === "normalMode"){
-                let lastPosX = this.bodyPosX[this.length - 1];
 
-                this.length += parts;
-                for (let i = 0; i < parts; i++) {
+            switch (GameMain.mode) {
+                case GameMode.Normal: {
+                    let lastPosX = this.bodyPosX[this.length - 1];
+                    this.length += parts;
+                    for (let i = 0; i < parts; i++) {
+                        this.bodyPosX.push(lastPosX);
+                        this.bodyPosY.push(this.bodyPosY[this.bodyPosY.length - 1] + Const.SNAKE_BODY_DEFALUT_SPACING);
+                    }
+                    break;
+                }
+                case GameMode.Color: {
+                    let lastPosX = this.bodyPosX[this.length - 1];
+                    this.length += 1;
                     this.bodyPosX.push(lastPosX);
                     this.bodyPosY.push(this.bodyPosY[this.bodyPosY.length - 1] + Const.SNAKE_BODY_DEFALUT_SPACING);
+                    break;
                 }
             }
-            else if(Const.GAME_MODE === "colorMode"){
-                let lastPosX = this.bodyPosX[this.length - 1];
 
-                this.length += 1;
-                this.bodyPosX.push(lastPosX);
-                this.bodyPosY.push(this.bodyPosY[this.bodyPosY.length - 1] + Const.SNAKE_BODY_DEFALUT_SPACING);
-            }
         }
+
+
 
         //显示蛇身
         public showBody(): void {
             this.graphics.clear();
-            //console.log('show body', this.bodyPosX);
             this.graphics.fillText(this.length.toString(), this.bodyPosX[0], this.bodyPosY[0] - 35, '20px Arial', '#FFFFFF', 'center');
 
             switch (this.state) {
@@ -152,6 +157,21 @@ module sprite {
                 this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, this.bodyColor);
 
                 // TODO: Using other image
+            }
+        }
+
+        public shortenBody() {
+            switch (GameMain.mode) {
+                case GameMode.Normal:
+                    {
+                        this.length--;
+                        break;
+                    }
+                case GameMode.Color:
+                    {
+                        this.length--;//TODO : 蛇头数组的第一个移除！
+                        break;
+                    }
             }
         }
 

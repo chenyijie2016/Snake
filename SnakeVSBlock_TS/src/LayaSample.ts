@@ -3,8 +3,6 @@ import Browser = Laya.Browser;
 import Stage = Laya.Stage;
 // 程序入口
 
-enum GameStatus { Start, Underway, Over }
-
 class GameMain {
     public static gameStart: view.GameStart;
     public static gameView: view.GameView;
@@ -12,6 +10,7 @@ class GameMain {
     public static leaderBoard: view.LeaderBoard;
     public static gameColorMode: view.GameColorMode;
     public static status: GameStatus;
+    public static mode: GameMode = GameMode.Normal;
     constructor() {
         GameMain.status = GameStatus.Start;
         Laya.MiniAdpter.init();

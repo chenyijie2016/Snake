@@ -11,7 +11,7 @@ module sprite {
             super();
             this.init();
         }
-        
+
         public getValue(): number {
             return this.value;
         }
@@ -31,37 +31,44 @@ module sprite {
             if (this.visible) {
                 // Using Skin !!!
                 // this is just a demo
-                if(Const.GAME_MODE === "normalMode"){
-                    this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getSnakeAddColor());
-                    this.graphics.fillText(this.value.toString(), this.PosX, this.PosY - 35, '20px Arial', '#FFFFFF', 'center');
+                switch (GameMain.mode) {
+                    case GameMode.Normal: {
+                        this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getSnakeAddColor());
+                        this.graphics.fillText(this.value.toString(), this.PosX, this.PosY - 35, '20px Arial', '#FFFFFF', 'center');
+                        break;
+                    }
+                    case GameMode.Color: {
+                        this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getSnakeAddColor());
+                        break;
+                    }
                 }
-                else if(Const.GAME_MODE === "colorMode"){
-                    this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getSnakeAddColor());
-                }
-
-                
-
                 // TODO: Using other image
             }
         }
 
         public getSnakeAddColor(): string {
-            if(Const.GAME_MODE === "normalMode"){
-                return '#FFFF00';
-            }
-            else if(Const.GAME_MODE === "colorMode"){
-                let blockValue = this.value;
-                let rgb = Const.COLORS_COLORMODE[blockValue - 1];
-                return Common.rgbToHex(rgb);
+            switch (GameMain.mode) {
+                case GameMode.Normal: {
+                    return '#FFFF00';
+                }
+                case GameMode.Color: {
+                    let blockValue = this.value;
+                    let rgb = Const.COLORS_COLORMODE[blockValue - 1];
+                    return Common.rgbToHex(rgb);
+                }
             }
         }
 
         init(): void {
-            if(Const.GAME_MODE === "normalMode"){
-                this.setValue(Common.getRandomNumber(1, 5));
-            }
-            else if(Const.GAME_MODE === "colorMode"){
-                this.setValue(Common.getRandomNumber(1, 4));
+            switch (GameMain.mode) {
+                case GameMode.Normal: {
+                    this.setValue(Common.getRandomNumber(1, 5));
+                    break;
+                }
+                case GameMode.Color: {
+                    this.setValue(Common.getRandomNumber(1, 4));
+                    break;
+                }
             }
             this.PosX = 0;
             this.PosY = 0;
