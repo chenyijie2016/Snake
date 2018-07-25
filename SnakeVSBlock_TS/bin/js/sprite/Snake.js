@@ -12,6 +12,7 @@ var sprite;
 (function (sprite) {
     var Snake = /** @class */ (function (_super) {
         __extends(Snake, _super);
+        //TODO 显然还需要给每段蛇的颜色建一个数组
         function Snake() {
             var _this = _super.call(this) || this;
             _this.graphics.clipRect(0, 0, Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);

@@ -320,27 +320,19 @@ module view{
 				&& block.PosX + Const.BLOCK_WIDTH / 2 >= this.snake.bodyPosX[0] - Const.SNAKE_BODY_RADIUS / 2
 				&& Math.abs(block.PosY - this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)
 				&& block.PosY < this.snake.bodyPosY[0]) {
-					if(this.snake.state === Const.SNAKE_STATE_SHIELD){
-						this.snake.setState(Const.SNAKE_STATE_NORMAL);
-						this.score += block.getValue();
-						block.setValue(0);
-					}
-					else if(this.snake.state === Const.SNAKE_STATE_SUPER){
-						this.score += block.getValue();
-						block.setValue(0);
-					}
 					this.directCollision = true;
-					if (!block.decreaseValue()) {
-						let p = new sprite.ParticleCtn();
-						p.setPos(block.PosX, block.PosY);
-						p.update();
-						this.addChild(p);
-						Laya.SoundManager.playSound(Const.BLOCK_BREAK);//音效
-						
 
-						block.destory();
-						this.blocks.splice(this.blocks.indexOf(block), 1);
-					}
+					let p = new sprite.ParticleCtn();
+					p.setPos(block.PosX, block.PosY);
+					p.setColor(Common.rgbToHex(Const.COLORS_COLORMODE[block.getValue()-1]));
+					p.update();
+					this.addChild(p);
+					Laya.SoundManager.playSound(Const.BLOCK_BREAK);//音效
+					
+
+					block.destory();
+					this.blocks.splice(this.blocks.indexOf(block), 1);
+					
 					if (this.snake.length <= 0) {
 						this.onGameOver();
 					}
