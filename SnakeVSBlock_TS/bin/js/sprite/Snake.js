@@ -12,13 +12,13 @@ var sprite;
 (function (sprite) {
     var Snake = /** @class */ (function (_super) {
         __extends(Snake, _super);
-        //TODO 显然还需要给每段蛇的颜色建一个数组
         function Snake() {
             var _this = _super.call(this) || this;
             _this.graphics.clipRect(0, 0, Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
             _this.bodyPosX = new Array();
             _this.bodyPosY = new Array();
             _this.headPosXHistory = new Array();
+            _this.eachBodyColor = new Array();
             for (var i = 0; i < 300; i++) {
                 _this.headPosXHistory.push(207);
             }
@@ -96,9 +96,17 @@ var sprite;
         };
         // 延长蛇身
         Snake.prototype.extendBody = function (parts) {
-            var lastPosX = this.bodyPosX[this.length - 1];
-            this.length += parts;
-            for (var i = 0; i < parts; i++) {
+            if (Const.GAME_MODE === "normalMode") {
+                var lastPosX = this.bodyPosX[this.length - 1];
+                this.length += parts;
+                for (var i = 0; i < parts; i++) {
+                    this.bodyPosX.push(lastPosX);
+                    this.bodyPosY.push(this.bodyPosY[this.bodyPosY.length - 1] + Const.SNAKE_BODY_DEFALUT_SPACING);
+                }
+            }
+            else if (Const.GAME_MODE === "colorMode") {
+                var lastPosX = this.bodyPosX[this.length - 1];
+                this.length += 1;
                 this.bodyPosX.push(lastPosX);
                 this.bodyPosY.push(this.bodyPosY[this.bodyPosY.length - 1] + Const.SNAKE_BODY_DEFALUT_SPACING);
             }

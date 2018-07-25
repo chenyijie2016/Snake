@@ -7,14 +7,17 @@ module sprite {
         public bodyColor: string;
         public headPosXHistory: Array<number>; // 记录每帧蛇头的历史轨迹(记录X坐标)
         public superTime: number
-
         //TODO 显然还需要给每段蛇的颜色建一个数组
+        public eachBodyColor: Array<string>; // 每段身体的颜色
+
+
         constructor() {
             super();
             this.graphics.clipRect(0, 0, Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
             this.bodyPosX = new Array<number>();
             this.bodyPosY = new Array<number>();
             this.headPosXHistory = new Array<number>();
+            this.eachBodyColor = new Array<string>();
             for (let i = 0; i < 300; i++) {
                 this.headPosXHistory.push(207);
             }
@@ -101,10 +104,19 @@ module sprite {
         }
         // 延长蛇身
         public extendBody(parts: number): void {
-            let lastPosX = this.bodyPosX[this.length - 1];
+            if(Const.GAME_MODE === "normalMode"){
+                let lastPosX = this.bodyPosX[this.length - 1];
 
-            this.length += parts;
-            for (let i = 0; i < parts; i++) {
+                this.length += parts;
+                for (let i = 0; i < parts; i++) {
+                    this.bodyPosX.push(lastPosX);
+                    this.bodyPosY.push(this.bodyPosY[this.bodyPosY.length - 1] + Const.SNAKE_BODY_DEFALUT_SPACING);
+                }
+            }
+            else if(Const.GAME_MODE === "colorMode"){
+                let lastPosX = this.bodyPosX[this.length - 1];
+
+                this.length += 1;
                 this.bodyPosX.push(lastPosX);
                 this.bodyPosY.push(this.bodyPosY[this.bodyPosY.length - 1] + Const.SNAKE_BODY_DEFALUT_SPACING);
             }
