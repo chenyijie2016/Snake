@@ -216,7 +216,7 @@ module view{
 				let orders = Common.getRandomArrayElements([1, 2, 3, 4], wallNumber[0]);
 				for (let i = 0; i < wallNumber[0]; i++) {
 					let w = new sprite.Wall();
-					w.setPos(orders[i] * 82.8 + 37.2, -Const.BLOCK_WIDTH * 3 - 1.5);
+					w.setPos(orders[i] * 82.8 + 37.2, -Const.BLOCK_WIDTH * 3 - 7.5);
 
 					this.walls.push(w);
 					this.addChildren(w);

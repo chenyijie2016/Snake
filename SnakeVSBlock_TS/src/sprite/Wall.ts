@@ -50,7 +50,7 @@ module sprite {
         }
 
         init(): void {
-            this.setLength(Common.getRandomArrayElements([101, 101, 101, 180, 180], 1)[0]);
+            this.setLength(Common.getRandomArrayElements(Const.WALL_LENGTH, 1)[0]);
             this.PosX = 0;
             this.PosY = 0;
         }

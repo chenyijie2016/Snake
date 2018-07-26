@@ -48,8 +48,9 @@ class Const {
     public static BLOCK_NUMBERS = [1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5];
     //每次添加WALL的随机数量【1-3】
     public static WALL_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3];
+    //Wall的随机长度
+    public static WALL_LENGTH = [100, 180];
     //添加BLOCK的随机帧数
-    //public static BLOCK_WALL_NEWTIMES = [60, 60, 60, 85, 85, 85, 85, 85, 85, 85, 85, 120, 120, 150];
     public static BLOCK_WALL_NEWTIMES = [160, 160, 240, 240, 240, 240, 240, 240, 240, 240, 240, 320, 320, 320, 320, 320, 400];
 
     //每次添加SNAKEADD的随机数量【1-3】 ---为4时有一个随机为SHIELD
