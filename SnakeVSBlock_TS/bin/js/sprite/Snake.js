@@ -111,6 +111,7 @@ var sprite;
                     this.length += 1;
                     this.bodyPosX.push(lastPosX);
                     this.bodyPosY.push(this.bodyPosY[this.bodyPosY.length - 1] + Const.SNAKE_BODY_DEFALUT_SPACING);
+                    this.eachBodyColor.push(Common.rgbToHex(Const.COLORS_COLORMODE[parts - 1]));
                     break;
                 }
             }
@@ -119,29 +120,39 @@ var sprite;
         Snake.prototype.showBody = function () {
             this.graphics.clear();
             this.graphics.fillText(this.length.toString(), this.bodyPosX[0], this.bodyPosY[0] - 35, '20px Arial', '#FFFFFF', 'center');
-            switch (this.state) {
-                case Const.SNAKE_STATE_SHIELD: {
-                    this.bodyColor = "red";
-                    break;
+            if (GameMain.mode === GameMode.Normal) {
+                switch (this.state) {
+                    case Const.SNAKE_STATE_SHIELD: {
+                        this.bodyColor = "red";
+                        break;
+                    }
+                    case Const.SNAKE_STATE_SUPER: {
+                        this.bodyColor = Common.getRandomArrayElements(["red", "yellow"], 1)[0];
+                        break;
+                    }
+                    case Const.SNAKE_STATE_NORMAL: {
+                        this.bodyColor = "#FFFF00";
+                        break;
+                    }
+                    default: {
+                        this.bodyColor = "#FFFF00";
+                        break;
+                    }
                 }
-                case Const.SNAKE_STATE_SUPER: {
-                    this.bodyColor = Common.getRandomArrayElements(["red", "yellow"], 1)[0];
-                    break;
-                }
-                case Const.SNAKE_STATE_NORMAL: {
-                    this.bodyColor = "#FFFF00";
-                    break;
-                }
-                default: {
-                    this.bodyColor = "#FFFF00";
-                    break;
+                for (var i = 0; i < this.length && i < Const.SNAKE_MAX_PARTS; i++) {
+                    // Using Skin !!!
+                    // this is just a demo
+                    this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, this.bodyColor);
+                    // TODO: Using other image
                 }
             }
-            for (var i = 0; i < this.length && i < Const.SNAKE_MAX_PARTS; i++) {
-                // Using Skin !!!
-                // this is just a demo
-                this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, this.bodyColor);
-                // TODO: Using other image
+            else if (GameMain.mode === GameMode.Color) {
+                for (var i = 0; i < this.length && i < Const.SNAKE_MAX_PARTS; i++) {
+                    // Using Skin !!!
+                    // this is just a demo
+                    this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, this.eachBodyColor[this.length - i - 1]);
+                    // TODO: Using other image
+                }
             }
         };
         Snake.prototype.shortenBody = function () {
@@ -153,7 +164,8 @@ var sprite;
                     }
                 case GameMode.Color:
                     {
-                        this.length--; //TODO : 蛇头数组的第一个移除！
+                        this.length--;
+                        //TODO : 蛇头数组的第一个移除！
                         break;
                     }
             }

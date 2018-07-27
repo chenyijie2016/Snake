@@ -56,6 +56,7 @@ module view{
 			GameMain.status = GameStatus.Underway;
 			this.snake.bodyPosX[0] = Const.SCREEN_WIDTH / 2;
 			this.snake.length = 1;
+			this.snake.eachBodyColor.push("white");
 			this.snake.bodyPosY[0] = Const.SCREEN_HEIGHT / 2;
 			Laya.stage.addChild(this.snake);
 			Laya.timer.frameLoop(1, this, this.mainLoop, null, false);// Every Frame
@@ -321,17 +322,26 @@ module view{
 				&& Math.abs(block.PosY - this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)
 				&& block.PosY < this.snake.bodyPosY[0]) {
 					this.directCollision = true;
-
-					let p = new sprite.ParticleCtn();
-					p.setPos(block.PosX, block.PosY);
-					p.setColor(Common.rgbToHex(Const.COLORS_COLORMODE[block.getValue()-1]));
-					p.update();
-					this.addChild(p);
-					Laya.SoundManager.playSound(Const.BLOCK_BREAK);//音效
-					
-
-					block.destory();
-					this.blocks.splice(this.blocks.indexOf(block), 1);
+					let blockColor = Common.rgbToHex(Const.COLORS_COLORMODE[block.getValue()-1]);
+					if(blockColor === this.snake.eachBodyColor[this.snake.length - 1]){
+						let p = new sprite.ParticleCtn();
+						p.setPos(block.PosX, block.PosY);
+						p.setColor(Common.rgbToHex(Const.COLORS_COLORMODE[block.getValue()-1]));
+						p.update();
+						this.addChild(p);
+						Laya.SoundManager.playSound(Const.BLOCK_BREAK);//音效
+						
+						this.snake.length--;
+						this.snake.eachBodyColor.pop();
+						this.score++;
+						block.destory();
+						this.blocks.splice(this.blocks.indexOf(block), 1);
+					}
+					else{
+						this.snake.length--;
+						this.score++;
+						this.snake.eachBodyColor.pop();
+					}
 					
 					if (this.snake.length <= 0) {
 						this.onGameOver();
