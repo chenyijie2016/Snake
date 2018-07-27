@@ -390,7 +390,7 @@ module view {
 						block.setValue(0);
 					}
 					this.directCollision = true;
-					if (!block.decreaseValue()) {
+					if (!block.decreaseValue() || block.getValue() === 0) {
 						let p = new sprite.ParticleCtn();
 						p.setPos(block.PosX, block.PosY);
 						p.update();
