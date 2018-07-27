@@ -4,6 +4,7 @@ var Stage = Laya.Stage;
 // 程序入口
 var GameMain = /** @class */ (function () {
     function GameMain() {
+        Laya.SoundManager.autoReleaseSound = false;
         GameMain.status = GameStatus.Start;
         Laya.MiniAdpter.init();
         Laya.init(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);

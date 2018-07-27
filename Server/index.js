@@ -122,7 +122,9 @@ app.get('/api/v1/user', function (req, res) {
 
 // 获取排行榜
 app.get('/api/v1/leaderboard', function (req, res) {
-    scoreCollection.find().sort({
+    scoreCollection.find({
+        visable: true
+    }).sort({
         score: -1
     }).limit(10).toArray(function (err, result) {
         if (!err)
@@ -140,6 +142,7 @@ app.post('/api/v1/score', function (req, res) {
             scoreCollection.insertOne({
                 openid: req.body.openid,
                 score: parseInt(req.body.score),
+                visable: true,
                 time: new Date().getTime()
             }, function (err, _result) {
                 if (err) {

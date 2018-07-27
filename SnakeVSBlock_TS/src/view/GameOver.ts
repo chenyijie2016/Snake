@@ -13,8 +13,6 @@ module view {
 		public drawUI(): void {
 			Laya.stage.once(Laya.Event.MOUSE_DOWN, this, this.onRestartGame);
 
-			
-
 			if(GameMain.mode === GameMode.Normal){
 				this.gameScoreText.text = GameMain.gameView.score.toString();
 				GameMain.gameView.snake.removeSelf();

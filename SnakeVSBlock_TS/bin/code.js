@@ -45625,10 +45625,20 @@ if (typeof define === 'function' && define.amd){
 /*
 * name Const Values;
 */
+var GameStatus;
+(function (GameStatus) {
+    GameStatus[GameStatus["Start"] = 0] = "Start";
+    GameStatus[GameStatus["Underway"] = 1] = "Underway";
+    GameStatus[GameStatus["Over"] = 2] = "Over";
+})(GameStatus || (GameStatus = {}));
+var GameMode;
+(function (GameMode) {
+    GameMode[GameMode["Normal"] = 0] = "Normal";
+    GameMode[GameMode["Color"] = 1] = "Color";
+})(GameMode || (GameMode = {})); //游戏模式
 var Const = /** @class */ (function () {
     function Const() {
     }
-    Const.GAME_MODE = "normalMode"; //游戏模式
     Const.SCREEN_WIDTH = 414; // 屏幕宽度
     Const.SCREEN_HEIGHT = 736; // 屏幕高度
     Const.SNAKE_FLEXIBILITY = 2; // 蛇的柔韧性，越小越不柔韧
@@ -45666,12 +45676,14 @@ var Const = /** @class */ (function () {
     Const.BLOCK_NUMBERS = [1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5];
     //每次添加WALL的随机数量【1-3】
     Const.WALL_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3];
+    //Wall的随机长度
+    Const.WALL_LENGTH = [100, 180];
     //添加BLOCK的随机帧数
-    Const.BLOCK_WALL_NEWTIMES = [60, 60, 60, 85, 85, 85, 85, 85, 85, 85, 85, 120, 120, 150];
+    Const.BLOCK_WALL_NEWTIMES = [160, 160, 240, 240, 240, 240, 240, 240, 240, 240, 240, 320, 320, 320, 320, 320, 400];
     //每次添加SNAKEADD的随机数量【1-3】 ---为4时有一个随机为SHIELD
     Const.SNAKE_ADD_NUMBERS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4];
     //添加SNAKEADD的随机帧数
-    Const.SNAKE_ADD_NEWTIMES = [50, 70, 70, 70, 90, 90, 90, 90, 90, 95, 130];
+    Const.SNAKE_ADD_NEWTIMES = [160, 160, 160, 240, 240, 240, 240, 240, 240, 240, 240, 320, 320, 320, 400];
     //粒子颜色
     Const.PARTICLE_COLORS = [[255, 0, 0], [255, 128, 0], [255, 255, 0], [0, 255, 0], [0, 255, 255], [0, 0, 255], [128, 0, 255]];
     //方块颜色
@@ -45761,11 +45773,12 @@ var sprite;
                 this.decreaseCount = 0;
                 if (this.value > 0) {
                     this.value--;
-                    if (Const.GAME_MODE === "normalMode") {
+                    // TODO :refactor
+                    if (GameMain.mode === GameMode.Normal) {
                         GameMain.gameView.score++;
                         GameMain.gameView.snake.length--;
                     }
-                    else if (Const.GAME_MODE === "colorMode") {
+                    else if (GameMain.mode === GameMode.Color) {
                         GameMain.gameColorMode.score++;
                         GameMain.gameColorMode.snake.length--;
                     }
@@ -45789,10 +45802,10 @@ var sprite;
                 var Xoffset = 1;
                 if (this.value > 0)
                     Xoffset = Math.floor(Math.log(this.value) / Math.log(10)) + 1;
-                if (this.state === Const.BLOCK_STATE_NORMAL && Const.GAME_MODE === "normalMode") {
+                if (this.state === Const.BLOCK_STATE_NORMAL && GameMain.mode === GameMode.Normal) {
                     this.graphics.fillText(this.value.toString(), this.PosX - 3 * (Xoffset - 1), this.PosY - 15, '30px Arial', '#000000', 'center');
                 }
-                else if (this.state === Const.BLOCK_STATE_SPECIAL && Const.GAME_MODE === "normalMode") {
+                else if (this.state === Const.BLOCK_STATE_SPECIAL && GameMain.mode === GameMode.Normal) {
                     this.graphics.fillText(this.value.toString(), this.PosX - 3 * (Xoffset - 1), this.PosY - 35, '30px Arial', '#000000', 'center');
                     var starPath = [0, 0, 5, 10, 16, 10, 6, 16, 11, 27, 0, 21, -11, 27, -6, 16, -16, 10, -5, 10];
                     this.graphics.drawPoly(this.PosX - 3 * (Xoffset - 1), this.PosY, starPath, "black");
@@ -45800,7 +45813,7 @@ var sprite;
             }
         };
         Block.prototype.getBlockColor = function () {
-            if (Const.GAME_MODE === "normalMode") {
+            if (GameMain.mode === GameMode.Normal) {
                 var blockValue = this.value;
                 if (blockValue > 50) {
                     blockValue = 51;
@@ -45808,7 +45821,7 @@ var sprite;
                 var rgb = Const.BLOCK_COLORS[blockValue - 1];
                 return Common.rgbToHex(rgb);
             }
-            else if (Const.GAME_MODE === "colorMode") {
+            else if (GameMain.mode === GameMode.Color) {
                 var blockValue = this.value;
                 var rgb = Const.COLORS_COLORMODE[blockValue - 1];
                 return Common.rgbToHex(rgb);
@@ -45822,10 +45835,10 @@ var sprite;
         };
         Block.prototype.init = function () {
             this.state = Const.BLOCK_STATE_NORMAL;
-            if (Const.GAME_MODE === "normalMode") {
+            if (GameMain.mode === GameMode.Normal) {
                 this.setValue(Common.getRandomNumber(1, 50));
             }
-            else if (Const.GAME_MODE === "colorMode") {
+            else if (GameMain.mode === GameMode.Color) {
                 this.setValue(Common.getRandomNumber(1, 4));
             }
             //this.setState(Const.BLOCK_STATE_SPECIAL);
@@ -45969,17 +45982,36 @@ var sprite;
             this.PosY = y;
             this.pos(this.PosX, this.PosY);
         };
+        ParticleCtn.prototype.setColor = function (color) {
+            this.Color = color;
+        };
         ParticleCtn.prototype.update = function () {
             this.graphics.clear();
             if (this.visible) {
-                for (var i = 0; i < 16; i++) {
-                    var p = new sprite.Particle();
-                    p.setPos(Math.cos(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5), Math.sin(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5));
-                    var color = Common.getRandomArrayElements(Const.PARTICLE_COLORS, 1)[0];
-                    p.setColor(Common.rgbToHex(color));
-                    p.update();
-                    this.Particles.push(p);
-                    this.addChild(p);
+                switch (GameMain.mode) {
+                    case GameMode.Normal: {
+                        for (var i = 0; i < 16; i++) {
+                            var p = new sprite.Particle();
+                            p.setPos(Math.cos(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5), Math.sin(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5));
+                            var color = Common.getRandomArrayElements(Const.PARTICLE_COLORS, 1)[0];
+                            p.setColor(Common.rgbToHex(color));
+                            p.update();
+                            this.Particles.push(p);
+                            this.addChild(p);
+                        }
+                        break;
+                    }
+                    case GameMode.Color: {
+                        for (var i = 0; i < 16; i++) {
+                            var p = new sprite.Particle();
+                            p.setPos(Math.cos(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5), Math.sin(this.radianUnit * i) * this.layoutRadius * (i % 2 == 0 ? 1 : 0.5));
+                            p.setColor(this.Color);
+                            p.update();
+                            this.Particles.push(p);
+                            this.addChild(p);
+                        }
+                        break;
+                    }
                 }
             }
             this.timer.frameLoop(4, this, this.animate);
@@ -46096,13 +46128,15 @@ var sprite;
             _this.bodyPosX = new Array();
             _this.bodyPosY = new Array();
             _this.headPosXHistory = new Array();
+            _this.eachBodyColor = new Array();
             for (var i = 0; i < 300; i++) {
-                _this.headPosXHistory.push(207);
+                _this.headPosXHistory.push(Const.SCREEN_WIDTH / 2);
             }
             _this.init();
             return _this;
         }
         Snake.prototype.init = function () {
+            // 默认长度为1，放在屏幕正中间
             this.state = Const.SNAKE_STATE_NORMAL;
             this.length = 1;
             this.bodyPosX.push(Const.SCREEN_WIDTH / 2);
@@ -46116,6 +46150,7 @@ var sprite;
             this.state = state;
         };
         Snake.prototype.updateHeadHistory = function () {
+            // 每300帧刷新一下headPosXHistory数组
             this.headPosXHistory = this.headPosXHistory.slice(0, 300);
         };
         Snake.prototype.updateBody = function () {
@@ -46125,6 +46160,7 @@ var sprite;
             var i = 0;
             var j = 0;
             var DiffY = Const.GAME_SCROLL_SPEED;
+            // 根据历史坐标求移动长度，每达到一段蛇身长度就将该段蛇身的位置进行更新
             while (i < this.length && i < Const.SNAKE_MAX_PARTS && j < 240) {
                 j++;
                 Len += Math.sqrt(Math.pow(Math.abs(this.headPosXHistory[j] - this.headPosXHistory[j - 1]), 2) + Math.pow(DiffY, 2));
@@ -46168,54 +46204,97 @@ var sprite;
             //     //this.showBody();
             // }
         };
+        // 延长蛇身
         Snake.prototype.extendBody = function (parts) {
-            var lastPosX = this.bodyPosX[this.length - 1];
-            this.length += parts;
-            for (var i = 0; i < parts; i++) {
-                this.bodyPosX.push(lastPosX);
-                this.bodyPosY.push(this.bodyPosY[this.bodyPosY.length - 1] + Const.SNAKE_BODY_DEFALUT_SPACING);
+            switch (GameMain.mode) {
+                case GameMode.Normal: {
+                    var lastPosX = this.bodyPosX[this.length - 1];
+                    this.length += parts;
+                    for (var i = 0; i < parts; i++) {
+                        this.bodyPosX.push(lastPosX);
+                        this.bodyPosY.push(this.bodyPosY[this.bodyPosY.length - 1] + Const.SNAKE_BODY_DEFALUT_SPACING);
+                    }
+                    break;
+                }
+                case GameMode.Color: {
+                    var lastPosX = this.bodyPosX[this.length - 1];
+                    this.length += 1;
+                    this.bodyPosX.push(lastPosX);
+                    this.bodyPosY.push(this.bodyPosY[this.bodyPosY.length - 1] + Const.SNAKE_BODY_DEFALUT_SPACING);
+                    this.eachBodyColor.push(Common.rgbToHex(Const.COLORS_COLORMODE[parts - 1]));
+                    break;
+                }
             }
         };
+        //显示蛇身
         Snake.prototype.showBody = function () {
             this.graphics.clear();
-            //console.log('show body', this.bodyPosX);
             this.graphics.fillText(this.length.toString(), this.bodyPosX[0], this.bodyPosY[0] - 35, '20px Arial', '#FFFFFF', 'center');
-            switch (this.state) {
-                case Const.SNAKE_STATE_SHIELD: {
-                    this.bodyColor = "red";
-                    break;
+            if (GameMain.mode === GameMode.Normal) {
+                switch (this.state) {
+                    case Const.SNAKE_STATE_SHIELD: {
+                        this.bodyColor = "red";
+                        break;
+                    }
+                    case Const.SNAKE_STATE_SUPER: {
+                        this.bodyColor = Common.getRandomArrayElements(["red", "yellow"], 1)[0];
+                        break;
+                    }
+                    case Const.SNAKE_STATE_NORMAL: {
+                        this.bodyColor = "#FFFF00";
+                        break;
+                    }
+                    default: {
+                        this.bodyColor = "#FFFF00";
+                        break;
+                    }
                 }
-                case Const.SNAKE_STATE_SUPER: {
-                    this.bodyColor = Common.getRandomArrayElements(["red", "yellow"], 1)[0];
-                    break;
-                }
-                case Const.SNAKE_STATE_NORMAL: {
-                    this.bodyColor = "#FFFF00";
-                    break;
-                }
-                default: {
-                    this.bodyColor = "#FFFF00";
-                    break;
+                for (var i = 0; i < this.length && i < Const.SNAKE_MAX_PARTS; i++) {
+                    // Using Skin !!!
+                    // this is just a demo
+                    this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, this.bodyColor);
+                    // TODO: Using other image
                 }
             }
-            for (var i = 0; i < this.length && i < Const.SNAKE_MAX_PARTS; i++) {
-                // Using Skin !!!
-                // this is just a demo
-                this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, this.bodyColor);
-                // TODO: Using other image
+            else if (GameMain.mode === GameMode.Color) {
+                for (var i = 0; i < this.length && i < Const.SNAKE_MAX_PARTS; i++) {
+                    // Using Skin !!!
+                    // this is just a demo
+                    this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, this.eachBodyColor[this.length - i - 1]);
+                    // TODO: Using other image
+                }
             }
         };
+        Snake.prototype.shortenBody = function () {
+            switch (GameMain.mode) {
+                case GameMode.Normal:
+                    {
+                        this.length--;
+                        break;
+                    }
+                case GameMode.Color:
+                    {
+                        this.length--;
+                        //TODO : 蛇头数组的第一个移除！
+                        break;
+                    }
+            }
+        };
+        // 向左移动
         Snake.prototype.moveLeft = function (level) {
-            this.bodyPosX[0] -= level;
-            if (this.bodyPosX[0] < 0) {
+            if (this.bodyPosX[0] - level < Const.SNAKE_BODY_RADIUS) {
                 this.bodyPosX[0] = Const.SNAKE_BODY_RADIUS;
             }
+            else
+                this.bodyPosX[0] -= level;
         };
+        // 向右移动
         Snake.prototype.moveRight = function (level) {
-            this.bodyPosX[0] += level;
-            if (this.bodyPosX[0] > Const.SCREEN_WIDTH) {
+            if (this.bodyPosX[0] + level > Const.SCREEN_WIDTH - Const.SNAKE_BODY_RADIUS) {
                 this.bodyPosX[0] = Const.SCREEN_WIDTH - Const.SNAKE_BODY_RADIUS;
             }
+            else
+                this.bodyPosX[0] += level;
         };
         return Snake;
     }(Laya.Sprite));
@@ -46260,32 +46339,42 @@ var sprite;
             if (this.visible) {
                 // Using Skin !!!
                 // this is just a demo
-                if (Const.GAME_MODE === "normalMode") {
-                    this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getSnakeAddColor());
-                    this.graphics.fillText(this.value.toString(), this.PosX, this.PosY - 35, '20px Arial', '#FFFFFF', 'center');
-                }
-                else if (Const.GAME_MODE === "colorMode") {
-                    this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getSnakeAddColor());
+                switch (GameMain.mode) {
+                    case GameMode.Normal: {
+                        this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getSnakeAddColor());
+                        this.graphics.fillText(this.value.toString(), this.PosX, this.PosY - 35, '20px Arial', '#FFFFFF', 'center');
+                        break;
+                    }
+                    case GameMode.Color: {
+                        this.graphics.drawCircle(this.PosX, this.PosY, Const.SNAKE_BODY_RADIUS, this.getSnakeAddColor());
+                        break;
+                    }
                 }
                 // TODO: Using other image
             }
         };
         SnakeAdd.prototype.getSnakeAddColor = function () {
-            if (Const.GAME_MODE === "normalMode") {
-                return '#FFFF00';
-            }
-            else if (Const.GAME_MODE === "colorMode") {
-                var blockValue = this.value;
-                var rgb = Const.COLORS_COLORMODE[blockValue - 1];
-                return Common.rgbToHex(rgb);
+            switch (GameMain.mode) {
+                case GameMode.Normal: {
+                    return '#FFFF00';
+                }
+                case GameMode.Color: {
+                    var blockValue = this.value;
+                    var rgb = Const.COLORS_COLORMODE[blockValue - 1];
+                    return Common.rgbToHex(rgb);
+                }
             }
         };
         SnakeAdd.prototype.init = function () {
-            if (Const.GAME_MODE === "normalMode") {
-                this.setValue(Common.getRandomNumber(1, 5));
-            }
-            else if (Const.GAME_MODE === "colorMode") {
-                this.setValue(Common.getRandomNumber(1, 4));
+            switch (GameMain.mode) {
+                case GameMode.Normal: {
+                    this.setValue(Common.getRandomNumber(1, 5));
+                    break;
+                }
+                case GameMode.Color: {
+                    this.setValue(Common.getRandomNumber(1, 4));
+                    break;
+                }
             }
             this.PosX = 0;
             this.PosY = 0;
@@ -46354,7 +46443,7 @@ var sprite;
             }
         };
         Wall.prototype.init = function () {
-            this.setLength(Common.getRandomArrayElements([101, 101, 101, 180, 180], 1)[0]);
+            this.setLength(Common.getRandomArrayElements(Const.WALL_LENGTH, 1)[0]);
             this.PosX = 0;
             this.PosY = 0;
         };
@@ -46579,6 +46668,7 @@ var view;
             GameMain.status = GameStatus.Underway;
             this.snake.bodyPosX[0] = Const.SCREEN_WIDTH / 2;
             this.snake.length = 1;
+            this.snake.eachBodyColor.push("white");
             this.snake.bodyPosY[0] = Const.SCREEN_HEIGHT / 2;
             Laya.stage.addChild(this.snake);
             Laya.timer.frameLoop(1, this, this.mainLoop, null, false); // Every Frame
@@ -46622,24 +46712,25 @@ var view;
             if (this.nextTimeNewBlocks === undefined) {
             }
             else {
-                if (this.nextTimeNewBlocks == 0) {
+                if (this.nextTimeNewBlocks <= 0) {
                     this.updateBlocks_WALLStatus();
                 }
                 else {
                     if (!this.isDirectCollision())
-                        this.nextTimeNewBlocks--;
+                        this.nextTimeNewBlocks -= this.gameScrollSpeed;
+                    ;
                 }
             }
             // 更新Grow集合SnakeAdds 
             if (this.nextTimeNewAdds === undefined) {
             }
             else {
-                if (this.nextTimeNewAdds == 0) {
+                if (this.nextTimeNewAdds <= 0) {
                     this.updateSnakeAddsStatus();
                 }
                 else {
                     if (!this.isDirectCollision())
-                        this.nextTimeNewAdds--;
+                        this.nextTimeNewAdds -= this.gameScrollSpeed;
                 }
             }
         };
@@ -46725,7 +46816,7 @@ var view;
                 var orders = Common.getRandomArrayElements([1, 2, 3, 4], wallNumber[0]);
                 for (var i = 0; i < wallNumber[0]; i++) {
                     var w = new sprite.Wall();
-                    w.setPos(orders[i] * 82.8 + 37.2, -Const.BLOCK_WIDTH * 3 - 1.5);
+                    w.setPos(orders[i] * 82.8 + 37.2, -Const.BLOCK_WIDTH * 3 - 7.5);
                     this.walls.push(w);
                     this.addChildren(w);
                 }
@@ -46821,24 +46912,25 @@ var view;
                     && block.PosX + Const.BLOCK_WIDTH / 2 >= _this.snake.bodyPosX[0] - Const.SNAKE_BODY_RADIUS / 2
                     && Math.abs(block.PosY - _this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)
                     && block.PosY < _this.snake.bodyPosY[0]) {
-                    if (_this.snake.state === Const.SNAKE_STATE_SHIELD) {
-                        _this.snake.setState(Const.SNAKE_STATE_NORMAL);
-                        _this.score += block.getValue();
-                        block.setValue(0);
-                    }
-                    else if (_this.snake.state === Const.SNAKE_STATE_SUPER) {
-                        _this.score += block.getValue();
-                        block.setValue(0);
-                    }
                     _this.directCollision = true;
-                    if (!block.decreaseValue()) {
+                    var blockColor = Common.rgbToHex(Const.COLORS_COLORMODE[block.getValue() - 1]);
+                    if (blockColor === _this.snake.eachBodyColor[_this.snake.length - 1]) {
                         var p = new sprite.ParticleCtn();
                         p.setPos(block.PosX, block.PosY);
+                        p.setColor(Common.rgbToHex(Const.COLORS_COLORMODE[block.getValue() - 1]));
                         p.update();
                         _this.addChild(p);
                         Laya.SoundManager.playSound(Const.BLOCK_BREAK); //音效
+                        _this.snake.length--;
+                        _this.snake.eachBodyColor.pop();
+                        _this.score++;
                         block.destory();
                         _this.blocks.splice(_this.blocks.indexOf(block), 1);
+                    }
+                    else {
+                        _this.snake.length--;
+                        _this.score++;
+                        _this.snake.eachBodyColor.pop();
                     }
                     if (_this.snake.length <= 0) {
                         _this.onGameOver();
@@ -46941,12 +47033,12 @@ var view;
         }
         GameOver.prototype.drawUI = function () {
             Laya.stage.once(Laya.Event.MOUSE_DOWN, this, this.onRestartGame);
-            if (Const.GAME_MODE === "normalMode") {
+            if (GameMain.mode === GameMode.Normal) {
                 this.gameScoreText.text = GameMain.gameView.score.toString();
                 GameMain.gameView.snake.removeSelf();
                 GameMain.gameView.removeSelf();
             }
-            else if (Const.GAME_MODE === "colorMode") {
+            else if (GameMain.mode === GameMode.Color) {
                 this.gameScoreText.text = GameMain.gameColorMode.score.toString();
                 GameMain.gameColorMode.snake.removeSelf();
                 GameMain.gameColorMode.removeSelf();
@@ -47006,12 +47098,12 @@ var view;
             return _this;
         }
         GameStart.prototype.onGameMode = function () {
-            if (Const.GAME_MODE === "normalMode") {
-                Const.GAME_MODE = "colorMode";
+            if (GameMain.mode === GameMode.Normal) {
+                GameMain.mode = GameMode.Color;
                 this.colorModeButton.selected = true;
             }
-            else if (Const.GAME_MODE === "colorMode") {
-                Const.GAME_MODE = "normalMode";
+            else if (GameMain.mode === GameMode.Color) {
+                GameMain.mode = GameMode.Normal;
                 this.colorModeButton.selected = false;
             }
         };
@@ -47026,14 +47118,14 @@ var view;
         GameStart.prototype.onGameStart = function () {
             Laya.SoundManager.playSound(Const.BUTTON_SOUND);
             this.removeSelf();
-            if (Const.GAME_MODE === "normalMode") {
+            if (GameMain.mode === GameMode.Normal) {
                 if (!GameMain.gameView) {
                     GameMain.gameView = new view.GameView();
                 }
                 GameMain.gameView.startGame();
                 Laya.stage.addChild(GameMain.gameView);
             }
-            else if (Const.GAME_MODE === "colorMode") {
+            else if (GameMain.mode === GameMode.Color) {
                 if (!GameMain.gameColorMode) {
                     GameMain.gameColorMode = new view.GameColorMode();
                 }
@@ -47167,6 +47259,8 @@ var view;
             this.snake.bodyPosX[0] = Const.SCREEN_WIDTH / 2;
             this.snake.length = 1;
             this.snake.bodyPosY[0] = Const.SCREEN_HEIGHT / 2;
+            //just for debug
+            this.snake.extendBody(100);
             Laya.stage.addChild(this.snake);
             Laya.timer.frameLoop(1, this, this.mainLoop, null, false); // Every Frame
             Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
@@ -47195,8 +47289,12 @@ var view;
                 this.scoreDisplay.pos(Const.SCREEN_WIDTH - 25, 0);
             }
         };
+        GameView.prototype.updateGameStatus = function () {
+            this.gameScrollSpeed = Const.GAME_SCROLL_SPEED + Math.floor(this.snake.length / 10) * 0.1;
+        };
         // The Main Loop for the game 
         GameView.prototype.mainLoop = function () {
+            this.updateGameStatus();
             this.updateScore();
             this.detectMouseMove();
             this.snake.updateBody();
@@ -47220,31 +47318,32 @@ var view;
             if (this.nextTimeNewBlocks === undefined) {
             }
             else {
-                if (this.nextTimeNewBlocks == 0) {
+                if (this.nextTimeNewBlocks <= 0) {
                     this.updateBlocks_WALLStatus();
                 }
                 else {
                     if (!this.isDirectCollision())
-                        this.nextTimeNewBlocks--;
+                        this.nextTimeNewBlocks -= this.gameScrollSpeed;
+                    ;
                 }
             }
             // 更新Grow集合SnakeAdds 
             if (this.nextTimeNewAdds === undefined) {
             }
             else {
-                if (this.nextTimeNewAdds == 0) {
+                if (this.nextTimeNewAdds <= 0) {
                     this.updateSnakeAddsStatus();
                 }
                 else {
                     if (!this.isDirectCollision())
-                        this.nextTimeNewAdds--;
+                        this.nextTimeNewAdds -= this.gameScrollSpeed;
                 }
             }
         };
-        // 检测触点移动情况
+        // 检测触点移动情况，据此控制蛇的移动
         GameView.prototype.detectMouseMove = function () {
             var _this = this;
-            var currentMouseX = Laya.stage.mouseX;
+            var currentMouseX = Laya.stage.mouseX; //当前触点位置
             if (this.mouseDown) {
                 var level_1 = 1;
                 if (Math.abs(currentMouseX - this.lastMouseX) > 20) {
@@ -47258,13 +47357,15 @@ var view;
                     direction_1 = 'left';
                 else if (currentMouseX > this.lastMouseX)
                     direction_1 = 'right';
+                // 方块左右两侧不可穿越
                 this.blocks.forEach(function (block) {
-                    if (block.PosY > _this.snake.bodyPosY[0] - Const.BLOCK_WIDTH / 2 - Const.SNAKE_BODY_RADIUS
-                        && block.PosY < _this.snake.bodyPosY[0] + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS) {
+                    if (block.PosY >= _this.snake.bodyPosY[0] - Const.BLOCK_WIDTH / 2
+                        && block.PosY <= _this.snake.bodyPosY[0] + Const.BLOCK_WIDTH / 2) {
                         switch (direction_1) {
                             case 'left': {
                                 if (block.PosX < _this.snake.bodyPosX[0] // 方块在蛇头左侧
-                                    && Math.abs(block.PosX - _this.snake.bodyPosX[0]) < level_1 + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS // 超出范围
+                                    && _this.snake.bodyPosX[0] - level_1 < block.PosX + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
+                                //&& Math.abs(block.PosX - this.snake.bodyPosX[0]) < level + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS // 超出范围
                                 ) {
                                     level_1 = Math.min(level_1, Math.abs(block.PosX - _this.snake.bodyPosX[0]) - (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS));
                                 }
@@ -47272,7 +47373,8 @@ var view;
                             }
                             case 'right': {
                                 if (block.PosX > _this.snake.bodyPosX[0] // 方块在蛇头左侧
-                                    && Math.abs(block.PosX - _this.snake.bodyPosX[0]) < level_1 + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS // 超出范围
+                                    && _this.snake.bodyPosX[0] + level_1 < block.PosX - Const.BLOCK_WIDTH / 2 - Const.SNAKE_BODY_RADIUS
+                                //&& Math.abs(block.PosX - this.snake.bodyPosX[0]) < level + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS // 超出范围
                                 ) {
                                     level_1 = Math.min(level_1, Math.abs(block.PosX - _this.snake.bodyPosX[0]) - (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS));
                                 }
@@ -47281,20 +47383,32 @@ var view;
                         }
                     }
                 });
+                // 墙体不可穿越
                 this.walls.forEach(function (wall) {
-                    if (wall.centerPoSY() + wall.len / 2 > _this.snake.bodyPosY[0]
-                        && wall.centerPoSY() - wall.len / 2 < _this.snake.bodyPosY[0]) {
+                    // 蛇头位置在墙体范围内
+                    if (wall.centerPoSY() + wall.len / 2 + Const.SNAKE_BODY_RADIUS > _this.snake.bodyPosY[0]
+                        && wall.centerPoSY() - wall.len / 2 - Const.SNAKE_BODY_RADIUS < _this.snake.bodyPosY[0]) {
                         switch (direction_1) {
                             case 'left': {
-                                if (wall.centerPosX() < _this.snake.bodyPosX[0]
-                                    && Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level_1) {
-                                    level_1 = Math.min(level_1, Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS);
+                                if (Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS)
+                                    level_1 = 0;
+                                if (wall.centerPosX() < _this.snake.bodyPosX[0] //墙体在蛇头左侧
+                                    && _this.snake.bodyPosX[0] - level_1 < wall.centerPosX() + Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
+                                /*&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level*/ ) {
+                                    console.log('level修正前>>>>>', level_1);
+                                    level_1 = Math.min(level_1, Math.abs(Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS));
+                                    console.log('level修正后<<<<<', level_1);
                                 }
                             }
                             case 'right': {
-                                if (wall.centerPosX() > _this.snake.bodyPosX[0]
-                                    && Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level_1) {
-                                    level_1 = Math.min(level_1, Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS);
+                                if (Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS)
+                                    level_1 = 0;
+                                if (wall.centerPosX() > _this.snake.bodyPosX[0] //墙体在蛇头右侧
+                                    && _this.snake.bodyPosX[0] + level_1 > wall.centerPosX() - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS
+                                /*&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level*/ ) {
+                                    console.log('level修正前>>>>>', level_1);
+                                    level_1 = Math.min(level_1, Math.abs(Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS));
+                                    console.log('level修正后<<<<<', level_1);
                                 }
                             }
                         }
@@ -47323,7 +47437,7 @@ var view;
                 var orders = Common.getRandomArrayElements([1, 2, 3, 4], wallNumber[0]);
                 for (var i = 0; i < wallNumber[0]; i++) {
                     var w = new sprite.Wall();
-                    w.setPos(orders[i] * 82.8 + 37.2, -Const.BLOCK_WIDTH * 3 - 1.5);
+                    w.setPos(orders[i] * 82.8 + 37.2, -Const.BLOCK_WIDTH * 3 - 7.5);
                     this.walls.push(w);
                     this.addChildren(w);
                 }
@@ -47432,6 +47546,7 @@ var view;
         // 更新碰撞检测信息
         GameView.prototype.updateCollisionDetection = function () {
             var _this = this;
+            // 先检测是否碰到了snakeAdd
             this.snakeAdds.forEach(function (snakeAdd) {
                 if (Math.pow((snakeAdd.PosX - _this.snake.bodyPosX[0]), 2) + Math.pow((snakeAdd.PosY - _this.snake.bodyPosY[0]), 2)
                     < Math.pow(Const.SNAKE_BODY_RADIUS, 2) * 4) {
@@ -47441,6 +47556,7 @@ var view;
                     Laya.SoundManager.playSound(Const.EAT_SNAKE_ADD_SOUND);
                 }
             });
+            // 是否碰到了 shield 道具
             this.shields.forEach(function (shield) {
                 if (Math.pow((shield.PosX - _this.snake.bodyPosX[0]), 2) + Math.pow((shield.PosY - _this.snake.bodyPosY[0]), 2)
                     < Math.pow(Const.SNAKE_BODY_RADIUS, 2) * 4) {
@@ -47454,11 +47570,13 @@ var view;
                 }
             });
             this.directCollision = false;
+            // 对方块正面的碰撞
             this.blocks.forEach(function (block) {
                 if (block.PosX - Const.BLOCK_WIDTH / 2 <= _this.snake.bodyPosX[0] + Const.SNAKE_BODY_RADIUS / 2
                     && block.PosX + Const.BLOCK_WIDTH / 2 >= _this.snake.bodyPosX[0] - Const.SNAKE_BODY_RADIUS / 2
                     && Math.abs(block.PosY - _this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)
                     && block.PosY < _this.snake.bodyPosY[0]) {
+                    _this.directCollision = true;
                     if (_this.snake.state === Const.SNAKE_STATE_SHIELD) {
                         _this.snake.setState(Const.SNAKE_STATE_NORMAL);
                         _this.score += block.getValue();
@@ -47468,8 +47586,7 @@ var view;
                         _this.score += block.getValue();
                         block.setValue(0);
                     }
-                    _this.directCollision = true;
-                    if (!block.decreaseValue()) {
+                    if (!block.decreaseValue() || block.getValue() === 0) {
                         var p = new sprite.ParticleCtn();
                         p.setPos(block.PosX, block.PosY);
                         p.update();
@@ -47491,6 +47608,7 @@ var view;
                     }
                 }
             });
+            // 对墙体的正面碰撞，可以导致蛇停下
             this.walls.forEach(function (wall) {
                 if (wall.centerPosX() - Const.SNAKE_BODY_RADIUS <= _this.snake.bodyPosX[0]
                     && wall.centerPosX() + Const.SNAKE_BODY_RADIUS >= _this.snake.bodyPosX[0]
@@ -47555,9 +47673,12 @@ var view;
                 }
             });
         };
+        // 游戏结束时的处理
         GameView.prototype.onGameOver = function () {
+            // 清除所有sprite以及计时器
             this.removeChildren();
             Laya.timer.clearAll(this);
+            // 请除储存的队列
             this.blocks.splice(0, this.blocks.length);
             this.walls.splice(0, this.walls.length);
             this.snakeAdds.splice(0, this.snakeAdds.length);
@@ -47627,14 +47748,9 @@ var WebGL = Laya.WebGL;
 var Browser = Laya.Browser;
 var Stage = Laya.Stage;
 // 程序入口
-var GameStatus;
-(function (GameStatus) {
-    GameStatus[GameStatus["Start"] = 0] = "Start";
-    GameStatus[GameStatus["Underway"] = 1] = "Underway";
-    GameStatus[GameStatus["Over"] = 2] = "Over";
-})(GameStatus || (GameStatus = {}));
 var GameMain = /** @class */ (function () {
     function GameMain() {
+        Laya.SoundManager.autoReleaseSound = false;
         GameMain.status = GameStatus.Start;
         Laya.MiniAdpter.init();
         Laya.init(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
@@ -47653,6 +47769,7 @@ var GameMain = /** @class */ (function () {
         Laya.stage.addChild(GameMain.gameStart);
         Laya.SoundManager.playMusic(Const.BGM_SOUND);
     };
+    GameMain.mode = GameMode.Normal;
     return GameMain;
 }());
 new GameMain();

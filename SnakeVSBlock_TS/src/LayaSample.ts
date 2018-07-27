@@ -12,6 +12,7 @@ class GameMain {
     public static status: GameStatus;
     public static mode: GameMode = GameMode.Normal;
     constructor() {
+        Laya.SoundManager.autoReleaseSound = false;
         GameMain.status = GameStatus.Start;
         Laya.MiniAdpter.init();
         Laya.init(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
