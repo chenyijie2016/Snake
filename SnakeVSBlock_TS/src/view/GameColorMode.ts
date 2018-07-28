@@ -153,6 +153,8 @@ module view {
 
 				// 方块左右两侧不可穿越
 				this.blocks.forEach((block) => {
+
+
 					if (block.PosY >= this.snake.bodyPosY[0] - Const.BLOCK_WIDTH / 2
 						&& block.PosY <= this.snake.bodyPosY[0] + Const.BLOCK_WIDTH / 2) {
 						switch (direction) {
@@ -161,6 +163,7 @@ module view {
 									&& this.snake.bodyPosX[0] - level < block.PosX + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS) {
 									level = Math.min(level, Math.abs(block.PosX - this.snake.bodyPosX[0]) - (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS));
 								}
+								console.log('Not blcok move');
 								break;
 							}
 							case 'right': {
@@ -168,6 +171,7 @@ module view {
 									&& this.snake.bodyPosX[0] + level > block.PosX - Const.BLOCK_WIDTH / 2 - Const.SNAKE_BODY_RADIUS) {
 									level = Math.min(level, Math.abs(block.PosX - this.snake.bodyPosX[0]) - (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS));
 								}
+								console.log('Not blcok move');
 								break;
 							}
 						}
@@ -181,28 +185,36 @@ module view {
 						&& wall.centerPoSY() - wall.len / 2 - Const.SNAKE_BODY_RADIUS < this.snake.bodyPosY[0]) {
 						switch (direction) {
 							case 'left': {
-								if (Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS)
+								if (Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
+									&& wall.centerPosX() < this.snake.bodyPosX[0]) {
 									level = 0;
+									// console.log('Not wall move');
+								}
 
 								if (wall.centerPosX() < this.snake.bodyPosX[0] //墙体在蛇头左侧
 									&& this.snake.bodyPosX[0] - level < wall.centerPosX() + Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
 									/*&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level*/) {
-									console.log('level修正前>>>>>', level);
+									// console.log('level修正前>>>>>', level);
 									level = Math.min(level, Math.abs(Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS));
-									console.log('level修正后<<<<<', level);
+									// console.log('level修正后<<<<<', level);
 								}
-
+								break;
 							}
 							case 'right': {
-								if (Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS)
+								if (Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
+									&& wall.centerPosX() > this.snake.bodyPosX[0]) {
+
 									level = 0;
+								}
+
 								if (wall.centerPosX() > this.snake.bodyPosX[0] //墙体在蛇头右侧
 									&& this.snake.bodyPosX[0] + level > wall.centerPosX() - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS
 									/*&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level*/) {
-									console.log('level修正前>>>>>', level);
+									// console.log('level修正前>>>>>', level);
 									level = Math.min(level, Math.abs(Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS));
-									console.log('level修正后<<<<<', level);
+									// console.log('level修正后<<<<<', level);
 								}
+								break;
 							}
 						}
 					}
@@ -339,30 +351,30 @@ module view {
 					&& block.PosY < this.snake.bodyPosY[0]) {
 					this.directCollision = true;
 
-					
-					let blockColor = Common.rgbToHex(Const.COLORS_COLORMODE[block.getValue()-1]);
- 					if(blockColor === this.snake.eachBodyColor[this.snake.length - 1]){
+
+					let blockColor = Common.rgbToHex(Const.COLORS_COLORMODE[block.getValue() - 1]);
+					if (blockColor === this.snake.eachBodyColor[this.snake.length - 1]) {
 						let p = new sprite.ParticleCtn();
 						p.setPos(block.PosX, block.PosY);
-						p.setColor(Common.rgbToHex(Const.COLORS_COLORMODE[block.getValue()-1]));
+						p.setColor(Common.rgbToHex(Const.COLORS_COLORMODE[block.getValue() - 1]));
 						p.update();
 						this.addChild(p);
 						Laya.SoundManager.playSound(Const.BLOCK_BREAK);//音效
- 						
- 						this.snake.length--;
- 						this.snake.eachBodyColor.pop();
- 						this.score++;
+
+						this.snake.length--;
+						this.snake.eachBodyColor.pop();
+						this.score++;
 
 
 
 						block.destory();
 						this.blocks.splice(this.blocks.indexOf(block), 1);
 					}
-					else{
- 						this.snake.length--;
- 						this.score++;
- 						this.snake.eachBodyColor.pop();
- 					}
+					else {
+						this.snake.length--;
+						this.score++;
+						this.snake.eachBodyColor.pop();
+					}
 
 					if (this.snake.length <= 0) {
 						this.onGameOver();

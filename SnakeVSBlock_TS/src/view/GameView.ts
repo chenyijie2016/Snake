@@ -205,8 +205,11 @@ module view {
 						&& wall.centerPoSY() - wall.len / 2 - Const.SNAKE_BODY_RADIUS < this.snake.bodyPosY[0]) {
 						switch (direction) {
 							case 'left': {
-								if (Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS)
+								if (Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
+									&& wall.centerPosX() < this.snake.bodyPosX[0]) {
 									level = 0;
+									console.log('Not wall move');
+								}
 
 								if (wall.centerPosX() < this.snake.bodyPosX[0] //墙体在蛇头左侧
 									&& this.snake.bodyPosX[0] - level < wall.centerPosX() + Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
@@ -215,11 +218,15 @@ module view {
 									level = Math.min(level, Math.abs(Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS));
 									console.log('level修正后<<<<<', level);
 								}
-
+								break;
 							}
 							case 'right': {
-								if (Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS)
+								if (Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
+								&& wall.centerPosX() > this.snake.bodyPosX[0]) {
 									level = 0;
+									console.log('Not wall move');
+								}
+
 								if (wall.centerPosX() > this.snake.bodyPosX[0] //墙体在蛇头右侧
 									&& this.snake.bodyPosX[0] + level > wall.centerPosX() - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS
 									/*&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level*/) {
@@ -227,11 +234,12 @@ module view {
 									level = Math.min(level, Math.abs(Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS));
 									console.log('level修正后<<<<<', level);
 								}
+								break;
 							}
 						}
 					}
 				})
-
+			
 				switch (direction) {
 					case 'left': this.snake.moveLeft(level); break;
 					case 'right': this.snake.moveRight(level); break;
@@ -470,7 +478,6 @@ module view {
 					snakeAdd.PosY += this.gameScrollSpeed;
 					snakeAdd.update();
 				}
-
 				if ((snakeAdd.PosY - Const.SNAKE_BODY_RADIUS * 2) > Const.SCREEN_HEIGHT) {
 					snakeAdd.destory();
 					this.snakeAdds.splice(this.snakeAdds.indexOf(snakeAdd), 1);
