@@ -181,7 +181,7 @@ module sprite {
                     {
                         this.length--;
                         //TODO : 蛇头数组的第一个移除！
-
+                        
                         break;
                     }
             }

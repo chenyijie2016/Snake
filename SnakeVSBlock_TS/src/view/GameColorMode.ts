@@ -339,34 +339,31 @@ module view {
 					&& block.PosY < this.snake.bodyPosY[0]) {
 					this.directCollision = true;
 
-					if (this.snake.state === Const.SNAKE_STATE_SHIELD) {
-						this.snake.setState(Const.SNAKE_STATE_NORMAL);
-						this.score += block.getValue();
-						block.setValue(0);
-					}
-					else if (this.snake.state === Const.SNAKE_STATE_SUPER) {
-						this.score += block.getValue();
-						block.setValue(0);
-					}
-					if (!block.decreaseValue() || block.getValue() === 0) {
+					
+					let blockColor = Common.rgbToHex(Const.COLORS_COLORMODE[block.getValue()-1]);
+ 					if(blockColor === this.snake.eachBodyColor[this.snake.length - 1]){
 						let p = new sprite.ParticleCtn();
 						p.setPos(block.PosX, block.PosY);
+						p.setColor(Common.rgbToHex(Const.COLORS_COLORMODE[block.getValue()-1]));
 						p.update();
 						this.addChild(p);
-						if (block.state === Const.BLOCK_STATE_NORMAL) {
-							Laya.SoundManager.playSound(Const.BLOCK_BREAK);//音效
-						}
-						else if (block.state === Const.BLOCK_STATE_SPECIAL) {
-							//TODU: change the state of snake to Super mode
-							this.snake.superTime = Const.SNAKE_SUPER_TIME;
-							this.snake.setState(Const.SNAKE_STATE_SUPER);
-							Laya.SoundManager.playSound(Const.EAT_SHIELD_SOUND);//音效
-						}
+						Laya.SoundManager.playSound(Const.BLOCK_BREAK);//音效
+ 						
+ 						this.snake.length--;
+ 						this.snake.eachBodyColor.pop();
+ 						this.score++;
+
 
 
 						block.destory();
 						this.blocks.splice(this.blocks.indexOf(block), 1);
 					}
+					else{
+ 						this.snake.length--;
+ 						this.score++;
+ 						this.snake.eachBodyColor.pop();
+ 					}
+
 					if (this.snake.length <= 0) {
 						this.onGameOver();
 					}

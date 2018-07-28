@@ -309,31 +309,24 @@ var view;
                     && (_this.snake.bodyPosY[0] - block.PosY) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 4)
                     && block.PosY < _this.snake.bodyPosY[0]) {
                     _this.directCollision = true;
-                    if (_this.snake.state === Const.SNAKE_STATE_SHIELD) {
-                        _this.snake.setState(Const.SNAKE_STATE_NORMAL);
-                        _this.score += block.getValue();
-                        block.setValue(0);
-                    }
-                    else if (_this.snake.state === Const.SNAKE_STATE_SUPER) {
-                        _this.score += block.getValue();
-                        block.setValue(0);
-                    }
-                    if (!block.decreaseValue() || block.getValue() === 0) {
+                    var blockColor = Common.rgbToHex(Const.COLORS_COLORMODE[block.getValue() - 1]);
+                    if (blockColor === _this.snake.eachBodyColor[_this.snake.length - 1]) {
                         var p = new sprite.ParticleCtn();
                         p.setPos(block.PosX, block.PosY);
+                        p.setColor(Common.rgbToHex(Const.COLORS_COLORMODE[block.getValue() - 1]));
                         p.update();
                         _this.addChild(p);
-                        if (block.state === Const.BLOCK_STATE_NORMAL) {
-                            Laya.SoundManager.playSound(Const.BLOCK_BREAK); //音效
-                        }
-                        else if (block.state === Const.BLOCK_STATE_SPECIAL) {
-                            //TODU: change the state of snake to Super mode
-                            _this.snake.superTime = Const.SNAKE_SUPER_TIME;
-                            _this.snake.setState(Const.SNAKE_STATE_SUPER);
-                            Laya.SoundManager.playSound(Const.EAT_SHIELD_SOUND); //音效
-                        }
+                        Laya.SoundManager.playSound(Const.BLOCK_BREAK); //音效
+                        _this.snake.length--;
+                        _this.snake.eachBodyColor.pop();
+                        _this.score++;
                         block.destory();
                         _this.blocks.splice(_this.blocks.indexOf(block), 1);
+                    }
+                    else {
+                        _this.snake.length--;
+                        _this.score++;
+                        _this.snake.eachBodyColor.pop();
                     }
                     if (_this.snake.length <= 0) {
                         _this.onGameOver();
