@@ -1,6 +1,6 @@
 /**Created by the LayaAirIDE*/
-module view{
-	export class GameColorMode extends ui.GameColorModeUI{
+module view {
+	export class GameColorMode extends ui.GameColorModeUI {
 		public snake: sprite.Snake;
 		private blocks: Array<sprite.Block>;
 		private latestBlocks: Array<sprite.Block>;//最近生成的一行Block
@@ -135,10 +135,9 @@ module view{
 
 		// 检测触点移动情况
 		private detectMouseMove(): void {
-			let currentMouseX = Laya.stage.mouseX;
+			let currentMouseX = Laya.stage.mouseX;//当前触点位置
 
 			if (this.mouseDown) {
-
 				let level = 1;
 				if (Math.abs(currentMouseX - this.lastMouseX) > 20) {
 					level = 40;
@@ -152,22 +151,21 @@ module view{
 				else if (currentMouseX > this.lastMouseX)
 					direction = 'right';
 
+				// 方块左右两侧不可穿越
 				this.blocks.forEach((block) => {
-					if (block.PosY > this.snake.bodyPosY[0] - Const.BLOCK_WIDTH / 2 - Const.SNAKE_BODY_RADIUS
-						&& block.PosY < this.snake.bodyPosY[0] + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS) {
+					if (block.PosY >= this.snake.bodyPosY[0] - Const.BLOCK_WIDTH / 2
+						&& block.PosY <= this.snake.bodyPosY[0] + Const.BLOCK_WIDTH / 2) {
 						switch (direction) {
 							case 'left': {
 								if (block.PosX < this.snake.bodyPosX[0] // 方块在蛇头左侧
-									&& Math.abs(block.PosX - this.snake.bodyPosX[0]) < level + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS // 超出范围
-								) {
+									&& this.snake.bodyPosX[0] - level < block.PosX + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS) {
 									level = Math.min(level, Math.abs(block.PosX - this.snake.bodyPosX[0]) - (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS));
 								}
 								break;
 							}
 							case 'right': {
-								if (block.PosX > this.snake.bodyPosX[0] // 方块在蛇头左侧
-									&& Math.abs(block.PosX - this.snake.bodyPosX[0]) < level + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS // 超出范围
-								) {
+								if (block.PosX > this.snake.bodyPosX[0] // 方块在蛇头右侧
+									&& this.snake.bodyPosX[0] + level > block.PosX - Const.BLOCK_WIDTH / 2 - Const.SNAKE_BODY_RADIUS) {
 									level = Math.min(level, Math.abs(block.PosX - this.snake.bodyPosX[0]) - (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS));
 								}
 								break;
@@ -176,20 +174,34 @@ module view{
 					}
 				})
 
+				// 墙体不可穿越
 				this.walls.forEach((wall) => {
-					if (wall.centerPoSY() + wall.len / 2 > this.snake.bodyPosY[0]
-						&& wall.centerPoSY() - wall.len / 2 < this.snake.bodyPosY[0]) {
+					// 蛇头位置在墙体范围内
+					if (wall.centerPoSY() + wall.len / 2 + Const.SNAKE_BODY_RADIUS > this.snake.bodyPosY[0]
+						&& wall.centerPoSY() - wall.len / 2 - Const.SNAKE_BODY_RADIUS < this.snake.bodyPosY[0]) {
 						switch (direction) {
 							case 'left': {
-								if (wall.centerPosX() < this.snake.bodyPosX[0]
-									&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level) {
-									level = Math.min(level, Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS);
+								if (Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS)
+									level = 0;
+
+								if (wall.centerPosX() < this.snake.bodyPosX[0] //墙体在蛇头左侧
+									&& this.snake.bodyPosX[0] - level < wall.centerPosX() + Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
+									/*&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level*/) {
+									console.log('level修正前>>>>>', level);
+									level = Math.min(level, Math.abs(Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS));
+									console.log('level修正后<<<<<', level);
 								}
+
 							}
 							case 'right': {
-								if (wall.centerPosX() > this.snake.bodyPosX[0]
-									&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level) {
-									level = Math.min(level, Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS);
+								if (Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS)
+									level = 0;
+								if (wall.centerPosX() > this.snake.bodyPosX[0] //墙体在蛇头右侧
+									&& this.snake.bodyPosX[0] + level > wall.centerPosX() - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS
+									/*&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level*/) {
+									console.log('level修正前>>>>>', level);
+									level = Math.min(level, Math.abs(Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS));
+									console.log('level修正后<<<<<', level);
 								}
 							}
 						}
@@ -256,7 +268,7 @@ module view{
 					this.blocks.push(b);
 					this.latestBlocks.push(b);
 					this.addChildren(b);
-					
+
 				}
 			}
 			this.nextTimeNewBlocks = Common.getRandomArrayElements(Const.BLOCK_WALL_NEWTIMES, 1)[0];
@@ -304,6 +316,8 @@ module view{
 
 		// 更新碰撞检测信息
 		private updateCollisionDetection(): void {
+
+			// 先检测是否碰到了snakeAdd
 			this.snakeAdds.forEach((snakeAdd) => {
 				if ((snakeAdd.PosX - this.snake.bodyPosX[0]) ** 2 + (snakeAdd.PosY - this.snake.bodyPosY[0]) ** 2
 					< Const.SNAKE_BODY_RADIUS ** 2 * 4) {
@@ -314,44 +328,56 @@ module view{
 				}
 			})
 
-			this.directCollision = false;
-			this.blocks.forEach((block) => {
 
+			this.directCollision = false;
+
+			// 对方块正面的碰撞
+			this.blocks.forEach((block) => {
 				if (block.PosX - Const.BLOCK_WIDTH / 2 <= this.snake.bodyPosX[0] + Const.SNAKE_BODY_RADIUS / 2
-				&& block.PosX + Const.BLOCK_WIDTH / 2 >= this.snake.bodyPosX[0] - Const.SNAKE_BODY_RADIUS / 2
-				&& Math.abs(block.PosY - this.snake.bodyPosY[0]) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 1)
-				&& block.PosY < this.snake.bodyPosY[0]) {
+					&& block.PosX + Const.BLOCK_WIDTH / 2 >= this.snake.bodyPosX[0] - Const.SNAKE_BODY_RADIUS / 2 // X资本 在方块范围内
+					&& (this.snake.bodyPosY[0] - block.PosY) < (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + 4)
+					&& block.PosY < this.snake.bodyPosY[0]) {
 					this.directCollision = true;
-					let blockColor = Common.rgbToHex(Const.COLORS_COLORMODE[block.getValue()-1]);
-					if(blockColor === this.snake.eachBodyColor[this.snake.length - 1]){
+
+					if (this.snake.state === Const.SNAKE_STATE_SHIELD) {
+						this.snake.setState(Const.SNAKE_STATE_NORMAL);
+						this.score += block.getValue();
+						block.setValue(0);
+					}
+					else if (this.snake.state === Const.SNAKE_STATE_SUPER) {
+						this.score += block.getValue();
+						block.setValue(0);
+					}
+					if (!block.decreaseValue() || block.getValue() === 0) {
 						let p = new sprite.ParticleCtn();
 						p.setPos(block.PosX, block.PosY);
-						p.setColor(Common.rgbToHex(Const.COLORS_COLORMODE[block.getValue()-1]));
 						p.update();
 						this.addChild(p);
-						Laya.SoundManager.playSound(Const.BLOCK_BREAK);//音效
-						
-						this.snake.length--;
-						this.snake.eachBodyColor.pop();
-						this.score++;
+						if (block.state === Const.BLOCK_STATE_NORMAL) {
+							Laya.SoundManager.playSound(Const.BLOCK_BREAK);//音效
+						}
+						else if (block.state === Const.BLOCK_STATE_SPECIAL) {
+							//TODU: change the state of snake to Super mode
+							this.snake.superTime = Const.SNAKE_SUPER_TIME;
+							this.snake.setState(Const.SNAKE_STATE_SUPER);
+							Laya.SoundManager.playSound(Const.EAT_SHIELD_SOUND);//音效
+						}
+
+
 						block.destory();
 						this.blocks.splice(this.blocks.indexOf(block), 1);
 					}
-					else{
-						this.snake.length--;
-						this.score++;
-						this.snake.eachBodyColor.pop();
-					}
-					
 					if (this.snake.length <= 0) {
 						this.onGameOver();
 					}
 				}
 			})
+
+			// 对墙体的正面碰撞，可以导致蛇停下
 			this.walls.forEach((wall) => {
 				if (wall.centerPosX() - Const.SNAKE_BODY_RADIUS <= this.snake.bodyPosX[0]
 					&& wall.centerPosX() + Const.SNAKE_BODY_RADIUS >= this.snake.bodyPosX[0]
-					&& Math.abs(wall.centerPoSY() + wall.len / 2 - this.snake.bodyPosY[0] + Const.SNAKE_BODY_RADIUS) < 3) {
+					&& Math.abs(wall.centerPoSY() + wall.len / 2 - (this.snake.bodyPosY[0] - Const.SNAKE_BODY_RADIUS)) < 5) {
 					this.directCollision = true;
 				}
 			})
@@ -418,6 +444,5 @@ module view{
 			Laya.stage.addChild(GameMain.gameOver);
 			GameMain.gameOver.drawUI();
 		}
-
 	}
 }

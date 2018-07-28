@@ -158,18 +158,14 @@ var view;
                         switch (direction_1) {
                             case 'left': {
                                 if (block.PosX < _this.snake.bodyPosX[0] // 方块在蛇头左侧
-                                    && _this.snake.bodyPosX[0] - level_1 < block.PosX + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
-                                //&& Math.abs(block.PosX - this.snake.bodyPosX[0]) < level + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS // 超出范围
-                                ) {
+                                    && _this.snake.bodyPosX[0] - level_1 < block.PosX + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS) {
                                     level_1 = Math.min(level_1, Math.abs(block.PosX - _this.snake.bodyPosX[0]) - (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS));
                                 }
                                 break;
                             }
                             case 'right': {
-                                if (block.PosX > _this.snake.bodyPosX[0] // 方块在蛇头左侧
-                                    && _this.snake.bodyPosX[0] + level_1 < block.PosX - Const.BLOCK_WIDTH / 2 - Const.SNAKE_BODY_RADIUS
-                                //&& Math.abs(block.PosX - this.snake.bodyPosX[0]) < level + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS // 超出范围
-                                ) {
+                                if (block.PosX > _this.snake.bodyPosX[0] // 方块在蛇头右侧
+                                    && _this.snake.bodyPosX[0] + level_1 > block.PosX - Const.BLOCK_WIDTH / 2 - Const.SNAKE_BODY_RADIUS) {
                                     level_1 = Math.min(level_1, Math.abs(block.PosX - _this.snake.bodyPosX[0]) - (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS));
                                 }
                                 break;

@@ -182,18 +182,14 @@ module view {
 						switch (direction) {
 							case 'left': {
 								if (block.PosX < this.snake.bodyPosX[0] // 方块在蛇头左侧
-									&& this.snake.bodyPosX[0] - level < block.PosX + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
-									//&& Math.abs(block.PosX - this.snake.bodyPosX[0]) < level + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS // 超出范围
-								) {
+									&& this.snake.bodyPosX[0] - level < block.PosX + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS) {
 									level = Math.min(level, Math.abs(block.PosX - this.snake.bodyPosX[0]) - (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS));
 								}
 								break;
 							}
 							case 'right': {
-								if (block.PosX > this.snake.bodyPosX[0] // 方块在蛇头左侧
-									&& this.snake.bodyPosX[0] + level < block.PosX - Const.BLOCK_WIDTH / 2 - Const.SNAKE_BODY_RADIUS
-									//&& Math.abs(block.PosX - this.snake.bodyPosX[0]) < level + Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS // 超出范围
-								) {
+								if (block.PosX > this.snake.bodyPosX[0] // 方块在蛇头右侧
+									&& this.snake.bodyPosX[0] + level > block.PosX - Const.BLOCK_WIDTH / 2 - Const.SNAKE_BODY_RADIUS) {
 									level = Math.min(level, Math.abs(block.PosX - this.snake.bodyPosX[0]) - (Const.BLOCK_WIDTH / 2 + Const.SNAKE_BODY_RADIUS));
 								}
 								break;
