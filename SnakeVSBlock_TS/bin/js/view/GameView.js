@@ -19,12 +19,12 @@ var view;
             _this.directCollision = false;
             _this.score = 0;
             /* for debug */
-            _this.debugInfo = new Laya.Text();
-            _this.debugInfo.width = 300;
-            _this.debugInfo.font = "Hei";
-            _this.debugInfo.fontSize = 20;
-            _this.debugInfo.color = "white";
-            _this.addChild(_this.debugInfo);
+            // this.debugInfo = new Laya.Text();
+            // this.debugInfo.width = 300;
+            // this.debugInfo.font = "Hei";
+            // this.debugInfo.fontSize = 20;
+            // this.debugInfo.color = "white";
+            // this.addChild(this.debugInfo);
             _this.scoreDisplay = new Laya.Text();
             _this.scoreDisplay.width = 100;
             _this.scoreDisplay.pos(Const.SCREEN_WIDTH - 25, 0);
@@ -41,9 +41,9 @@ var view;
             _this.shields = new Array();
             return _this;
         }
-        GameView.prototype.setDebugInfo = function (msg) {
-            this.debugInfo.text = msg;
-        };
+        // public setDebugInfo(msg: string): void {
+        // 	this.debugInfo.text = msg;
+        // }
         GameView.prototype.startGame = function () {
             this.addChild(this.scoreDisplay);
             this.score = 0;
@@ -71,7 +71,6 @@ var view;
         };
         GameView.prototype.onMouseUp = function () {
             this.mouseDown = false;
-            this.debugInfo.text = 'mouseup';
         };
         GameView.prototype.updateScore = function () {
             this.scoreDisplay.text = this.score.toString();
@@ -212,7 +211,6 @@ var view;
                         }
                     }
                 });
-                console.log('level=', level_1);
                 switch (direction_1) {
                     case 'left':
                         this.snake.moveLeft(level_1);

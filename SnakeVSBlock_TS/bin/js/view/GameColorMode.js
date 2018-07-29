@@ -165,30 +165,25 @@ var view;
                         && wall.centerPoSY() - wall.len / 2 - Const.SNAKE_BODY_RADIUS < _this.snake.bodyPosY[0]) {
                         switch (direction_1) {
                             case 'left': {
-                                if (Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS) {
+                                if (Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
+                                    && wall.centerPosX() < _this.snake.bodyPosX[0]) {
                                     level_1 = 0;
-                                    console.log('Not wall move');
+                                    // console.log('Not wall move');
                                 }
                                 if (wall.centerPosX() < _this.snake.bodyPosX[0] //墙体在蛇头左侧
-                                    && _this.snake.bodyPosX[0] - level_1 < wall.centerPosX() + Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
-                                /*&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level*/ ) {
-                                    console.log('level修正前>>>>>', level_1);
+                                    && _this.snake.bodyPosX[0] - level_1 < wall.centerPosX() + Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS) {
                                     level_1 = Math.min(level_1, Math.abs(Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS));
-                                    console.log('level修正后<<<<<', level_1);
                                 }
                                 break;
                             }
                             case 'right': {
-                                if (Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS) {
-                                    console.log('Not wall move');
+                                if (Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
+                                    && wall.centerPosX() > _this.snake.bodyPosX[0]) {
                                     level_1 = 0;
                                 }
                                 if (wall.centerPosX() > _this.snake.bodyPosX[0] //墙体在蛇头右侧
-                                    && _this.snake.bodyPosX[0] + level_1 > wall.centerPosX() - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS
-                                /*&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level*/ ) {
-                                    console.log('level修正前>>>>>', level_1);
+                                    && _this.snake.bodyPosX[0] + level_1 > wall.centerPosX() - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS) {
                                     level_1 = Math.min(level_1, Math.abs(Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS));
-                                    console.log('level修正后<<<<<', level_1);
                                 }
                                 break;
                             }

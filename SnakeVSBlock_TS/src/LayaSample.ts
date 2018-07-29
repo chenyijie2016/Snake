@@ -16,7 +16,7 @@ class GameMain {
         GameMain.status = GameStatus.Start;
         Laya.MiniAdpter.init();
         Laya.init(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
-        Laya.Stat.show(0, 600);
+        //Laya.Stat.show(0, 600);
         Laya.stage.alignH = Laya.Stage.ALIGN_CENTER;
         Laya.stage.alignV = Laya.Stage.ALIGN_CENTER;
         Laya.stage.scaleMode = Laya.Stage.SCALE_SHOWALL;

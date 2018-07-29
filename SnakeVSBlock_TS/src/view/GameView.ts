@@ -22,12 +22,12 @@ module view {
 		constructor() {
 			super();
 			/* for debug */
-			this.debugInfo = new Laya.Text();
-			this.debugInfo.width = 300;
-			this.debugInfo.font = "Hei";
-			this.debugInfo.fontSize = 20;
-			this.debugInfo.color = "white";
-			this.addChild(this.debugInfo);
+			// this.debugInfo = new Laya.Text();
+			// this.debugInfo.width = 300;
+			// this.debugInfo.font = "Hei";
+			// this.debugInfo.fontSize = 20;
+			// this.debugInfo.color = "white";
+			// this.addChild(this.debugInfo);
 
 			this.scoreDisplay = new Laya.Text();
 			this.scoreDisplay.width = 100;
@@ -47,9 +47,9 @@ module view {
 			this.shields = new Array<sprite.Shield>();
 		}
 
-		public setDebugInfo(msg: string): void {
-			this.debugInfo.text = msg;
-		}
+		// public setDebugInfo(msg: string): void {
+		// 	this.debugInfo.text = msg;
+		// }
 
 		public startGame(): void {
 			this.addChild(this.scoreDisplay);
@@ -84,7 +84,6 @@ module view {
 
 		private onMouseUp(): void {
 			this.mouseDown = false;
-			this.debugInfo.text = 'mouseup'
 		}
 
 		private updateScore(): void {
