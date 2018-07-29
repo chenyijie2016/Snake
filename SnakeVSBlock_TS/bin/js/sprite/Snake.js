@@ -44,7 +44,8 @@ var sprite;
             this.headPosXHistory = this.headPosXHistory.slice(0, 300);
         };
         Snake.prototype.updateBody = function () {
-            this.headPosXHistory.unshift(this.bodyPosX[0]);
+            if ((GameMain.gameView && !GameMain.gameView.isDirectCollision()) || (GameMain.gameColorMode && !GameMain.gameColorMode.isDirectCollision()))
+                this.headPosXHistory.unshift(this.bodyPosX[0]);
             var rate = Const.SNAKE_BODY_RADIUS * 2 / Const.GAME_SCROLL_SPEED;
             var Len = 0;
             var i = 0;
@@ -73,26 +74,6 @@ var sprite;
                     }
                 }
             }
-            //this.showBody();
-            // for (let i = 1; i < this.length && i <= 15; i++) {
-            //     let XDifference = Math.abs(this.bodyPosX[i] - this.bodyPosX[i - 1]);
-            //     if (XDifference > Const.SNAKE_BODY_RADIUS * 2) {
-            //         //this.concatBody();
-            //         // return;
-            //     }
-            //     if (this.bodyPosX[i] < this.bodyPosX[i - 1]) {
-            //         this.bodyPosX[i] += XDifference / Const.SNAKE_FLEXIBILITY;
-            //     }
-            //     else if (this.bodyPosX[i] > this.bodyPosX[i - 1]) {
-            //         this.bodyPosX[i] -= XDifference / Const.SNAKE_FLEXIBILITY;
-            //     }
-            //     let YDifference = Const.SNAKE_BODY_MINIUM_SPACING;
-            //     if (Const.SNAKE_BODY_DEFALUT_SPACING ** 2 - XDifference ** 2 / Const.SNAKE_FLEXIBILITY ** 2 > 0) {
-            //         YDifference = Math.sqrt(Const.SNAKE_BODY_DEFALUT_SPACING ** 2 - XDifference ** 2 / Const.SNAKE_FLEXIBILITY ** 2);
-            //     }
-            //     this.bodyPosY[i] = this.bodyPosY[i - 1] + YDifference;
-            //     //this.showBody();
-            // }
         };
         // 延长蛇身
         Snake.prototype.extendBody = function (parts) {

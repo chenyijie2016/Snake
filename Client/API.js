@@ -1,5 +1,5 @@
-//const API_URL = 'https://chenyiji16.iterator-traits.com:12306'
-const API_URL = 'https://127.0.0.1:12306'
+const API_URL = 'https://chenyiji16.iterator-traits.com:12306'
+//const API_URL = 'https://127.0.0.1:12306'
 class API {
     constructor() {
         this.openid = undefined;
@@ -8,11 +8,11 @@ class API {
 
     login() {
         wx.getUserInfo({
-            success: function (userInfo) {
+            success: (userInfo) => {
 
                 // 登录，获取code
                 wx.login({
-                    success: function (res) {
+                    success: (res) => {
                         let code = res.code;
 
                         // 提交登录用的code,后台返回用户唯一openid
@@ -22,8 +22,9 @@ class API {
                                 code: code
                             },
 
-                            success: function (_res) {
+                            success: (_res) => {
                                 this.openid = _res.data.openid;
+                               
                                 // 向后台提交用户公开信息
                                 wx.request({
                                     url: API_URL + '/api/v1/user',
@@ -44,12 +45,18 @@ class API {
 
     // 获取排行榜信息
     getLeaderBoard() {
-        wx.request({
-            url: API_URL + '/api/v1/leaderboard',
-            success: function (result) {
-                this.leaderBoardData = result.data;
-            }
+        return new Promise((resolve, reject) => {
+            wx.request({
+                url: API_URL + '/api/v1/leaderboard',
+                success: (result) => {
+                    resolve(result);
+                },
+                fail: () => {
+                    reject();
+                }
+            })
         })
+
     }
     // 上传分数
     uploadScore(score) {
@@ -66,11 +73,12 @@ class API {
     getUserData(openid) {
         return new Promise((resolve, reject) => {
             wx.request({
-                url: '/api/v1/user',
+                url: API_URL + '/api/v1/user',
+                method: 'GET',
                 data: {
                     openid: openid
                 },
-                success: function (result) {
+                success: (result) => {
                     resolve(result)
                 },
                 fail: () => {
@@ -82,4 +90,4 @@ class API {
     }
 
 }
-window.test = new Test()
+window.api = new API()

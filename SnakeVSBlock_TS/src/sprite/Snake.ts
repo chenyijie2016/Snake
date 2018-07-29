@@ -47,8 +47,10 @@ module sprite {
             this.headPosXHistory = this.headPosXHistory.slice(0, 300);
         }
         public updateBody(): void {
+            if ((GameMain.gameView && !GameMain.gameView.isDirectCollision()) || (GameMain.gameColorMode && !GameMain.gameColorMode.isDirectCollision()))
+                this.headPosXHistory.unshift(this.bodyPosX[0]);
 
-            this.headPosXHistory.unshift(this.bodyPosX[0]);
+
             let rate = Const.SNAKE_BODY_RADIUS * 2 / Const.GAME_SCROLL_SPEED;
             let Len = 0;
             let i = 0;
@@ -76,31 +78,6 @@ module sprite {
                     }
                 }
             }
-
-            //this.showBody();
-
-
-            // for (let i = 1; i < this.length && i <= 15; i++) {
-            //     let XDifference = Math.abs(this.bodyPosX[i] - this.bodyPosX[i - 1]);
-            //     if (XDifference > Const.SNAKE_BODY_RADIUS * 2) {
-            //         //this.concatBody();
-            //         // return;
-            //     }
-            //     if (this.bodyPosX[i] < this.bodyPosX[i - 1]) {
-            //         this.bodyPosX[i] += XDifference / Const.SNAKE_FLEXIBILITY;
-            //     }
-            //     else if (this.bodyPosX[i] > this.bodyPosX[i - 1]) {
-            //         this.bodyPosX[i] -= XDifference / Const.SNAKE_FLEXIBILITY;
-            //     }
-            //     let YDifference = Const.SNAKE_BODY_MINIUM_SPACING;
-            //     if (Const.SNAKE_BODY_DEFALUT_SPACING ** 2 - XDifference ** 2 / Const.SNAKE_FLEXIBILITY ** 2 > 0) {
-            //         YDifference = Math.sqrt(Const.SNAKE_BODY_DEFALUT_SPACING ** 2 - XDifference ** 2 / Const.SNAKE_FLEXIBILITY ** 2);
-            //     }
-            //     this.bodyPosY[i] = this.bodyPosY[i - 1] + YDifference;
-
-            //     //this.showBody();
-            // }
-
         }
         // 延长蛇身
         public extendBody(parts: number): void {
@@ -120,7 +97,7 @@ module sprite {
                     this.length += 1;
                     this.bodyPosX.push(lastPosX);
                     this.bodyPosY.push(this.bodyPosY[this.bodyPosY.length - 1] + Const.SNAKE_BODY_DEFALUT_SPACING);
-                    this.eachBodyColor.push(Common.rgbToHex(Const.COLORS_COLORMODE[parts-1]));
+                    this.eachBodyColor.push(Common.rgbToHex(Const.COLORS_COLORMODE[parts - 1]));
                     break;
                 }
             }
@@ -132,7 +109,7 @@ module sprite {
         public showBody(): void {
             this.graphics.clear();
             this.graphics.fillText(this.length.toString(), this.bodyPosX[0], this.bodyPosY[0] - 35, '20px Arial', '#FFFFFF', 'center');
-            if(GameMain.mode === GameMode.Normal){
+            if (GameMain.mode === GameMode.Normal) {
                 switch (this.state) {
                     case Const.SNAKE_STATE_SHIELD: {
                         this.bodyColor = "red";
@@ -159,11 +136,11 @@ module sprite {
                     // TODO: Using other image
                 }
             }
-            else if(GameMain.mode === GameMode.Color){
+            else if (GameMain.mode === GameMode.Color) {
                 for (let i = 0; i < this.length && i < Const.SNAKE_MAX_PARTS; i++) {
                     // Using Skin !!!
                     // this is just a demo
-                    this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, this.eachBodyColor[this.length-i-1]);
+                    this.graphics.drawCircle(this.bodyPosX[i], this.bodyPosY[i], Const.SNAKE_BODY_RADIUS, this.eachBodyColor[this.length - i - 1]);
 
                     // TODO: Using other image
                 }
@@ -181,7 +158,7 @@ module sprite {
                     {
                         this.length--;
                         //TODO : 蛇头数组的第一个移除！
-                        
+
                         break;
                     }
             }

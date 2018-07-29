@@ -107,14 +107,20 @@ app.post('/api/v1/user', function (req, res) {
 // 获取用户公开信息
 app.get('/api/v1/user', function (req, res) {
     let openid = req.query.openid;
+    console.log('openid ', openid);
     userCollection.findOne({
         openid: openid
     }, function (err, result) {
-        if (!err) {
+        if (!err && result) {
+            console.log(result);
+            logger.info('GET /api/v1/user ' + result.userInfo.nickName)
             res.json({
-                nickName: result.nickname,
-                avatarUrl: result.avatarUrl
+                nickName: result.userInfo.nickName,
+                avatarUrl: result.userInfo.avatarUrl
             }) //只返回昵称和头像url
+        } else {
+            logger.warn('GET /api/v1/user ' + openid)
+            res.json({});
         }
     })
 })
@@ -129,6 +135,8 @@ app.get('/api/v1/leaderboard', function (req, res) {
     }).limit(10).toArray(function (err, result) {
         if (!err)
             res.json(result)
+        else
+            res.json([])
     })
 })
 
@@ -147,6 +155,7 @@ app.post('/api/v1/score', function (req, res) {
             }, function (err, _result) {
                 if (err) {
                     logger.warn('Insert Score Failed');
+                    console.log(req.body)
                     res.json({
                         msg: 'failed'
                     })
@@ -158,7 +167,8 @@ app.post('/api/v1/score', function (req, res) {
                 }
             })
         } else {
-            logger.warn('Insert Score Failed');
+            logger.warn('openid Not exists');
+            console.log(req.body)
             res.json({
                 msg: 'failed'
             })

@@ -211,7 +211,7 @@ module view {
 		}
 
 		// 是否是正在正面碰撞
-		private isDirectCollision(): boolean {
+		public isDirectCollision(): boolean {
 			return this.directCollision;
 		}
 

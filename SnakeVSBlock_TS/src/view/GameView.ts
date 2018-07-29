@@ -11,7 +11,6 @@ module view {
 		private shields: Array<sprite.Shield>;
 		private lastMouseX: number;
 		private mouseDown: boolean;
-		private debugInfo: Laya.Text;
 		public gameScrollSpeed: number = Const.GAME_SCROLL_SPEED;
 		public directCollision: boolean = false;
 		public score: number = 0;
@@ -21,13 +20,6 @@ module view {
 
 		constructor() {
 			super();
-			/* for debug */
-			// this.debugInfo = new Laya.Text();
-			// this.debugInfo.width = 300;
-			// this.debugInfo.font = "Hei";
-			// this.debugInfo.fontSize = 20;
-			// this.debugInfo.color = "white";
-			// this.addChild(this.debugInfo);
 
 			this.scoreDisplay = new Laya.Text();
 			this.scoreDisplay.width = 100;
@@ -47,9 +39,6 @@ module view {
 			this.shields = new Array<sprite.Shield>();
 		}
 
-		// public setDebugInfo(msg: string): void {
-		// 	this.debugInfo.text = msg;
-		// }
 
 		public startGame(): void {
 			this.addChild(this.scoreDisplay);
@@ -61,9 +50,6 @@ module view {
 			this.snake.bodyPosX[0] = Const.SCREEN_WIDTH / 2;
 			this.snake.length = 1;
 			this.snake.bodyPosY[0] = Const.SCREEN_HEIGHT / 2;
-
-			//just for debug
-			this.snake.extendBody(100);
 
 			Laya.stage.addChild(this.snake);
 			Laya.timer.frameLoop(1, this, this.mainLoop, null, false);// Every Frame
@@ -207,38 +193,31 @@ module view {
 								if (Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
 									&& wall.centerPosX() < this.snake.bodyPosX[0]) {
 									level = 0;
-									console.log('Not wall move');
+
 								}
 
 								if (wall.centerPosX() < this.snake.bodyPosX[0] //墙体在蛇头左侧
-									&& this.snake.bodyPosX[0] - level < wall.centerPosX() + Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
-									/*&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level*/) {
-									console.log('level修正前>>>>>', level);
+									&& this.snake.bodyPosX[0] - level < wall.centerPosX() + Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS) {
 									level = Math.min(level, Math.abs(Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS));
-									console.log('level修正后<<<<<', level);
 								}
 								break;
 							}
 							case 'right': {
 								if (Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
-								&& wall.centerPosX() > this.snake.bodyPosX[0]) {
+									&& wall.centerPosX() > this.snake.bodyPosX[0]) {
 									level = 0;
-									console.log('Not wall move');
 								}
 
 								if (wall.centerPosX() > this.snake.bodyPosX[0] //墙体在蛇头右侧
-									&& this.snake.bodyPosX[0] + level > wall.centerPosX() - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS
-									/*&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level*/) {
-									console.log('level修正前>>>>>', level);
+									&& this.snake.bodyPosX[0] + level > wall.centerPosX() - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS) {
 									level = Math.min(level, Math.abs(Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS));
-									console.log('level修正后<<<<<', level);
 								}
 								break;
 							}
 						}
 					}
 				})
-			
+
 				switch (direction) {
 					case 'left': this.snake.moveLeft(level); break;
 					case 'right': this.snake.moveRight(level); break;
@@ -248,7 +227,7 @@ module view {
 		}
 
 		// 是否是正在正面碰撞
-		private isDirectCollision(): boolean {
+		public isDirectCollision(): boolean {
 			return this.directCollision;
 		}
 

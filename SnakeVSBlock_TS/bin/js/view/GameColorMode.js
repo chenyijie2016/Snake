@@ -18,13 +18,6 @@ var view;
             _this.gameScrollSpeed = 4;
             _this.directCollision = false;
             _this.score = 0;
-            /* for debug */
-            _this.debugInfo = new Laya.Text();
-            _this.debugInfo.width = 300;
-            _this.debugInfo.font = "Hei";
-            _this.debugInfo.fontSize = 20;
-            _this.debugInfo.color = "white";
-            _this.addChild(_this.debugInfo);
             _this.scoreDisplay = new Laya.Text();
             _this.scoreDisplay.width = 100;
             _this.scoreDisplay.pos(Const.SCREEN_WIDTH - 25, 0);
@@ -40,9 +33,6 @@ var view;
             _this.walls = new Array();
             return _this;
         }
-        GameColorMode.prototype.setDebugInfo = function (msg) {
-            this.debugInfo.text = msg;
-        };
         GameColorMode.prototype.startGame = function () {
             this.addChild(this.scoreDisplay);
             this.score = 0;
@@ -69,7 +59,6 @@ var view;
         };
         GameColorMode.prototype.onMouseUp = function () {
             this.mouseDown = false;
-            this.debugInfo.text = 'mouseup';
         };
         GameColorMode.prototype.updateScore = function () {
             this.scoreDisplay.text = this.score.toString();

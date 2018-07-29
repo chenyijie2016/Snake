@@ -46154,7 +46154,8 @@ var sprite;
             this.headPosXHistory = this.headPosXHistory.slice(0, 300);
         };
         Snake.prototype.updateBody = function () {
-            this.headPosXHistory.unshift(this.bodyPosX[0]);
+            if ((GameMain.gameView && !GameMain.gameView.isDirectCollision()) || (GameMain.gameColorMode && !GameMain.gameColorMode.isDirectCollision()))
+                this.headPosXHistory.unshift(this.bodyPosX[0]);
             var rate = Const.SNAKE_BODY_RADIUS * 2 / Const.GAME_SCROLL_SPEED;
             var Len = 0;
             var i = 0;
@@ -46183,26 +46184,6 @@ var sprite;
                     }
                 }
             }
-            //this.showBody();
-            // for (let i = 1; i < this.length && i <= 15; i++) {
-            //     let XDifference = Math.abs(this.bodyPosX[i] - this.bodyPosX[i - 1]);
-            //     if (XDifference > Const.SNAKE_BODY_RADIUS * 2) {
-            //         //this.concatBody();
-            //         // return;
-            //     }
-            //     if (this.bodyPosX[i] < this.bodyPosX[i - 1]) {
-            //         this.bodyPosX[i] += XDifference / Const.SNAKE_FLEXIBILITY;
-            //     }
-            //     else if (this.bodyPosX[i] > this.bodyPosX[i - 1]) {
-            //         this.bodyPosX[i] -= XDifference / Const.SNAKE_FLEXIBILITY;
-            //     }
-            //     let YDifference = Const.SNAKE_BODY_MINIUM_SPACING;
-            //     if (Const.SNAKE_BODY_DEFALUT_SPACING ** 2 - XDifference ** 2 / Const.SNAKE_FLEXIBILITY ** 2 > 0) {
-            //         YDifference = Math.sqrt(Const.SNAKE_BODY_DEFALUT_SPACING ** 2 - XDifference ** 2 / Const.SNAKE_FLEXIBILITY ** 2);
-            //     }
-            //     this.bodyPosY[i] = this.bodyPosY[i - 1] + YDifference;
-            //     //this.showBody();
-            // }
         };
         // 延长蛇身
         Snake.prototype.extendBody = function (parts) {
@@ -46579,7 +46560,7 @@ var ui;
             _super.prototype.createChildren.call(this);
             this.createView(ui.GameStartUI.uiView);
         };
-        GameStartUI.uiView = { "type": "View", "props": { "height": 736 }, "child": [{ "type": "Button", "props": { "y": 643, "x": 187, "width": 165, "var": "gameStartButton", "stateNum": 2, "skin": "ui/btn_start.png", "pivotY": 48, "pivotX": 63, "height": 80 } }, { "type": "Button", "props": { "y": 462, "x": 116, "width": 164, "var": "leaderBoardButton", "labelStroke": 32, "labelSize": 30, "labelFont": "Arial", "labelColors": "#FFF,#F00,#F00,#F00", "labelBold": true, "label": "排行榜", "height": 42, "gray": false } }, { "type": "Button", "props": { "y": 541, "x": 165, "width": 164, "var": "colorModeButton", "scaleY": 0.8, "scaleX": 0.8, "labelStroke": 32, "labelSize": 30, "labelFont": "Arial", "labelColors": "#FFF,#F00,#F00,#F00", "labelBold": true, "label": "彩色模式", "height": 42, "gray": false } }] };
+        GameStartUI.uiView = { "type": "View", "props": { "height": 736 }, "child": [{ "type": "Button", "props": { "y": 643, "x": 187, "width": 165, "var": "gameStartButton", "stateNum": 2, "skin": "ui/btn_start.png", "pivotY": 48, "pivotX": 63, "height": 80 } }, { "type": "Button", "props": { "y": 515, "x": 222, "width": 164, "var": "leaderBoardButton", "labelStroke": 32, "labelSize": 30, "labelFont": "Arial", "labelColors": "#FFF,#F00,#F00,#F00", "labelBold": true, "label": "排行榜", "height": 42, "gray": false } }, { "type": "Button", "props": { "y": 520, "x": 75, "width": 164, "var": "colorModeButton", "scaleY": 0.8, "scaleX": 0.8, "labelStroke": 32, "labelSize": 30, "labelFont": "Arial", "labelColors": "#FFF,#F00,#F00,#F00", "labelBold": true, "label": "彩色模式", "height": 42, "gray": false } }] };
         return GameStartUI;
     }(View));
     ui.GameStartUI = GameStartUI;
@@ -46635,13 +46616,6 @@ var view;
             _this.gameScrollSpeed = 4;
             _this.directCollision = false;
             _this.score = 0;
-            /* for debug */
-            _this.debugInfo = new Laya.Text();
-            _this.debugInfo.width = 300;
-            _this.debugInfo.font = "Hei";
-            _this.debugInfo.fontSize = 20;
-            _this.debugInfo.color = "white";
-            _this.addChild(_this.debugInfo);
             _this.scoreDisplay = new Laya.Text();
             _this.scoreDisplay.width = 100;
             _this.scoreDisplay.pos(Const.SCREEN_WIDTH - 25, 0);
@@ -46657,9 +46631,6 @@ var view;
             _this.walls = new Array();
             return _this;
         }
-        GameColorMode.prototype.setDebugInfo = function (msg) {
-            this.debugInfo.text = msg;
-        };
         GameColorMode.prototype.startGame = function () {
             this.addChild(this.scoreDisplay);
             this.score = 0;
@@ -46686,7 +46657,6 @@ var view;
         };
         GameColorMode.prototype.onMouseUp = function () {
             this.mouseDown = false;
-            this.debugInfo.text = 'mouseup';
         };
         GameColorMode.prototype.updateScore = function () {
             this.scoreDisplay.text = this.score.toString();
@@ -47241,13 +47211,6 @@ var view;
             _this.gameScrollSpeed = Const.GAME_SCROLL_SPEED;
             _this.directCollision = false;
             _this.score = 0;
-            /* for debug */
-            // this.debugInfo = new Laya.Text();
-            // this.debugInfo.width = 300;
-            // this.debugInfo.font = "Hei";
-            // this.debugInfo.fontSize = 20;
-            // this.debugInfo.color = "white";
-            // this.addChild(this.debugInfo);
             _this.scoreDisplay = new Laya.Text();
             _this.scoreDisplay.width = 100;
             _this.scoreDisplay.pos(Const.SCREEN_WIDTH - 25, 0);
@@ -47264,9 +47227,6 @@ var view;
             _this.shields = new Array();
             return _this;
         }
-        // public setDebugInfo(msg: string): void {
-        // 	this.debugInfo.text = msg;
-        // }
         GameView.prototype.startGame = function () {
             this.addChild(this.scoreDisplay);
             this.score = 0;
@@ -47276,8 +47236,6 @@ var view;
             this.snake.bodyPosX[0] = Const.SCREEN_WIDTH / 2;
             this.snake.length = 1;
             this.snake.bodyPosY[0] = Const.SCREEN_HEIGHT / 2;
-            //just for debug
-            this.snake.extendBody(100);
             Laya.stage.addChild(this.snake);
             Laya.timer.frameLoop(1, this, this.mainLoop, null, false); // Every Frame
             Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
@@ -47405,14 +47363,10 @@ var view;
                                 if (Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
                                     && wall.centerPosX() < _this.snake.bodyPosX[0]) {
                                     level_1 = 0;
-                                    console.log('Not wall move');
                                 }
                                 if (wall.centerPosX() < _this.snake.bodyPosX[0] //墙体在蛇头左侧
-                                    && _this.snake.bodyPosX[0] - level_1 < wall.centerPosX() + Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
-                                /*&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level*/ ) {
-                                    console.log('level修正前>>>>>', level_1);
+                                    && _this.snake.bodyPosX[0] - level_1 < wall.centerPosX() + Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS) {
                                     level_1 = Math.min(level_1, Math.abs(Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS));
-                                    console.log('level修正后<<<<<', level_1);
                                 }
                                 break;
                             }
@@ -47420,14 +47374,10 @@ var view;
                                 if (Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
                                     && wall.centerPosX() > _this.snake.bodyPosX[0]) {
                                     level_1 = 0;
-                                    console.log('Not wall move');
                                 }
                                 if (wall.centerPosX() > _this.snake.bodyPosX[0] //墙体在蛇头右侧
-                                    && _this.snake.bodyPosX[0] + level_1 > wall.centerPosX() - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS
-                                /*&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level*/ ) {
-                                    console.log('level修正前>>>>>', level_1);
+                                    && _this.snake.bodyPosX[0] + level_1 > wall.centerPosX() - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS) {
                                     level_1 = Math.min(level_1, Math.abs(Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS));
-                                    console.log('level修正后<<<<<', level_1);
                                 }
                                 break;
                             }
@@ -47742,17 +47692,50 @@ var view;
             _this.returnButton.pos(Const.SCREEN_WIDTH / 2 - 40, Const.SCREEN_HEIGHT * 0.8);
             _this.returnButton.width = 80;
             _this.returnButton.height = 40;
-            _this.returnButton.label = 'return';
+            _this.returnButton.label = '返回';
             _this.returnButton.labelFont = 'Arial';
             _this.returnButton.labelColors = '#FFFFFF,#FF0000,#FF0000,#FF0000';
             _this.returnButton.labelSize = 30;
             return _this;
         }
         LeaderBoard.prototype.setLeaderBoard = function (data) {
+            // data = [
+            // 	{ nickname: 'tee', score: 45 },
+            // 	{ nickname: 'ree', score: 11 },
+            // 	{ nickname: 'ree', score: 10 },
+            // 	{ nickname: 'ree', score: 11 },
+            // 	{ nickname: 'ree', score: 11 },
+            // 	{ nickname: 'ree', score: 8 },
+            // 	{ nickname: 'ree', score: 7 },
+            // 	{ nickname: 'ree', score: 6 },
+            // ];
             this.removeChildren();
             this.addChild(this.returnButton);
-            // for (let i = 0; i < data.length; i++) {
-            // }
+            var text1 = new Laya.Text(), text2 = new Laya.Text();
+            text1.text = '用户';
+            text2.text = '分数';
+            text1.font = text2.font = 'Hei';
+            text1.color = text2.color = 'white';
+            text1.fontSize = text2.fontSize = 25;
+            text1.pos(100, 100);
+            text2.pos(300, 100);
+            this.addChild(text1);
+            this.addChild(text2);
+            console.log(data);
+            if (data)
+                for (var i = 0; i < data.length && i < 10; i++) {
+                    var nicknameText = new Laya.Text();
+                    var scoreText = new Laya.Text();
+                    nicknameText.text = data[i].nickname;
+                    scoreText.text = data[i].score.toString();
+                    nicknameText.font = scoreText.font = 'Hei';
+                    nicknameText.fontSize = scoreText.fontSize = 20;
+                    nicknameText.color = scoreText.color = 'white';
+                    nicknameText.pos(100, 150 + 40 * i);
+                    scoreText.pos(300, 150 + 40 * i);
+                    this.addChild(scoreText);
+                    this.addChild(nicknameText);
+                }
         };
         LeaderBoard.prototype.onButtonClicked = function () {
             _super.prototype.removeSelf.call(this);

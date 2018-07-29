@@ -18,13 +18,6 @@ var view;
             _this.gameScrollSpeed = Const.GAME_SCROLL_SPEED;
             _this.directCollision = false;
             _this.score = 0;
-            /* for debug */
-            // this.debugInfo = new Laya.Text();
-            // this.debugInfo.width = 300;
-            // this.debugInfo.font = "Hei";
-            // this.debugInfo.fontSize = 20;
-            // this.debugInfo.color = "white";
-            // this.addChild(this.debugInfo);
             _this.scoreDisplay = new Laya.Text();
             _this.scoreDisplay.width = 100;
             _this.scoreDisplay.pos(Const.SCREEN_WIDTH - 25, 0);
@@ -41,9 +34,6 @@ var view;
             _this.shields = new Array();
             return _this;
         }
-        // public setDebugInfo(msg: string): void {
-        // 	this.debugInfo.text = msg;
-        // }
         GameView.prototype.startGame = function () {
             this.addChild(this.scoreDisplay);
             this.score = 0;
@@ -53,8 +43,6 @@ var view;
             this.snake.bodyPosX[0] = Const.SCREEN_WIDTH / 2;
             this.snake.length = 1;
             this.snake.bodyPosY[0] = Const.SCREEN_HEIGHT / 2;
-            //just for debug
-            this.snake.extendBody(100);
             Laya.stage.addChild(this.snake);
             Laya.timer.frameLoop(1, this, this.mainLoop, null, false); // Every Frame
             Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
@@ -182,14 +170,10 @@ var view;
                                 if (Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
                                     && wall.centerPosX() < _this.snake.bodyPosX[0]) {
                                     level_1 = 0;
-                                    console.log('Not wall move');
                                 }
                                 if (wall.centerPosX() < _this.snake.bodyPosX[0] //墙体在蛇头左侧
-                                    && _this.snake.bodyPosX[0] - level_1 < wall.centerPosX() + Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
-                                /*&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level*/ ) {
-                                    console.log('level修正前>>>>>', level_1);
+                                    && _this.snake.bodyPosX[0] - level_1 < wall.centerPosX() + Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS) {
                                     level_1 = Math.min(level_1, Math.abs(Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS));
-                                    console.log('level修正后<<<<<', level_1);
                                 }
                                 break;
                             }
@@ -197,14 +181,10 @@ var view;
                                 if (Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) <= Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS
                                     && wall.centerPosX() > _this.snake.bodyPosX[0]) {
                                     level_1 = 0;
-                                    console.log('Not wall move');
                                 }
                                 if (wall.centerPosX() > _this.snake.bodyPosX[0] //墙体在蛇头右侧
-                                    && _this.snake.bodyPosX[0] + level_1 > wall.centerPosX() - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS
-                                /*&& Math.abs(wall.centerPosX() - this.snake.bodyPosX[0]) < Const.WALL_WIDTH / 2 + Const.SNAKE_BODY_RADIUS + level*/ ) {
-                                    console.log('level修正前>>>>>', level_1);
+                                    && _this.snake.bodyPosX[0] + level_1 > wall.centerPosX() - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS) {
                                     level_1 = Math.min(level_1, Math.abs(Math.abs(wall.centerPosX() - _this.snake.bodyPosX[0]) - Const.WALL_WIDTH / 2 - Const.SNAKE_BODY_RADIUS));
-                                    console.log('level修正后<<<<<', level_1);
                                 }
                                 break;
                             }
